@@ -125,25 +125,23 @@ if os.environ.has_key('XMPP_SETTINGS_USER'):
     }
 
 EMAIL_SETTINGS = {
-   'user': os.environ['EMAIL_SETTINGS_USER'],
-   'password': os.environ['EMAIL_SETTINGS_PASSWORD']
+   'user': os.environ.get('EMAIL_SETTINGS_USER'),
+   'password': os.environ.get('EMAIL_SETTINGS_PASSWORD')
 }
 
 TWILIO_SETTINGS = {
-    'SID': os.environ['TWILIO_SETTINGS_SID'],
-    'token': os.environ['TWILIO_SETTINGS_TOKEN'],
-    'phone_number': os.environ['TWILIO_SETTINGS_PHONE_NUMBER'],
-    'sms_number': os.environ['TWILIO_SETTINGS_SMS_NUMBER'],
-    'twiml_url': os.environ['TWILIO_SETTINGS_TWIM_URL']
+    'SID': os.environ.get('TWILIO_SETTINGS_SID'),
+    'token': os.environ.get('TWILIO_SETTINGS_TOKEN'),
+    'phone_number': os.environ.get('TWILIO_SETTINGS_PHONE_NUMBER'),
+    'sms_number': os.environ.get('TWILIO_SETTINGS_SMS_NUMBER'),
+    'twiml_url': os.environ.get('TWILIO_SETTINGS_TWIM_URL')
 }
 
 SLACK_SETTINGS = {
-    'apikey': os.environ['SLACK_SETTINGS_APIKEY']
+    'apikey': os.environ.get('SLACK_SETTINGS_APIKEY')
 }
 
 PROWL_SETTINGS = {
-  'priority': 0,
-  'application': 'openduty'
 }
 
 CACHES = {
