@@ -91,6 +91,7 @@ class EventLog(models.Model):
     Event Log
     """
     ACTIONS = (('acknowledge', 'acknowledge'),
+               ('unacknowledge', 'unacknowledge'),
                ('resolve', 'resolve'),
                ('silence_service', 'silence service'),
                ('unsilence_service', 'unsilence service'),
@@ -105,6 +106,7 @@ class EventLog(models.Model):
     @property
     def color(self):
         colort_dict = {'acknowledge': 'warning',
+                       'unacknowledge' : 'warning',
                        'resolve': 'success',
                        'silence_service': 'active',
                        'unsilence_service': 'active',
@@ -139,6 +141,7 @@ class Incident(models.Model):
     TRIGGER = "trigger"
     RESOLVE = "resolve"
     ACKNOWLEDGE = "acknowledge"
+    UNACKNOWLEDGE = "unacknowledge"
     """
     Incidents are representations of a malfunction in the system.
     """
@@ -152,6 +155,7 @@ class Incident(models.Model):
     @property
     def color(self):
         colort_dict = {'acknowledge': 'warning',
+                       'unacknowledge': 'warning',
                        'resolve': 'success',
                        'silence_service': 'active',
                        'silence_incident': 'active',
@@ -171,8 +175,8 @@ class Incident(models.Model):
     def natural_key(self):
         return (self.service_key, self.incident_key)
     def clean(self):
-        if self.event_type not in ['trigger', 'acknowledge', 'resolve']:
-            raise ValidationError("'%s' is an invalid event type, valid values are 'trigger', 'acknowledge' and 'resolve'" % self.event_type)
+        if self.event_type not in ['trigger', 'acknowledge', 'unacknowledge', 'resolve']:
+            raise ValidationError("'%s' is an invalid event type, valid values are 'trigger', 'acknowledge', 'unacknowledge' and 'resolve'" % self.event_type)
 
 @python_2_unicode_compatible
 class ServiceTokens(models.Model):
