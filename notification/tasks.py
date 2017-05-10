@@ -16,7 +16,7 @@ from django.utils import timezone
 
 from openduty.models import EventLog
 
-@app.task(ignore_result=True)
+@app.task(ignore_result=False)
 def send_notifications(notification_id):
     try:
         notification = ScheduledNotification.objects.get(id = notification_id)
@@ -47,7 +47,7 @@ def send_notifications(notification_id):
             logmessage.incident_key = notification.incident
             logmessage.user = notification.user_to_notify
             logmessage.action = 'notified'
-            logmessage.data = "Notification sent to %s about %s service" % (notification.user_to_notify, logmessage.service_key, )
+            logmessage.data = "Notification sent to %s about %s service via %s" % (notification.user_to_notify, logmessage.service_key, notification.notifier, )
             logmessage.occurred_at = timezone.now()
             logmessage.save()
         if notification.notifier != UserNotificationMethod.METHOD_TWILIO_CALL:
@@ -55,7 +55,7 @@ def send_notifications(notification_id):
             notification.delete()
     except ScheduledNotification.DoesNotExist:
         pass #Incident was resolved. NOP.
-    except:
+    except Exception, e:
                 # Log successful notification
         logmessage = EventLog()
         if notification.incident:
@@ -63,8 +63,9 @@ def send_notifications(notification_id):
             logmessage.incident_key = notification.incident
             logmessage.user = notification.user_to_notify
             logmessage.action = 'notification_failed'
-            logmessage.data = "Sending notification failed to %s about %s service" % (notification.user_to_notify, logmessage.service_key, )
+            logmessage.data = "Sending notification failed to %s about %s service because %s" % (notification.user_to_notify, logmessage.service_key, e,)
             logmessage.occurred_at = timezone.now()
             logmessage.save()
+            return (logmessage.data)
         raise
 
