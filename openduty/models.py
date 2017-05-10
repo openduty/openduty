@@ -72,6 +72,8 @@ class Service(models.Model):
     policy = models.ForeignKey(SchedulePolicy, blank=True, null=True)
     escalate_after = models.IntegerField(blank=True, null=True)
     notifications_disabled = models.BooleanField(default=False)
+    send_resolve_enabled = models.BooleanField(default=False)
+
 
     class Meta:
         verbose_name = _('service')
@@ -223,6 +225,7 @@ class UserProfile(models.Model):
     prowl_application = models.CharField(max_length=256, blank=True)
     prowl_url = models.CharField(max_length=512, blank=True)
     rocket_webhook_url = models.CharField(max_length=512, blank=True)
+    send_resolve_enabled = models.BooleanField(default=False)
 
 class ServiceSilenced(models.Model):
     service = models.ForeignKey(Service)

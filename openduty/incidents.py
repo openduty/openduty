@@ -205,6 +205,9 @@ def _update_type(user, ids, event_type):
             logmessage.save()
             if incident.event_type == Incident.RESOLVE or incident.event_type == Incident.ACKNOWLEDGE:
                 ScheduledNotification.remove_all_for_incident(incident)
+                if incident.event_type == Incident.RESOLVE and service.send_resolve_enabled:
+                    NotificationHelper.notify_incident(incident)
+
 
 
 @login_required()

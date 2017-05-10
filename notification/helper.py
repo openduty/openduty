@@ -1,7 +1,6 @@
 __author__ = 'deathowl'
 
 from datetime import datetime, timedelta
-
 from notification.tasks import send_notifications
 from openduty.escalation_helper import get_escalation_for_service
 from django.utils import timezone
@@ -35,6 +34,9 @@ class NotificationHelper(object):
         notifications = []
 
         for officer_index, duty_officer in enumerate(duty_officers):
+            if incident.event_type == Incident.RESOLVE and not duty_officer.profile.send_resolve_enabled:
+                print "Skipping notification for %s because type is RESOLVE and user %s has send_resolve_enabled OFF" % (incident.incident_key, duty_officer.username)
+                continue
             escalation_time = incident.service_key.escalate_after * (officer_index + 1)
             escalate_at = current_time + timedelta(minutes=escalation_time)
 

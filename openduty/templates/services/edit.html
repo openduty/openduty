@@ -79,6 +79,12 @@
         </div>
     </div>
     <div class="form-group">
+        <label for="send_resolve_notifications" class="col-sm-2 control-label">Send Resolve Notifications</label>
+        <div class="col-sm-1">
+            <input type="checkbox" class="form-control alert-danger" name="send_resolve_notification" id="send_resolve_notification" {% if item.send_resolve_enabled  %} checked {% endif %}>
+        </div>
+    </div>
+    <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
             <button type="submit" class="btn btn-default">Save</button>
         </div>
