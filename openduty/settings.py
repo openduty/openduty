@@ -121,6 +121,10 @@ XMPP_SETTINGS = {
 }
 
 EMAIL_SETTINGS = {
+    'user': '',
+    'password': '',
+    'host': '',
+    'port': ''
 }
 
 TWILIO_SETTINGS = {
