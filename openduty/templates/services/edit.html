@@ -92,6 +92,9 @@
     {% csrf_token %}
 </form>
 
+<div class="row header">
+    <div class="col-xs-12"><h3>Silence service</h3></div>
+
     <form class="form-horizontal" role="form" method="post" action="{% url 'openduty.services.silence' item.id %}">
         <div class="form-group">
                 <label class="col-sm-2 control-label">Silence service for</label>
@@ -103,7 +106,9 @@
                     <input type="submit" value="Silence Service"  class="btn btn-inverse">
         </div>
     </form>
+</div>
 
+<br />
 {% if item %}
 <div class="row header">
     <div class="col-xs-12 col-md-8"><h3>API Keys</h3></div>

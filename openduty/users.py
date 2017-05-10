@@ -14,6 +14,9 @@ from django.db import IntegrityError
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.conf import settings
+from django.contrib.admin.views.decorators import staff_member_required
+from django.core.exceptions import PermissionDenied
+
 
 @login_required()
 def list(request):
@@ -21,6 +24,7 @@ def list(request):
     return TemplateResponse(request, 'users/list.html', {'users': users})
 
 @login_required()
+@staff_member_required
 def delete(request, id):
     try:
         user = User.objects.get(id = id)
@@ -31,6 +35,8 @@ def delete(request, id):
 
 @login_required()
 def edit(request, id):
+    if not request.user.is_staff and int(request.user.id) != int(id):
+        raise PermissionDenied("User " + str(request.user.id) + " isn't staff")
     try:
         user = User.objects.get(id = id)
         user_methods = UserNotificationMethod.objects.filter(user = user).order_by('position')
@@ -43,12 +49,15 @@ def edit(request, id):
         raise Http404
 
 @login_required()
+@staff_member_required
 def new(request):
     return TemplateResponse(request, 'users/edit.html', {'methods': UserNotificationMethod.methods, 'empty_user_method': UserNotificationMethod(), 'hipchat_rooms': HipchatNotifier(settings.HIPCHAT_SETTINGS).get_all_rooms()})
 
 @login_required()
 @require_http_methods(["POST"])
 def save(request):
+    if not request.user.is_staff and int(request.user.id) != int(request.POST['id']):
+        raise PermissionDenied("User " + str(request.user.id) + " isn't staff")
     try:
         user = User.objects.get(id = request.POST['id'])
     except User.DoesNotExist:
@@ -104,6 +113,8 @@ def save(request):
 @login_required()
 @require_http_methods(["POST"])
 def testnotification(request):
+    if not request.user.is_staff and int(request.user.id) != int(request.POST['id']):
+        raise PermissionDenied("User " + str(request.user.id) + " isn't staff")
     user = User.objects.get(id=request.POST['id'])
     NotificationHelper.notify_user_about_incident(None, user, 1, "This is a notification test message, just ignore it")
     return HttpResponseRedirect(reverse('openduty.users.list'))

@@ -3,6 +3,14 @@
 {% load arrowfilter %}
 
 {% block content %}
+{% if messages %}
+<div class="alert alert-danger">
+    {% for message in messages %}
+        {{ message }}
+    {% endfor %}
+</div>
+{% endif %}
+
 <div class="center-block">
     <div class="row header">
         <div style="text-align: center"><h2>Incident details</h2></div>

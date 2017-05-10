@@ -10,6 +10,7 @@ from .tables import IncidentTable
 from django_tables2_simplefilter import FilteredSingleTableView
 from .incidents import ServicesByMe
 
+
 admin.autodiscover()
 rest_router = rest_routers.SimpleRouter(trailing_slash=False)
 rest_router.register(r'users', views.UserViewSet)
@@ -123,4 +124,5 @@ if settings.DEBUG:
     urlpatterns += [
         url(r'^__debug__/', include(debug_toolbar.urls)),
     ]
+
 

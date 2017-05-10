@@ -30,9 +30,9 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="{% url 'openduty.event_log.list' %}">Dashboard</a></li>
+                    <li><a href="{% url 'openduty.event_log.list' %}"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a></li>
                     <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Incidents <b class="caret"></b></a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-warning-sign"></span> Incidents <b class="caret"></b></a>
                         <ul class="dropdown-menu" role="menu">
                             <li role="presentation">
                                 <a href="{% url 'incidents_on_call' %}?event_type=trigger">Unhandled (for me)</a>
@@ -48,20 +48,20 @@
                             </li>
                         </ul>
                     </li>
-                    <li><a href="{% url 'openduty.services.list' %}">Services</a></li>
-                    <li><a href="{% url 'openduty.escalation.list' %}">Escalation Policies</a></li>
-                    <li><a href="{% url 'openduty.schedules.list' %}">On-Call Schedules</a></li>
-                    <li><a href="{% url 'openduty.users.list' %}">Users</a></li>
+                    <li><a href="{% url 'openduty.services.list' %}"><span class="glyphicon glyphicon-phone-alt"></span> Services</a></li>
+                    <li><a href="{% url 'openduty.escalation.list' %}"><span class="glyphicon glyphicon-plane"></span> Escalation Policies</a></li>
+                    <li><a href="{% url 'openduty.schedules.list' %}"><span class="glyphicon glyphicon-calendar"></span> On-Call Schedules</a></li>
+                    <li><a href="{% url 'openduty.users.list' %}"><span class="glyphicon glyphicon-user"></span> Users</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown">
                         <a data-toggle="dropdown" href="#">{{ user.username }}<b class="caret"></b></a>
                         <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                             <li role="presentation">
-                                <a href="{% url 'openduty.users.edit' user.id %}">Account</a>
+                                <a href="{% url 'openduty.users.edit' user.id %}"><span class="glyphicon glyphicon-pencil"></span> Account</a>
                             </li>
                             <li role="presentation">
-                                <a href="{% url 'openduty.auth.logout' %}">Logout</a>
+                                <a href="{% url 'openduty.auth.logout' %}"><span class="glyphicon glyphicon-arrow-left"></span> Logout</a>
                             </li>
                         </ul>
                     </li>
