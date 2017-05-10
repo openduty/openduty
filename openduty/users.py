@@ -3,6 +3,7 @@ from notification.helper import NotificationHelper
 __author__ = "dzsubek"
 
 from notification.models import UserNotificationMethod
+from notification.notifier.hipchat import HipchatNotifier
 from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.contrib.auth.decorators import login_required
@@ -12,6 +13,7 @@ from django.views.decorators.http import require_http_methods
 from django.db import IntegrityError
 from django.core.urlresolvers import reverse
 from django.contrib import messages
+from django.conf import settings
 
 @login_required()
 def list(request):
@@ -35,14 +37,14 @@ def edit(request, id):
 
         return TemplateResponse(
             request, 'users/edit.html',
-            {'item': user, 'methods': UserNotificationMethod.methods, 'user_methods': user_methods, 'empty_user_method': UserNotificationMethod()}
+            {'item': user, 'methods': UserNotificationMethod.methods, 'user_methods': user_methods, 'empty_user_method': UserNotificationMethod(), 'hipchat_rooms': HipchatNotifier(settings.HIPCHAT_SETTINGS).get_all_rooms()}
         )
     except User.DoesNotExist:
         raise Http404
 
 @login_required()
 def new(request):
-    return TemplateResponse(request, 'users/edit.html', {'methods': UserNotificationMethod.methods, 'empty_user_method': UserNotificationMethod()})
+    return TemplateResponse(request, 'users/edit.html', {'methods': UserNotificationMethod.methods, 'empty_user_method': UserNotificationMethod(), 'hipchat_rooms': HipchatNotifier(settings.HIPCHAT_SETTINGS).get_all_rooms()})
 
 @login_required()
 @require_http_methods(["POST"])
@@ -86,6 +88,8 @@ def save(request):
         profile.prowl_application = request.POST['prowl_application']
         profile.prowl_url = request.POST['prowl_url']
         profile.rocket_webhook_url = request.POST['rocket_webhook_url']
+        profile.hipchat_room_name = request.POST['hipchat_room_name']
+        profile.hipchat_room_url = request.POST['hipchat_room_url']
         profile.send_resolve_enabled = request.POST.get("send_resolve_notification", "off") == "on"
         profile.save()
 
