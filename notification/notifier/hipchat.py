@@ -8,8 +8,9 @@ class HipchatNotifier:
         self.__config = config
 
     def start(self):
-        if not self.__config['token']:
-            return False
+        if not self.__config['token'] or not self.__config['endpoint']:
+            print "HipChat configuration is missing %s" % self.__config
+            raise
         elif self.__config['endpoint']:
             return HypChat(self.__config['token'], endpoint=self.__config['endpoint'])
         else:
@@ -53,13 +54,15 @@ class HipchatNotifier:
                 raise
 
     def get_all_rooms(self):
-        hc = self.start()
-        if not hc:
-            return [""]
-        else:
-            rooms = hc.rooms().contents()
-            names = [""]
-            for room in rooms:
-                names.append(room['name'])
+        try:
+            hc = self.start()
+            if not hc:
+                return [""]
+            else:
+                rooms = hc.rooms().contents()
+                names = []
+                for room in rooms:
+                    names.append(room['name'])
             return names
-
+        except:
+            return [""]

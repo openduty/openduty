@@ -132,6 +132,12 @@ SLACK_SETTINGS = {
 PROWL_SETTINGS = {
 }
 
+HIPCHAT_SETTINGS = {
+    'token' : '',
+    'endpoint' : ''
+}
+
+
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
