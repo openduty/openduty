@@ -10,7 +10,7 @@ Has been tested with Nagios, works well for us. Any Pagerduty Notifier using the
 [Icinga2 config](https://github.com/deathowl/OpenDuty-Icinga2) for openduty integration
 
 #Notifications
-XMPP, email, SMS, Phone(Thanks Twilio for being awesome!), and Push notifications(thanks Pushover also),and Slack are supported at the moment.
+XMPP, email, SMS, Phone(Thanks Twilio for being awesome!), Push notifications(thanks Pushover, Prowl as well!)and Slack, HipChat, Rocket.chat are supported at the moment.
 #Current status
 Openduty is in Beta status, it can be considered stable at the moment, however major structural changes can appear anytime (not affecting the API, or the Notifier structure)
 
@@ -79,7 +79,22 @@ python manage.py runserver
 ```
 now, you can start hacking on it.
 
-# After models you've changed your models please run:
+# Running as a service with systemd
+*OpenDuty can be ran as a service with the help of gunicorn and systemd*
+```
+cp systemd/gunicorn.service /etc/systemd/system/
+cp -r systemd/gunicorn.service.d /etc/systemd/system/gunicorn.service.d
+
+cp systemd/celery.service /etc/systemd/system/
+cp -r systemd/celery.service.d /etc/systemd/system/
+
+systemctl daemon-reload
+sudo systemctl start gunicorn
+sudo systemctl enable gunicorn
+
+```
+
+# After you've changed your models please run:
 ```
 ./manage.py schemamigration openduty --auto
 ./manage.py schemamigration notification --auto
