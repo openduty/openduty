@@ -124,7 +124,8 @@ EMAIL_SETTINGS = {
     'user': '',
     'password': '',
     'host': '',
-    'port': ''
+    'port': '',
+    'tls': False
 }
 
 TWILIO_SETTINGS = {

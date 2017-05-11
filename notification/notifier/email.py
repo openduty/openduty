@@ -28,7 +28,8 @@ class EmailNotifier:
             """ % (FROM, ", ".join(TO), SUBJECT, TEXT)
         try:
             server = smtplib.SMTP(host, int(port))
-            server.starttls()
+            if self.__config['tls']:
+                server.starttls()
             server.ehlo()
             if user and password:
                 server.login(user, password)
