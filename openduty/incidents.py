@@ -24,9 +24,7 @@ from notification.helper import NotificationHelper
 from openduty.tasks import unsilence_incident
 import uuid
 import base64
-
 from .tables import IncidentTable
-
 from django_tables2_simplefilter import FilteredSingleTableView
 
 class IncidentViewSet(viewsets.ModelViewSet):
@@ -50,7 +48,7 @@ class IncidentViewSet(viewsets.ModelViewSet):
             # True if not acknowleged or type is resolve
             return (incident.event_type != Incident.ACKNOWLEDGE or
                     (incident.event_type == Incident.ACKNOWLEDGE and
-                             new_event_type == Incident.RESOLVE))
+                     new_event_type == Incident.RESOLVE) or (incident.event_type == Incident.ACKNOWLEDGE and new_event_type == Incident.UNACKNOWLEDGE))
         # New incident
         else:
             # True if this is a trigger action
