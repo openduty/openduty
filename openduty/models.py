@@ -175,7 +175,7 @@ class Incident(models.Model):
     def natural_key(self):
         return (self.service_key, self.incident_key)
     def clean(self):
-        if self.event_type not in ['trigger', 'acknowledge', 'unacknowledge', 'resolve']:
+        if self.event_type not in ['trigger', 'acknowledge','unacknowledge', 'resolve']:
             raise ValidationError("'%s' is an invalid event type, valid values are 'trigger', 'acknowledge', 'unacknowledge' and 'resolve'" % self.event_type)
 
 @python_2_unicode_compatible
