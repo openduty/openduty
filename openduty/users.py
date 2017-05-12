@@ -8,6 +8,7 @@ from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.contrib.auth.decorators import login_required
 from .models import User, UserProfile
+from django.contrib.auth.models import Group
 from django.http import Http404
 from django.views.decorators.http import require_http_methods
 from django.db import IntegrityError
@@ -16,6 +17,7 @@ from django.contrib import messages
 from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import PermissionDenied
+import itertools
 
 
 @login_required()
@@ -40,10 +42,11 @@ def edit(request, id):
     try:
         user = User.objects.get(id = id)
         user_methods = UserNotificationMethod.objects.filter(user = user).order_by('position')
-
+        all_groups = Group.objects.all()
+        user_groups = [str(x.name) for x in User.objects.get(id=id).groups.all()]
         return TemplateResponse(
             request, 'users/edit.html',
-            {'item': user, 'methods': UserNotificationMethod.methods, 'user_methods': user_methods, 'empty_user_method': UserNotificationMethod(), 'hipchat_rooms': HipchatNotifier(settings.HIPCHAT_SETTINGS).get_all_rooms()}
+            {'item': user, 'all_groups': all_groups, 'user_groups': user_groups, 'methods': UserNotificationMethod.methods, 'user_methods': user_methods, 'empty_user_method': UserNotificationMethod(), 'hipchat_rooms': HipchatNotifier(settings.HIPCHAT_SETTINGS).get_all_rooms()}
         )
     except User.DoesNotExist:
         raise Http404
@@ -51,7 +54,7 @@ def edit(request, id):
 @login_required()
 @staff_member_required
 def new(request):
-    return TemplateResponse(request, 'users/edit.html', {'methods': UserNotificationMethod.methods, 'empty_user_method': UserNotificationMethod(), 'hipchat_rooms': HipchatNotifier(settings.HIPCHAT_SETTINGS).get_all_rooms()})
+    return TemplateResponse(request, 'users/edit.html', {'methods': UserNotificationMethod.methods, 'empty_user_method': UserNotificationMethod(), 'hipchat_rooms': HipchatNotifier (settings.HIPCHAT_SETTINGS).get_all_rooms()})
 
 @login_required()
 @require_http_methods(["POST"])
@@ -70,6 +73,25 @@ def save(request):
         user.set_password(request.POST['password'])
 
     try:
+        user.save()
+        all_groups = []
+        for group in Group.objects.all():
+            all_groups.append(int(group.id))
+        post_groups = request.POST.getlist('groups[]')
+        for idx, group in enumerate(post_groups):
+            group = int(group)
+            if group in all_groups:
+                all_groups.remove(group)
+            if group not in [x.id for x in User.objects.get(id=request.POST['id']).groups.all()]:  #Groups.objects.filter(id__in=user.groups.all().values_list('id', flat=True))]:
+                try:
+                    user.groups.add(group)
+                except e:
+                    messages.error(request, str(e))
+
+        if len(all_groups) > 0:
+            for group in all_groups:
+                user.groups.remove(group)
+
         user.save()
         try:
             UserNotificationMethod.objects.filter(user=user).delete()

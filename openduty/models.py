@@ -7,7 +7,7 @@ from hashlib import sha1
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from uuidfield import UUIDField
 from django.core.exceptions import ValidationError
 from schedule.models import Calendar
@@ -74,7 +74,6 @@ class Service(models.Model):
     notifications_disabled = models.BooleanField(default=False)
     send_resolve_enabled = models.BooleanField(default=False)
 
-
     class Meta:
         verbose_name = _('service')
         verbose_name_plural = _('service')
@@ -113,6 +112,7 @@ class EventLog(models.Model):
                        'silence_incident': 'active',
                        'unsilence_incident': 'active',
                        'forward': 'info',
+                        'escalate': 'info',
                        'trigger': 'trigger',
                        'notified': 'success',
                        'notification_failed': 'danger',
@@ -142,15 +142,17 @@ class Incident(models.Model):
     RESOLVE = "resolve"
     ACKNOWLEDGE = "acknowledge"
     UNACKNOWLEDGE = "unacknowledge"
+    ESCALATE = "escalate"
     """
     Incidents are representations of a malfunction in the system.
     """
-    service_key = models.ForeignKey(Service)
+    service_key = models.ForeignKey(Service,related_name="incident")
     incident_key = models.CharField(max_length=200)
     event_type = models.CharField(max_length=15)
     description = models.CharField(max_length=200)
     details = models.TextField()
     occurred_at = models.DateTimeField()
+    service_to_escalate_to = models.ForeignKey(Service,related_name="service_to_escalate_to_id",null=True, blank=True, default = None)
 
     @property
     def color(self):
@@ -205,6 +207,7 @@ class SchedulePolicyRule(models.Model):
     schedule_policy = models.ForeignKey(SchedulePolicy, related_name='rules')
     position = models.IntegerField()
     user_id = models.ForeignKey(User, blank=True, null=True)
+    group_id = models.ForeignKey(Group, blank=True, null=True)
     schedule = models.ForeignKey(Calendar, blank=True, null=True)
     escalate_after = models.IntegerField()
 
@@ -217,7 +220,7 @@ class SchedulePolicyRule(models.Model):
 
     @classmethod
     def getRulesForService(cls, service):
-        return cls.objects.filter(schedule_policy=service.policy)
+        return cls.objects.filter(schedule_policy=service.policy.id)
 
 class UserProfile(models.Model):
     user = models.OneToOneField('auth.User', related_name='profile')
