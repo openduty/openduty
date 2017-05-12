@@ -35,7 +35,9 @@ class IncidentTable(tables.Table):
                  values_list=[ (str(x), str(x.id)) for x in Service.objects.all()]),
                F('event_type', 'Event',
                  values_list=EventLog.ACTIONS),
-               )
+               F('incident_key', 'Incident Key',
+                 values_list= [(i, i) for i in Incident.objects.values_list('incident_key', flat=True).order_by('-occurred_at')[:500] ])
+              )
     tr_class = tables.Column(visible=False, empty_values=())
 
     def render_tr_class(self, record):
