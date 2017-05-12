@@ -82,11 +82,13 @@ now, you can start hacking on it.
 # Running as a service with systemd
 *OpenDuty can be ran as a service with the help of gunicorn and systemd*
 ```
-cp systemd/gunicorn.service /etc/systemd/system/
-cp -r systemd/gunicorn.service.d /etc/systemd/system/gunicorn.service.d
+cp -r systemd/gunicorn.service.* /etc/systemd/system/
 
-cp systemd/celery.service /etc/systemd/system/
-cp -r systemd/celery.service.d /etc/systemd/system/
+cp -r systemd/celery.service* /etc/systemd/system/
+
+// EDIT VARIABLES IN *.service.d/main.conf TO REFLECT YOUR ENV
+vi /etc/systemd/system/gunicorn.service.d/main.conf
+vi /etc/systemd/system/celery.service.d/main.conf
 
 systemctl daemon-reload
 sudo systemctl start gunicorn

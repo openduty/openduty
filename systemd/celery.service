@@ -1,0 +1,14 @@
+[Unit]
+Description=Celery daemon
+After=network.target gunicorn.service
+
+[Service]
+ExecStart=/bin/sh -c "/$WorkingDirectory/env/bin/celery  worker --uid=$User --gid=$Group --logfile=$LogFile --loglevel=info --pidfile=$PIDFile --autoscale=2,1 --app=openduty --workdir=/$WorkingDirectory"
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
+
