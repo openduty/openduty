@@ -60,9 +60,9 @@ class IncidentViewSet(viewsets.ModelViewSet):
             serviceToken = ServiceTokens.objects.get(token_id=token)
             service = serviceToken.service_id
         except ServiceTokens.DoesNotExist:
-            return Response({}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"Service key does not exist"}, status=status.HTTP_404_NOT_FOUND)
         except Token.DoesNotExist:
-            return Response({}, status=status.HTTP_403_FORBIDDEN)
+            return Response({"No service key"}, status=status.HTTP_403_FORBIDDEN)
 
         with transaction.atomic():
             try:
@@ -125,8 +125,11 @@ class IncidentViewSet(viewsets.ModelViewSet):
                     service=service).count() > 0
                 if incident.event_type == Incident.TRIGGER and not servicesilenced:
                     NotificationHelper.notify_incident(incident)
-                if incident.event_type == "resolve" or incident.event_type == Incident.ACKNOWLEDGE:
+                if incident.event_type == Incident.RESOLVE or incident.event_type == Incident.ACKNOWLEDGE:
                     ScheduledNotification.remove_all_for_incident(incident)
+                    if incident.event_type == Incident.RESOLVE and service.send_resolve_enabled:
+                        NotificationHelper.notify_incident(incident)
+
 
             headers = self.get_success_headers(request.POST)
 
