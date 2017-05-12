@@ -50,6 +50,7 @@ def send_notifications(notification_id):
             logmessage.data = "Notification sent to %s about %s service via %s" % (notification.user_to_notify, logmessage.service_key, notification.notifier, )
             logmessage.occurred_at = timezone.now()
             logmessage.save()
+            return (logmessage.data)
         if notification.notifier != UserNotificationMethod.METHOD_TWILIO_CALL:
             # In case of a twilio call, we need the object for TWiml generation
             notification.delete()
@@ -68,4 +69,3 @@ def send_notifications(notification_id):
             logmessage.save()
             return (logmessage.data)
         raise
-
