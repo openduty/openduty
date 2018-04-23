@@ -14,12 +14,16 @@ $( document ).ready(function() {
     $('#add').on('click', function () {
         list.append(
             '<li class="list-group-item">' +
-                '<label for="escalate_after" class="col-sm-2 control-label">Calendar or user:</label>'+
-                '<div class="col-sm-1">'+
+                '<label for="escalate_after" class="col-sm-3 control-label">Calendar, group or user:</label>'+
+                '<div class="col-sm-8">'+
                     '<select id="escalate_after[]" name="escalate_to[]" class="form-control">'+
                         '<optgroup label="Calendars">'+
                         {% for item in calendars %}
                         '<option value="calendar|{{item.id}}" >{{item.name}}</option>'+
+                        {% endfor %}
+                        '<optgroup label="Groups">'+
+                        {% for item in groups %}
+                        '<option value="group|{{item.id}}" >{{ item.name }}</option>'+
                         {% endfor %}
                         '<optgroup label="People">'+
                          {% for item in users %}
@@ -40,7 +44,7 @@ $( document ).ready(function() {
 </script>
 
 <div class="row header">
-    <div class="col-xs-12 col-md-8"><h2>{% if item %}Edit escalation policy{% else%}New escalation-policy{% endif %}</h2></div>
+    <div class="col-xs-12 col-md-8"><h2>{% if item %}Edit escalation policy{% else%}New escalation policy{% endif %}</h2></div>
 </div>
 {% if messages %}
 <div class="alert alert-danger">
@@ -66,21 +70,27 @@ $( document ).ready(function() {
         </div>
     </div>
     <div class="form-group">
-        <label for="username" class="col-sm-2 control-label">Elements of the escalation policy</label>
+        <label for="username" class="col-sm-4 control-label">Elements of the escalation policy</label>
     </div>
 
     <div class="form-group">
         <ol id="list" class="list-group">
              {% for row in elements %}
             <li class="list-group-item">
-                <label for="escalate_after" class="col-sm-2 control-label">Calendar or user:</label>
-                <div class="col-sm-1">
+                <label for="escalate_after" class="col-sm-3 control-label">Calendar, group or user:</label>
+                <div class="col-sm-8">
                 <select id="escalate_after[]" name="escalate_to[]" class="form-control">
                             <optgroup label="Calendars">
                             {% for item in calendars %}
                             <option value="calendar|{{item.id}}" {% if row.schedule.id == item.id %}selected{% endif %} >{{item.name}}</option>
                             {% endfor %}
                             </optgroup>
+                            <optgroup label="Groups">
+                             {% for item in groups %}
+                            <option value="group|{{item.id}}" {% if row.group_id.id == item.id %}selected{% endif %} >{{ item.name }}</option>
+                            {% endfor %}
+                            </optgroup>
+
                             <optgroup label="People">
                              {% for item in users %}
                             <option value="user|{{item.id}}" {% if row.user_id.id == item.id %}selected{% endif %} >{{ item.username }}</option>

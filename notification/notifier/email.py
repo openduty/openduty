@@ -10,8 +10,10 @@ class EmailNotifier:
         self.__config = config
     def notify(self, notification):
 
-        gmail_user = self.__config['user']
-        gmail_pwd = self.__config['password']
+        host = self.__config['host']
+        port = self.__config['port']
+        user = self.__config['user']
+        password = self.__config['password']
         truncate_length = int(self.__config.get('max_subject_length', 100))
         FROM = self.__config['user']
         TO = [notification.user_to_notify.email]
@@ -25,10 +27,12 @@ class EmailNotifier:
         message = """\From: %s\nTo: %s\nSubject: %s\n\n%s
             """ % (FROM, ", ".join(TO), SUBJECT, TEXT)
         try:
-            server = smtplib.SMTP("smtp.gmail.com", 587)
-            server.starttls()
+            server = smtplib.SMTP(host, int(port))
+            if self.__config['tls']:
+                server.starttls()
             server.ehlo()
-            server.login(gmail_user, gmail_pwd)
+            if user and password:
+                server.login(user, password)
             server.sendmail(FROM, TO, message)
             server.close()
             print 'successfully sent the mail'

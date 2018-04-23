@@ -52,7 +52,8 @@ INSTALLED_APPS = (
     'django_tables2',
     'django_tables2_simplefilter',
     'bootstrap3',
-    "django_twilio"
+    "django_twilio",
+    "debug_toolbar" 
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -120,6 +121,11 @@ XMPP_SETTINGS = {
 }
 
 EMAIL_SETTINGS = {
+    'user': '',
+    'password': '',
+    'host': '',
+    'port': '',
+    'tls': False
 }
 
 TWILIO_SETTINGS = {
@@ -130,6 +136,12 @@ SLACK_SETTINGS = {
 
 PROWL_SETTINGS = {
 }
+
+HIPCHAT_SETTINGS = {
+    'token' : '',
+    'endpoint' : ''
+}
+
 
 CACHES = {
     'default': {

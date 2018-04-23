@@ -3,7 +3,9 @@
 {% block content %}
     <div class="row header">
       <div class="col-xs-12 col-md-8"><h2>Users</h2></div>
+	{% if perms.is_staff %}
       <div class="col-xs-6 col-md-4 button"><a href="{% url 'openduty.users.new' %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> New user</a></div>
+	{% endif %}
     </div>
     <table class="table table-striped">
         <thead>
@@ -15,36 +17,28 @@
             </tr>
         </thead>
         <tbody>
-            {% for item in users %}
-                <tr class="">
-                    <td>{{ item.username }}</td>
-                    <td>{{ item.email }}</td>
-                    <td>{{ item.profile.phone_number }}</td>
-                    <td class="controls">
-                        <form method="post" action="{% url 'openduty.users.testnotification' %}">
+			{% for item in users %}
+				{% if perms.is_staff or item.id == user.id %}
+					<tr class="">
+						<td>{{ item.username }}</td>
+	                    <td>{{ item.email }}</td>
+		                <td>{{ item.profile.phone_number }}</td>
+			            <td class="controls">
+						    <form method="post" action="{% url 'openduty.users.testnotification' %}">
 
-                        <a href="{% url 'openduty.users.edit' item.id %}" class="btn btn-default btn-sm"
-                                data-toggle="tooltip" data-placement="top" title="Edit">
-                            <span class="glyphicon glyphicon-edit"></span></a>
-                        {% if item.id != user.id %}
-                        <a href="{% url 'openduty.users.delete' item.id %}" class="btn btn-default btn-sm"
-                                data-toggle="tooltip" data-placement="top" title="Remove">
-                            <span class="glyphicon glyphicon-remove"></span></a>
-                        {% else %}
-                            <input type="hidden" name="id" value="{{ item.id }}">
-                            <input type="hidden" name="url" value="{{ url }}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-default btn-sm"
-                                    data-toggle="tooltip" data-placement="top" title="Test notification"
-                                    name="event_type" value="">
-                                <span class="glyphicon glyphicon-bullhorn"></span>
-                            </button>
-
-                        {% endif %}
-                       </form>
+							    <a href="{% url 'openduty.users.edit' item.id %}" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="top" title="Edit"><span class="glyphicon glyphicon-edit"></span></a>
+								<input type="hidden" name="id" value="{{ item.id }}">
+		                        <input type="hidden" name="url" value="{{ url }}">
+	                            {% csrf_token %}
+			                    <button type="submit" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="top" title="Test notification" name="event_type" value=""><span class="glyphicon glyphicon-bullhorn"></span></button>
+								{% if item.id != user.id %}
+				                    <a href="{% url 'openduty.users.delete' item.id %}" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="top" title="Remove" input type="submit" onclick="return confirm('Are you really want to suppress this user : {{ item.username }}')" value="Button"> <span class="glyphicon glyphicon-remove"></span></a>
+						        {% endif %}
+							</form>
                     </td>
 
                 </tr>
+			{% endif %}
             {% endfor %}
         </tbody>
     </table>

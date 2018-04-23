@@ -13,6 +13,7 @@ from rest_framework import viewsets
 from .serializers import IncidentSerializer
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.decorators import detail_route, list_route
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.template.response import TemplateResponse
@@ -24,7 +25,6 @@ from notification.helper import NotificationHelper
 from openduty.tasks import unsilence_incident
 import uuid
 import base64
-
 from .tables import IncidentTable
 
 from django_tables2_simplefilter import FilteredSingleTableView
@@ -50,7 +50,7 @@ class IncidentViewSet(viewsets.ModelViewSet):
             # True if not acknowleged or type is resolve
             return (incident.event_type != Incident.ACKNOWLEDGE or
                     (incident.event_type == Incident.ACKNOWLEDGE and
-                             new_event_type == Incident.RESOLVE))
+                     new_event_type == Incident.RESOLVE) or (incident.event_type == Incident.ACKNOWLEDGE and new_event_type == Incident.UNACKNOWLEDGE))
         # New incident
         else:
             # True if this is a trigger action
@@ -62,19 +62,33 @@ class IncidentViewSet(viewsets.ModelViewSet):
             serviceToken = ServiceTokens.objects.get(token_id=token)
             service = serviceToken.service_id
         except ServiceTokens.DoesNotExist:
-            return Response({}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"Service key does not exist"}, status=status.HTTP_404_NOT_FOUND)
         except Token.DoesNotExist:
-            return Response({}, status=status.HTTP_403_FORBIDDEN)
+            return Response({"No service key"}, status=status.HTTP_403_FORBIDDEN)
 
         with transaction.atomic():
             try:
-                incident = Incident.objects.get(
-                    incident_key=request.DATA["incident_key"],
-                    service_key=service)
-
-                event_log_message = "%s api key changed %s from %s to %s" % (
-                    serviceToken.name, incident.incident_key,
-                    incident.event_type, request.DATA['event_type'])
+                esc = False
+                incident = Incident.objects.get(incident_key=request.DATA["incident_key"],service_key=service)
+                print "Received %s for %s on service %s" % (request.DATA['event_type'],request.DATA['incident_key'],serviceToken.name)
+                #check if type is ACK or resolve and if there's an escalation to a different escalation policy, remove it
+                if request.DATA['event_type'] == Incident.ACKNOWLEDGE or request.DATA['event_type'] == Incident.RESOLVE:
+                    print "ACK or Resolve, removing specific escalation"
+                    esc = True
+                    incident.service_to_escalate_to = None
+                    incident.save()
+                # check if incident is resolved and refuse to ACK
+                if not (incident.event_type == Incident.RESOLVE and request.DATA['event_type'] == Incident.ACKNOWLEDGE):
+                    event_log_message = "%s api key changed %s from %s to %s" % (
+                        serviceToken.name, incident.incident_key,
+                        incident.event_type, request.DATA['event_type'])
+                    if esc:
+                        event_log_message += ", unescalated"
+                else:
+                    response = {}
+                    response["status"] = "failure"
+                    response["message"] = "Can\'t ACK a resolved incident!"
+                    return Response(response, status=status.HTTP_400_BAD_REQUEST)
             except (Incident.DoesNotExist, KeyError):
                 incident = Incident()
                 try:
@@ -127,8 +141,10 @@ class IncidentViewSet(viewsets.ModelViewSet):
                     service=service).count() > 0
                 if incident.event_type == Incident.TRIGGER and not servicesilenced:
                     NotificationHelper.notify_incident(incident)
-                if incident.event_type == "resolve" or incident.event_type == Incident.ACKNOWLEDGE:
+                if incident.event_type == Incident.RESOLVE or incident.event_type == Incident.ACKNOWLEDGE:
                     ScheduledNotification.remove_all_for_incident(incident)
+                    if incident.event_type == Incident.RESOLVE and service.send_resolve_enabled:
+                        NotificationHelper.notify_incident(incident)
 
             headers = self.get_success_headers(request.POST)
 
@@ -136,10 +152,66 @@ class IncidentViewSet(viewsets.ModelViewSet):
             response["status"] = "success"
             response["message"] = "Event processed"
             response["incident_key"] = incident.incident_key
-            return Response(
-                response,
-                status=status.HTTP_201_CREATED,
-                headers=headers)
+            return Response(response,status=status.HTTP_201_CREATED,headers=headers)
+
+
+    #escalate an incident to another service's escalation rule; persists until ACK
+    @detail_route(methods=['put'])
+    def escalate(self, request, *args, **kwargs):
+        #get arguments
+        try:
+            token = Token.objects.get(key=request.DATA["service_key"])
+            serviceToken = ServiceTokens.objects.get(token_id=token)
+            service = serviceToken.service_id
+        except ServiceTokens.DoesNotExist:
+            return Response({"Service key does not exist"}, status=status.HTTP_404_NOT_FOUND)
+        except Token.DoesNotExist:
+            return Response({"No service key"}, status=status.HTTP_403_FORBIDDEN)
+
+        try:
+            token2 = Token.objects.get(key=request.DATA["service_key_to_escalate_to"])
+            serviceToken2 = ServiceTokens.objects.get(token_id=token2)
+            service2 = serviceToken2.service_id
+        except ServiceTokens.DoesNotExist:
+            return Response({"Service to escalate to key does not exist"}, status=status.HTTP_404_NOT_FOUND)
+        except Token.DoesNotExist:
+            return Response({"No service to escalate to key"}, status=status.HTTP_403_FORBIDDEN)
+
+        #modify incident
+        with transaction.atomic():
+            try:
+                # get service_to_escalate to and modify incident object
+                incident = Incident.objects.get(incident_key=request.DATA["incident_key"],service_key=service)
+                incident.service_to_escalate_to = service2
+                incident.event_type = "escalated"
+                if request.DATA["incident_details"]:
+                    incident.details = request.DATA["incident_details"]
+#                incident.description = "[escalated] " + incident.description
+                incident.save()
+
+                event_log_message = "%s escalated to service escalation policy :  %s  to %s" % (request.user.username, incident.incident_key, service2.name)
+                event_log = EventLog()
+                event_log.user = request.user
+                event_log.action = "escalate"
+                event_log.incident_key = incident
+                event_log.service_key = incident.service_key
+                event_log.data = event_log_message
+                event_log.occurred_at = timezone.now()
+                event_log.save()
+
+            except (Incident.DoesNotExist, KeyError):
+                return Response({"Incident does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            except (Service.DoesNotExist, KeyError):
+                return Response({"Service does not exist"}, status=status.HTTP_400_BAD_REQUEST)
+        # remove all planned notifs
+        ScheduledNotification.remove_all_for_incident(incident)
+        # notify anew, this time notify_incident will detect the service_to_escalate to and notify its escalation rule
+        NotificationHelper.notify_incident(incident)
+
+        headers = self.get_success_headers(request.POST)
+
+        return Response({"Incident successfully escalated to service " + service2.name + " escalation policy"},status=status.HTTP_200_OK,headers=headers)
+
 
 class ServicesByMe(FilteredSingleTableView):
     model = Incident
@@ -185,7 +257,10 @@ def _update_type(user, ids, event_type):
     for incident_id in ids:
         with transaction.atomic():
             incident = Incident.objects.get(id=int(incident_id))
-
+            unesc = False
+            if incident.service_to_escalate_to is not None:
+                incident.service_to_escalate_to = None
+                unesc = True
             logmessage = EventLog()
             logmessage.service_key = incident.service_key
             logmessage.user = user
@@ -195,6 +270,8 @@ def _update_type(user, ids, event_type):
                 incident.incident_key,
                 incident.event_type,
                 event_type)
+            if unesc:
+                logmessage.data += ", unescalated"
             logmessage.occurred_at = timezone.now()
 
             incident.event_type = event_type
@@ -213,16 +290,27 @@ def update_type(request):
     event_type = request.POST['event_type']
     event_types = ('acknowledge', 'resolve')
     incident_ids = request.POST.getlist('selection', None)
-
     if not event_type:
         messages.error(request, 'Invalid event modification!')
         return HttpResponseRedirect(request.POST['url'])
     try:
         if incident_ids:
-            _update_type(request.user, incident_ids, event_type)
+            for id in incident_ids:
+                with transaction.atomic():
+                    incident = Incident.objects.get(id=id)
+                    if incident.event_type == 'resolve' and event_type == 'acknowledge':
+                        messages.error(request, 'Can\' ACK a resolved incident!')
+                        return HttpResponseRedirect(request.POST['url'])
+                    else:
+                        _update_type(request.user, incident_ids, event_type)
         else:
             id = request.POST.get('id')
-            _update_type(request.user, [id], event_type)
+            incident = Incident.objects.get(id=id)
+            if incident.event_type == 'resolve' and event_type == 'acknowledge':
+                messages.error(request, 'Can\' ACK a resolved incident!')
+                return HttpResponseRedirect(request.POST['url'])
+            else:
+                _update_type(request.user, [id], event_type)
     except Incident.DoesNotExist:
         messages.error(request, 'Incident not found')
         return HttpResponseRedirect(request.POST['url'])

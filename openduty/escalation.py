@@ -5,6 +5,7 @@ from django.template.response import TemplateResponse
 from django.contrib.auth.decorators import login_required
 
 from .models import Calendar, User, SchedulePolicy, SchedulePolicyRule
+from django.contrib.auth.models import Group 
 from django.http import Http404
 from django.views.decorators.http import require_http_methods
 from django.db import IntegrityError
@@ -33,11 +34,15 @@ def new(request):
     except User.DoesNotExist:
         users = None
     try:
+        groups = Group.objects.all()
+    except Group.DoesNotExist:
+        groups = None
+    try:
         calendars = Calendar.objects.all()
     except Calendar.DoesNotExist:
         calendars = None
 
-    return TemplateResponse(request, 'escalation/edit.html', {'calendars': calendars, 'users': users})
+    return TemplateResponse(request, 'escalation/edit.html', {'calendars': calendars, 'groups': groups, 'users': users})
 
 @login_required()
 def edit(request, id):
@@ -52,12 +57,16 @@ def edit(request, id):
         except Calendar.DoesNotExist:
             calendars = None
         try:
+            groups = Group.objects.all()
+        except Group.DoesNotExist:
+            groups = None
+        try:
             users = User.objects.all()
         except User.DoesNotExist:
             users = None
 
         return TemplateResponse(request, 'escalation/edit.html', {'item': policy, 'elements': elements,
-                                                                  'calendars': calendars, 'users': users})
+                                                                  'calendars': calendars, 'groups': groups, 'users': users})
     except Calendar.DoesNotExist:
         raise Http404
 
@@ -91,12 +100,16 @@ def save(request):
         parts = item.split("|")
         rule.escalate_after = 0  # HACK!
         rule.position = idx + 1
+        rule.schedule = None
+        rule.user_id = None
+        rule.group_id = None
         if parts[0] == "user":
             rule.user_id = User.objects.get(id=parts[1])
-            rule.schedule = None
-        if parts[0] == "calendar":
+        elif parts[0] == "calendar":
             rule.schedule = Calendar.objects.get(id=parts[1])
-            rule.user_id = None
+        elif parts[0] == "group":
+            rule.group_id = Group.objects.get(id=parts[1])
+
         try:
             rule.save()
         except IntegrityError:
@@ -104,3 +117,4 @@ def save(request):
 
 
     return HttpResponseRedirect('/policies/')
+

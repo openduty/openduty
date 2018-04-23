@@ -1,4 +1,5 @@
 import datetime
+from django.contrib.auth.models import Group
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
@@ -38,7 +39,9 @@ def create_or_edit_event(request, calendar_slug, event_id=None, next=None,
     if data:
         data["title"] = data["oncall"]+","+data["fallback"]
     form = form_class(data=data or None, instance=instance, initial=initial_data)
-    users = User.objects.all();
+    users = User.objects.all()
+    groups = Group.objects.all()
+    #users = Item.groups.all();    
     if form.is_valid():
         event = form.save(commit=False)
         if instance is None:
@@ -57,7 +60,7 @@ def create_or_edit_event(request, calendar_slug, event_id=None, next=None,
         if instance.end_recurring_period:
             data["recurr_ymd"] = instance.end_recurring_period.date().isoformat()
         data["description"] = instance.description
-        data["rule"] = instance.rule and instance.rule.id or ""
+        data["rule"] = (instance.rule and instance.rule.id) or ""
 
 
     next = get_next_url(request, next)
@@ -66,6 +69,7 @@ def create_or_edit_event(request, calendar_slug, event_id=None, next=None,
         "calendar": calendar,
         "next":next,
         "users":users,
+        "groups": groups,
         "form": form,
     }, context_instance=RequestContext(request))
 

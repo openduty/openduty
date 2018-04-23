@@ -37,7 +37,7 @@ class SchedulePolicyRuleSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = SchedulePolicyRule
-        fields = ('schedule_policy', 'position', 'user_id', 'schedule', 'escalate_after')
+        fields = ('schedule_policy', 'position', 'user_id', 'group_id', 'schedule', 'escalate_after')
 
 
 class NoneSerializer(serializers.Serializer):

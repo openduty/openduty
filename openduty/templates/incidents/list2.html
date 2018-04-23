@@ -33,9 +33,10 @@ function toggle(source) {
 
     <form id="tform" action="/incidents/update_type/" method="post">
         <input type="hidden" name="url" value="{{ request.get_full_path }}">
-    <button type="submit" id="ack_all" class="bulk-op btn btn-warning" name="event_type" value="acknowledge">Acknowledge</button>
-    <button type="submit" id="res_all" class="bulk-op btn btn-success" name="event_type" value="resolve">Resolve</button>
-
+        <div class="col-xs-4 col-xs-offset-8">
+            <button type="submit" id="ack_all" class="bulk-op btn btn-warning" name="event_type" value="acknowledge">Acknowledge</button>
+            <button type="submit" id="res_all" class="bulk-op btn btn-success" name="event_type" value="resolve">Resolve</button>
+         </div>
     {% csrf_token %}
     </form>
         {% render_table table %}
