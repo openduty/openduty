@@ -6,7 +6,7 @@ class SlackNotifier:
         self.__config = config
     
     def notify(self, notification):
-        slack = Slacker(self.__config['apikey'])
+        slack = Slacker(self.__config['apikey'], http_proxy=self.__config['slack_http_proxy'], https_proxy=self.__config['slack_https_proxy'])
         response = slack.chat.post_message(notification.user_to_notify.profile.slack_room_name, notification.message,
                                            username="Openduty", icon_url="https://slack.global.ssl.fastly.net/1937/img/services/pagerduty_48.png")
         if not response.error:
