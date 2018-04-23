@@ -9,9 +9,15 @@
 Has been tested with Nagios, works well for us. Any Pagerduty Notifier using the Pagerduty API should work without a problem.
 [Icinga2 config](https://github.com/deathowl/OpenDuty-Icinga2) for openduty integration
 
+<<<<<<< HEAD
 # Notifications
 XMPP, email, SMS, Phone(Thanks Twilio for being awesome!), and Push notifications(thanks Pushover also),and Slack are supported at the moment.
 # Current status
+=======
+#Notifications
+XMPP, email, SMS, Phone(Thanks Twilio for being awesome!), Push notifications(thanks Pushover, Prowl as well!)and Slack, HipChat, Rocket.chat are supported at the moment.
+#Current status
+>>>>>>> 5dddc86521301b8c7c2070a882c9b6a7870dbef9
 Openduty is in Beta status, it can be considered stable at the moment, however major structural changes can appear anytime (not affecting the API, or the Notifier structure)
 
 # Contribution guidelines
@@ -79,7 +85,24 @@ python manage.py runserver
 ```
 now, you can start hacking on it.
 
-# After models you've changed your models please run:
+# Running as a service with systemd
+*OpenDuty can be ran as a service with the help of gunicorn and systemd*
+```
+cp -r systemd/gunicorn.service.* /etc/systemd/system/
+
+cp -r systemd/celery.service* /etc/systemd/system/
+
+// EDIT VARIABLES IN *.service.d/main.conf TO REFLECT YOUR ENV
+vi /etc/systemd/system/gunicorn.service.d/main.conf
+vi /etc/systemd/system/celery.service.d/main.conf
+
+systemctl daemon-reload
+sudo systemctl start gunicorn
+sudo systemctl enable gunicorn
+
+```
+
+# After you've changed your models please run:
 ```
 ./manage.py schemamigration openduty --auto
 ./manage.py schemamigration notification --auto

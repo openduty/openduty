@@ -1,0 +1,20 @@
+[Unit]
+Description=gunicorn daemon
+After=network.target
+
+[Service]
+PermissionsStartOnly=true
+User=www-data
+Group=www-data
+ExecStartPre=/bin/mkdir -p /var/run/openduty/
+ExecStartPre=/bin/chown -R www-data:www-data /var/run/openduty
+ExecStart=/bin/sh -c "/$WorkingDirectory/env/bin/gunicorn --user=$User --workers=9 --pid=$PIDFile --log-file=$LogFile --log-level=Debug --capture-output --error-logfile=$ErrorLogFile --chdir=$WorkingDirectory --bind 0.0.0.0:8080 openduty.wsgi:application"
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
+
+

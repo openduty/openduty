@@ -8,21 +8,23 @@
         <div class="form-group">
             <label class="control-label col-sm-2" for="{{ f.verbose_name }}">{{ f.verbose_name }}:</label>
              <div class="col-sm-5">
-            <select class="form-control" name="{{ f.field }}">
-                <option value="">All</option>
+             <input type="text" list="{{ f.field }}" name="{{ f.field }}" class="form-control"/>
+             <datalist id="{{ f.field }}">
                 {% for obj in f.values_list %}
                     <option value="{{ obj.1 }}" {% if f.selected == obj.1 %}selected{% endif %}>{{ obj.0 }}</option>
                 {% endfor %}
-             </select>
+             </datalist>
+
              </div>
         </div>
         {% endfor %}
       <div class="form-group">
           <div class="col-sm-2"></div>
           <div class="col-sm-3">
-        <input type="submit" class="btn btn-default" value="Filter"></input>
-        <a href="?" class="btn btn-danger">Reset</a>
+		<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Filter</button>
+        <a href="?" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Reset</a>
           </div>
       </div>
   </form>
+<br />
 </div>

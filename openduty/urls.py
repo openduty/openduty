@@ -10,6 +10,7 @@ from .tables import IncidentTable
 from django_tables2_simplefilter import FilteredSingleTableView
 from .incidents import ServicesByMe
 
+
 admin.autodiscover()
 rest_router = rest_routers.SimpleRouter(trailing_slash=False)
 rest_router.register(r'users', views.UserViewSet)
@@ -17,6 +18,7 @@ rest_router.register(r'groups', views.GroupViewSet)
 rest_router.register(r'schedule_policies', views.SchedulePolicyViewSet)
 rest_router.register(r'schedule_policy_rules', views.SchedulePolicyRuleViewSet)
 rest_router.register(r'create_event', incidents.IncidentViewSet)
+rest_router.register(r'incident', incidents.IncidentViewSet)
 rest_router.register(r'healthcheck', healthcheck.HealthCheckViewSet)
 rest_router.register(r'celeryhealthcheck', healthcheck.CeleryHealthCheckViewSet)
 rest_router.register(r'opsweekly', opsweekly.OpsWeeklyIncidentViewSet)
@@ -114,3 +116,13 @@ urlpatterns += patterns('',
 urlpatterns += patterns('',
              (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT, 'show_indexes':True}),
         )
+
+
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns += [
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    ]
+
+
