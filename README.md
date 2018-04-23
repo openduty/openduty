@@ -9,15 +9,9 @@
 Has been tested with Nagios, works well for us. Any Pagerduty Notifier using the Pagerduty API should work without a problem.
 [Icinga2 config](https://github.com/deathowl/OpenDuty-Icinga2) for openduty integration
 
-<<<<<<< HEAD
-# Notifications
-XMPP, email, SMS, Phone(Thanks Twilio for being awesome!), and Push notifications(thanks Pushover also),and Slack are supported at the moment.
-# Current status
-=======
 #Notifications
 XMPP, email, SMS, Phone(Thanks Twilio for being awesome!), Push notifications(thanks Pushover, Prowl as well!)and Slack, HipChat, Rocket.chat are supported at the moment.
 #Current status
->>>>>>> 5dddc86521301b8c7c2070a882c9b6a7870dbef9
 Openduty is in Beta status, it can be considered stable at the moment, however major structural changes can appear anytime (not affecting the API, or the Notifier structure)
 
 # Contribution guidelines
