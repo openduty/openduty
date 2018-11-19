@@ -10,10 +10,10 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-import djcelery
+# import djcelery
 import ldap
 from django_auth_ldap.config import LDAPSearch, PosixGroupType
-djcelery.setup_loader()
+# djcelery.setup_loader()
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -43,11 +43,11 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'kombu.transport.django',
+    # 'kombu.transport.django',
     'openduty',
     'openduty.templatetags',
     'schedule',
-    'djcelery',
+    # 'djcelery',
     'notification',
     'django_tables2',
     'django_tables2_simplefilter',
@@ -174,3 +174,7 @@ if 'test' in sys.argv:
         'django.contrib.auth.hashers.MD5PasswordHasher',
         'django.contrib.auth.hashers.SHA1PasswordHasher',
     )
+
+# CELERY STUFF
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'

@@ -8,7 +8,6 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
 from django.contrib.auth.models import User, Group
-from uuidfield import UUIDField
 from django.core.exceptions import ValidationError
 from schedule.models import Calendar
 from django.contrib.auth import models as auth_models
@@ -67,9 +66,9 @@ class Service(models.Model):
     Incidents are representations of a malfunction in the system.
     """
     name = models.CharField(max_length=80, unique=True)
-    id = UUIDField(primary_key=True, auto=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     retry = models.IntegerField(blank=True, null=True)
-    policy = models.ForeignKey(SchedulePolicy, blank=True, null=True)
+    policy = models.ForeignKey(SchedulePolicy, blank=True, null=True, on_delete=models.CASCADE)
     escalate_after = models.IntegerField(blank=True, null=True)
     notifications_disabled = models.BooleanField(default=False)
     send_resolve_enabled = models.BooleanField(default=False)
@@ -119,10 +118,10 @@ class EventLog(models.Model):
                        'log': ''}
         return colort_dict[self.action]
 
-    user = models.ForeignKey(User, blank=True, default=None, null=True, related_name='users')
-    incident_key = models.ForeignKey('Incident', blank=True, null=True)
+    user = models.ForeignKey(User, blank=True, default=None, null=True, related_name='users', on_delete=models.CASCADE)
+    incident_key = models.ForeignKey('Incident', blank=True, null=True, on_delete=models.CASCADE)
     action = models.CharField(choices=ACTIONS, default='log', max_length="100")
-    service_key = models.ForeignKey(Service)
+    service_key = models.ForeignKey(Service, on_delete=models.CASCADE)
     data = models.TextField()
     occurred_at = models.DateTimeField()
     class Meta:
@@ -146,13 +145,15 @@ class Incident(models.Model):
     """
     Incidents are representations of a malfunction in the system.
     """
-    service_key = models.ForeignKey(Service,related_name="incident")
+    service_key = models.ForeignKey(Service,related_name="incident", on_delete=models.CASCADE)
     incident_key = models.CharField(max_length=200)
     event_type = models.CharField(max_length=15)
     description = models.CharField(max_length=200)
     details = models.TextField()
     occurred_at = models.DateTimeField()
-    service_to_escalate_to = models.ForeignKey(Service,related_name="service_to_escalate_to_id",null=True, blank=True, default = None)
+    service_to_escalate_to = models.ForeignKey(
+        Service,related_name="service_to_escalate_to_id",
+        null=True, blank=True, default=None, on_delete=models.CASCADE)
 
     @property
     def color(self):
@@ -186,8 +187,8 @@ class ServiceTokens(models.Model):
     Service tokens
     """
     name = models.CharField(max_length=80)
-    service_id = models.ForeignKey(Service)
-    token_id = models.ForeignKey(Token)
+    service_id = models.ForeignKey(Service, on_delete=models.CASCADE)
+    token_id = models.ForeignKey(Token, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = _('service_tokens')
@@ -204,11 +205,11 @@ class SchedulePolicyRule(models.Model):
     """
     Schedule rule
     """
-    schedule_policy = models.ForeignKey(SchedulePolicy, related_name='rules')
+    schedule_policy = models.ForeignKey(SchedulePolicy, related_name='rules', on_delete=models.CASCADE)
     position = models.IntegerField()
-    user_id = models.ForeignKey(User, blank=True, null=True)
-    group_id = models.ForeignKey(Group, blank=True, null=True)
-    schedule = models.ForeignKey(Calendar, blank=True, null=True)
+    user_id = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
+    group_id = models.ForeignKey(Group, blank=True, null=True, on_delete=models.CASCADE)
+    schedule = models.ForeignKey(Calendar, blank=True, null=True, on_delete=models.CASCADE)
     escalate_after = models.IntegerField()
 
     class Meta:
@@ -223,7 +224,7 @@ class SchedulePolicyRule(models.Model):
         return cls.objects.filter(schedule_policy=service.policy.id)
 
 class UserProfile(models.Model):
-    user = models.OneToOneField('auth.User', related_name='profile')
+    user = models.OneToOneField('auth.User', related_name='profile', on_delete=models.CASCADE)
     phone_number = models.CharField(max_length=50)
     pushover_user_key = models.CharField(max_length=50)
     pushover_app_key = models.CharField(max_length=50)
@@ -237,13 +238,13 @@ class UserProfile(models.Model):
     send_resolve_enabled = models.BooleanField(default=False)
 
 class ServiceSilenced(models.Model):
-    service = models.ForeignKey(Service)
+    service = models.ForeignKey(Service, on_delete=models.CASCADE)
     silenced = models.BooleanField(default=False)
     silenced_until = models.DateTimeField()
 
 
 class IncidentSilenced(models.Model):
-    incident = models.ForeignKey(Incident)
+    incident = models.ForeignKey(Incident, on_delete=models.CASCADE)
     silenced = models.BooleanField(default=False)
     silenced_until = models.DateTimeField()
 
@@ -253,6 +254,6 @@ def create_user_profile(sender, instance, created, **kwargs):
 
 signals.post_save.connect(create_user_profile, sender=User)
 
-signals.post_syncdb.disconnect(
+signals.post_migrate.disconnect(
     sender=auth_models,
     dispatch_uid='django.contrib.auth.management.create_superuser')

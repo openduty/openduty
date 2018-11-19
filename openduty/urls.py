@@ -1,6 +1,7 @@
 from django.conf import settings
-from django.conf.urls import patterns, url, include
+from django.conf.urls import url
 from rest_framework import routers as rest_routers
+from django.urls import path, include
 from openduty import views
 from . import incidents, healthcheck, opsweekly
 from django.contrib import admin
@@ -9,6 +10,8 @@ from .models import Incident
 from .tables import IncidentTable
 from django_tables2_simplefilter import FilteredSingleTableView
 from .incidents import ServicesByMe
+from rest_framework.authtoken.views import obtain_auth_token
+from openduty import auth, users, services, escalation
 
 
 admin.autodiscover()
@@ -28,41 +31,41 @@ rest_router.register(r'oncall', opsweekly.OpsWeeklyOnCallViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browseable API.
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^api/', include(rest_router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^api-token-auth/', 'rest_framework.authtoken.views.obtain_auth_token'),
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^api-token-auth/', obtain_auth_token),
+    path('admin/', admin.site.urls),
     url(r'^schedule/', include('schedule.urls')),
 
     #AUTH
-    url(r'^login/$', 'openduty.auth.login'),
-    url(r'^login/do$', 'openduty.auth.do'),
-    url(r'^logout/$', 'openduty.auth.logout'),
+    path('login/', auth.login),
+    url(r'^login/do$', auth.do),
+    url(r'^logout/$', auth.logout),
 
     #USERS
-    url(r'^users/$', 'openduty.users.list'),
-    url(r'^users/new$', 'openduty.users.new'),
-    url(r'^users/save', 'openduty.users.save'),
-    url(r'^users/testnotification', 'openduty.users.testnotification'),
-    url(r'^users/edit/(\d+)$', 'openduty.users.edit'),
-    url(r'^users/delete/(\d+)$', 'openduty.users.delete'),
+    url(r'^users/$', users.list),
+    url(r'^users/new$', users.new),
+    url(r'^users/save', users.save),
+    url(r'^users/testnotification', users.testnotification),
+    url(r'^users/edit/(\d+)$', users.edit),
+    url(r'^users/delete/(\d+)$', users.delete),
 
     #SERVICES
-    url(r'^services/$', 'openduty.services.list'),
-    url(r'^services/new$', 'openduty.services.new'),
-    url(r'^services/save', 'openduty.services.save'),
-    url(r'^services/edit/(.*)$', 'openduty.services.edit', name="service_detail"),
-    url(r'^services/delete/(.*)$', 'openduty.services.delete'),
-    url(r'^services/silence/(.*)$', 'openduty.services.silence'),
-    url(r'^services/unsilence/(.*)$', 'openduty.services.unsilence'),
+    url(r'^services/$', services.list),
+    url(r'^services/new$', services.new),
+    url(r'^services/save', services.save),
+    url(r'^services/edit/(.*)$', services.edit, name="service_detail"),
+    url(r'^services/delete/(.*)$', services.delete),
+    url(r'^services/silence/(.*)$', services.silence),
+    url(r'^services/unsilence/(.*)$', services.unsilence),
 
     #Policies
-    url(r'^policies/$', 'openduty.escalation.list'),
-    url(r'^policies/new$', 'openduty.escalation.new'),
-    url(r'^policies/save', 'openduty.escalation.save'),
-    url(r'^policies/edit/(.*)$', 'openduty.escalation.edit'),
-    url(r'^policies/delete/(.*)$', 'openduty.escalation.delete'),
+    url(r'^policies/$', escalation.list),
+    url(r'^policies/new$', escalation.new),
+    url(r'^policies/save', escalation.save),
+    url(r'^policies/edit/(.*)$', escalation.edit),
+    url(r'^policies/delete/(.*)$', escalation.delete),
 
 
     #SCHEDULES
@@ -107,15 +110,15 @@ urlpatterns = patterns('',
    url(r'^twilio/handle/(\d+)/(\d+)$', 'openduty.call_handler.handle_key'),
 
 
-)
+]
 
-urlpatterns += patterns('',
-        (r'^static/media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT, 'show_indexes':True}),
-    )
-
-urlpatterns += patterns('',
-             (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT, 'show_indexes':True}),
-        )
+# urlpatterns += urlpatterns[
+#     url(r'^static/media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT, 'show_indexes':True}),
+# ]
+#
+# urlpatterns += urlpatterns[
+#     url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT, 'show_indexes':True}),
+# ]
 
 
 

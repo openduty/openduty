@@ -3,7 +3,7 @@ __author__ = 'deathowl'
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from openduty.serializers import UserSerializer, GroupSerializer, SchedulePolicySerializer, SchedulePolicyRuleSerializer
-from models import SchedulePolicy, SchedulePolicyRule
+from openduty.models import SchedulePolicy, SchedulePolicyRule
 
 
 class UserViewSet(viewsets.ModelViewSet):

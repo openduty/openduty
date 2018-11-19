@@ -1,4 +1,4 @@
-from settings import *
+from openduty.settings import *
 
 DEBUG = True
 TEMPLATE_DEBUG = True

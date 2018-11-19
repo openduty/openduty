@@ -70,10 +70,10 @@ class IncidentViewSet(viewsets.ModelViewSet):
             try:
                 esc = False
                 incident = Incident.objects.get(incident_key=request.DATA["incident_key"],service_key=service)
-                print "Received %s for %s on service %s" % (request.DATA['event_type'],request.DATA['incident_key'],serviceToken.name)
+                print("Received %s for %s on service %s" % (request.DATA['event_type'],request.DATA['incident_key'],serviceToken.name))
                 #check if type is ACK or resolve and if there's an escalation to a different escalation policy, remove it
                 if request.DATA['event_type'] == Incident.ACKNOWLEDGE or request.DATA['event_type'] == Incident.RESOLVE:
-                    print "ACK or Resolve, removing specific escalation"
+                    print("ACK or Resolve, removing specific escalation")
                     esc = True
                     incident.service_to_escalate_to = None
                     incident.save()
@@ -216,8 +216,8 @@ class IncidentViewSet(viewsets.ModelViewSet):
 class ServicesByMe(FilteredSingleTableView):
     model = Incident
     table_class = IncidentTable
-    template_name='incidents/list2.html'
-    table_pagination={"per_page": 10}
+    template_name = 'incidents/list2.html'
+    table_pagination = {"per_page": 10}
 
     def get_queryset(self):
         user = self.request.user

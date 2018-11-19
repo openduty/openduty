@@ -10,7 +10,7 @@ from django.http import Http404
 from django.views.decorators.http import require_http_methods
 from django.db import IntegrityError
 from django.db.models import Count
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib import messages
 from openduty.tasks import unsilence_service
 from openduty.event_log import EventLog
