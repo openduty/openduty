@@ -12,7 +12,7 @@ if 'test' not in sys.argv:
             'ENGINE': 'django.db.backends.mysql',
             'NAME': 'openduty',
             'USER': 'openduty',
-            'PASSWORD': 'dutyfree',
+            'PASSWORD': 'secret',
             'HOST': '127.0.0.1',
             'PORT': '3306'
         }
@@ -54,5 +54,6 @@ AUTHENTICATION_BACKENDS = (
 
 MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + (
     'openduty.middleware.basicauthmiddleware.BasicAuthMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 

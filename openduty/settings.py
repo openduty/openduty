@@ -53,7 +53,7 @@ INSTALLED_APPS = (
     'django_tables2_simplefilter',
     'bootstrap3',
     "django_twilio",
-    "debug_toolbar" 
+    "debug_toolbar"
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (

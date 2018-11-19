@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.db import models, migrations
+from django.db import migrations, models
 from django.conf import settings
 import uuidfield.fields
 
@@ -11,6 +11,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ('schedule', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('auth', '0006_require_contenttypes_0002'),
     ]
 
     operations = [
@@ -18,7 +19,7 @@ class Migration(migrations.Migration):
             name='EventLog',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('action', models.CharField(default=b'log', max_length=b'100', choices=[(b'acknowledge', b'acknowledge'), (b'resolve', b'resolve'), (b'silence_service', b'silence service'), (b'silence_incident', b'silence incident'), (b'forward', b'forward'), (b'log', b'log'), (b'notified', b'notified'), (b'notification_failed', b'notification failed'), (b'trigger', b'trigger')])),
+                ('action', models.CharField(default=b'log', max_length=b'100', choices=[(b'acknowledge', b'acknowledge'), (b'unacknowledge', b'unacknowledge'), (b'resolve', b'resolve'), (b'silence_service', b'silence service'), (b'unsilence_service', b'unsilence service'), (b'silence_incident', b'silence incident'), (b'unsilence_incident', b'unsilence incident'), (b'forward', b'forward'), (b'log', b'log'), (b'notified', b'notified'), (b'notification_failed', b'notification failed'), (b'trigger', b'trigger')])),
                 ('data', models.TextField()),
                 ('occurred_at', models.DateTimeField()),
             ],
@@ -69,6 +70,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('position', models.IntegerField()),
                 ('escalate_after', models.IntegerField()),
+                ('group_id', models.ForeignKey(blank=True, to='auth.Group', null=True)),
                 ('schedule', models.ForeignKey(blank=True, to='schedule.Calendar', null=True)),
                 ('schedule_policy', models.ForeignKey(related_name='rules', to='openduty.SchedulePolicy')),
                 ('user_id', models.ForeignKey(blank=True, to=settings.AUTH_USER_MODEL, null=True)),
@@ -86,6 +88,7 @@ class Migration(migrations.Migration):
                 ('retry', models.IntegerField(null=True, blank=True)),
                 ('escalate_after', models.IntegerField(null=True, blank=True)),
                 ('notifications_disabled', models.BooleanField(default=False)),
+                ('send_resolve_enabled', models.BooleanField(default=False)),
                 ('policy', models.ForeignKey(blank=True, to='openduty.SchedulePolicy', null=True)),
             ],
             options={
@@ -132,6 +135,10 @@ class Migration(migrations.Migration):
                 ('prowl_api_key', models.CharField(max_length=50, blank=True)),
                 ('prowl_application', models.CharField(max_length=256, blank=True)),
                 ('prowl_url', models.CharField(max_length=512, blank=True)),
+                ('rocket_webhook_url', models.CharField(max_length=512, blank=True)),
+                ('hipchat_room_name', models.CharField(max_length=100)),
+                ('hipchat_room_url', models.CharField(max_length=100)),
+                ('send_resolve_enabled', models.BooleanField(default=False)),
                 ('user', models.OneToOneField(related_name='profile', to=settings.AUTH_USER_MODEL)),
             ],
         ),
@@ -143,12 +150,17 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='incident',
             name='service_key',
-            field=models.ForeignKey(to='openduty.Service'),
+            field=models.ForeignKey(related_name='incident', to='openduty.Service'),
+        ),
+        migrations.AddField(
+            model_name='incident',
+            name='service_to_escalate_to',
+            field=models.ForeignKey(related_name='service_to_escalate_to_id', default=None, blank=True, to='openduty.Service', null=True),
         ),
         migrations.AddField(
             model_name='eventlog',
             name='incident_key',
-            field=models.ForeignKey(to='openduty.Incident', blank=True),
+            field=models.ForeignKey(blank=True, to='openduty.Incident', null=True),
         ),
         migrations.AddField(
             model_name='eventlog',
