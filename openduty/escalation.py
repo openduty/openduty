@@ -5,11 +5,11 @@ from django.template.response import TemplateResponse
 from django.contrib.auth.decorators import login_required
 
 from .models import Calendar, User, SchedulePolicy, SchedulePolicyRule
-from django.contrib.auth.models import Group 
+from django.contrib.auth.models import Group
 from django.http import Http404
 from django.views.decorators.http import require_http_methods
 from django.db import IntegrityError
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib import messages
 
 

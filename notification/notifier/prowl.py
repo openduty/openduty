@@ -1,5 +1,5 @@
-import httplib
-import urllib
+import httplib2
+from urllib.parse import urlencode
 from openduty.models import Incident
 
 __author__ = 'gabo'
@@ -9,7 +9,7 @@ class ProwlNotifier:
         self.__config = config
 
     def notify(self, notification):
-        conn = httplib.HTTPSConnection("api.prowlapp.com", 443, timeout=10)
+        conn = httplib2.HTTPSConnectionWithTimeout("api.prowlapp.com", 443, timeout=10)
         try:
             description = notification.incident.description
             details = notification.incident.details
@@ -17,7 +17,7 @@ class ProwlNotifier:
             description = notification.message
             details = ""
         conn.request("POST", "/publicapi/add",
-          urllib.urlencode({
+          urlencode({
             "apikey": notification.user_to_notify.profile.prowl_api_key,
             "application" : notification.user_to_notify.profile.prowl_application or self.__config.get('application', 'openduty'),
             "url" : notification.user_to_notify.profile.prowl_url or "",

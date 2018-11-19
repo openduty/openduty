@@ -35,6 +35,6 @@ class EmailNotifier:
                 server.login(user, password)
             server.sendmail(FROM, TO, message)
             server.close()
-            print 'successfully sent the mail'
+            print('successfully sent the mail')
         except:
-            print "failed to send mail"
+            print("failed to send mail")

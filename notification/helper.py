@@ -32,7 +32,7 @@ class NotificationHelper(object):
         duty_officers = []
         # if incident has been escalated, notify according to the escalated service's escalation rule
         if hasattr(incident, 'service_to_escalate_to') and incident.service_to_escalate_to is not None:
-            print "escalation rule in place to " + incident.service_to_escalate_to.name
+            print("escalation rule in place to " + incident.service_to_escalate_to.name)
             duty_officers = get_escalation_for_service(incident.service_to_escalate_to)
             with transaction.atomic():
                 incident.description = "[escalated] " + incident.description
@@ -47,7 +47,7 @@ class NotificationHelper(object):
 
         for officer_index, duty_officer in enumerate(duty_officers):
             if incident.event_type == Incident.RESOLVE and not duty_officer.profile.send_resolve_enabled:
-                print "Skipping notification for %s because type is RESOLVE and user %s has send_resolve_enabled OFF" % (incident.incident_key, duty_officer.username)
+                print("Skipping notification for %s because type is RESOLVE and user %s has send_resolve_enabled OFF" % (incident.incident_key, duty_officer.username))
                 continue
             index = 0
             if hasattr(duty_officer ,'came_from_group' ):
@@ -76,7 +76,9 @@ class NotificationHelper(object):
 
                     notifications.append(notification)
 
-                    print "[%s] Notify %s about %s at %s with method: %s" % (notification.incident.event_type, duty_officer.username, notification.incident.incident_key, notify_at, notification.notifier)
+                    print("[%s] Notify %s about %s at %s with method: %s" % (
+                        notification.incident.event_type, duty_officer.username,
+                        notification.incident.incident_key, notify_at, notification.notifier))
                 else:
                     break
                 user_method_index[duty_officer.username] += 1
@@ -112,7 +114,7 @@ class NotificationHelper(object):
                 notification.message = preparedmsg
             notifications.append(notification)
             if notification.incident:
-                print "[%s] Notify %s at %s with method: %s" % (notification.incident.event_type, user.username, notify_at, notification.notifier)
+                print("[%s] Notify %s at %s with method: %s" % (notification.incident.event_type, user.username, notify_at, notification.notifier))
             method_index += 1
 
         # todo: error handling

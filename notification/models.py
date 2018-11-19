@@ -26,7 +26,7 @@ class UserNotificationMethod(models.Model):
 
     methods = [METHOD_XMPP, METHOD_PUSHOVER, METHOD_EMAIL, METHOD_TWILIO_SMS, METHOD_TWILIO_CALL, METHOD_SLACK, METHOD_PROWL, METHOD_ROCKET, METHOD_HIPCHAT]
 
-    user = models.ForeignKey(User, related_name='notification_methods')
+    user = models.ForeignKey(User, related_name='notification_methods', on_delete=models.CASCADE)
     position = models.IntegerField()
     method = models.CharField(max_length=50)
 
@@ -43,9 +43,9 @@ class UserNotificationMethod(models.Model):
 class ScheduledNotification(models.Model):
     notifier = models.CharField(max_length=30)
     message = models.CharField(max_length=500)
-    user_to_notify = models.ForeignKey(User)
+    user_to_notify = models.ForeignKey(User, on_delete=models.CASCADE)
     send_at = models.DateTimeField()
-    incident = models.ForeignKey(Incident, blank=True, null=True, default=None)
+    incident = models.ForeignKey(Incident, blank=True, null=True, default=None, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = _('scheduled_notifications')

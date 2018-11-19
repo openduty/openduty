@@ -1,13 +1,13 @@
-import httplib
-import urllib
+import httplib2
+from urllib.parse import urlencode
 
 __author__ = 'oker'
 
 class PushoverNotifier:
     def notify(self, notification):
-        conn = httplib.HTTPSConnection("api.pushover.net:443")
+        conn = httplib2.HTTPSConnectionWithTimeout("api.pushover.net:443")
         conn.request("POST", "/1/messages.json",
-          urllib.urlencode({
+          urlencode({
             "token": notification.user_to_notify.profile.pushover_app_key,
             "user": notification.user_to_notify.profile.pushover_user_key,
             "message": notification.message,

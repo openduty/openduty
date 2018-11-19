@@ -2,7 +2,7 @@ from __future__ import absolute_import
 
 from openduty.celery import app
 from notification.notifier.pushover import PushoverNotifier
-from notification.notifier.xmpp import XmppNotifier
+# from notification.notifier.xmpp import XmppNotifier
 from notification.notifier.email import EmailNotifier
 from notification.notifier.twilio_sms import TwilioSmsNotifier
 from notification.notifier.twilio_call import TwilioCallNotifier
@@ -20,8 +20,8 @@ from openduty.models import EventLog
 def send_notifications(notification_id):
     try:
         notification = ScheduledNotification.objects.get(id = notification_id)
-        if notification.notifier == UserNotificationMethod.METHOD_XMPP:
-            notifier = XmppNotifier(settings.XMPP_SETTINGS)
+        # if notification.notifier == UserNotificationMethod.METHOD_XMPP:
+        #     notifier = XmppNotifier(settings.XMPP_SETTINGS)
         if notification.notifier == UserNotificationMethod.METHOD_EMAIL:
             notifier = EmailNotifier(settings.EMAIL_SETTINGS)
         if notification.notifier == UserNotificationMethod.METHOD_TWILIO_SMS:
@@ -56,7 +56,7 @@ def send_notifications(notification_id):
             notification.delete()
     except ScheduledNotification.DoesNotExist:
         pass #Incident was resolved. NOP.
-    except Exception, e:
+    except Exception as e:
                 # Log successful notification
         logmessage = EventLog()
         if notification.incident:

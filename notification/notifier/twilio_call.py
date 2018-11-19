@@ -17,6 +17,6 @@ class TwilioCallNotifier:
                 method="GET",
                 to=notification.user_to_notify.profile.phone_number,
                 from_=self.__config['phone_number'])
-            print 'successfully sent the call'
+            print('successfully sent the call')
         except :
-            print 'failed to send the call'
+            print('failed to send the call')
