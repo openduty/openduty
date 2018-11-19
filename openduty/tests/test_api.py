@@ -1,7 +1,6 @@
 from django.utils import timezone
 from openduty.models import Service, ServiceTokens, Token, SchedulePolicy, Incident
-from rest_framework.reverse import reverse
-from rest_framework.test import APIRequestFactory, APIClient
+from rest_framework.test import APIClient
 from .shared import BaseTestCase, random_string
 
 
@@ -74,7 +73,6 @@ class TestAPI(BaseTestCase):
             self.assertEqual(403, response.status_code)
         finally:
             pass
-
 
     def inject_incident(self):
         incident = Incident()
