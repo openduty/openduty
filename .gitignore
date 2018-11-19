@@ -1,10 +1,11 @@
 test_sqlite.db
 .idea/*
 env/*
-venv/*
 26env/*
 *.pyc
 database.sql
 .DS_Store
 openduty/settings_dev.py
 *.swp
+/venv/
+/.venv/
