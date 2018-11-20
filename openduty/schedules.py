@@ -1,7 +1,6 @@
 __author__ = 'deathowl'
 
 from openduty import escalation_helper
-from urllib import quote
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
@@ -15,7 +14,7 @@ from schedule.periods import weekday_names
 from django.http import Http404
 from django.views.decorators.http import require_http_methods
 from django.db import IntegrityError
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
 import pytz
@@ -85,9 +84,8 @@ def details(request, calendar_slug,  periods=None):
             'local_timezone': local_timezone,
             'current_date': timezone.now(),
 
-            'here':quote(request.get_full_path()),
-        },context_instance=RequestContext(request),
-                                  )
+            'here':f"{request.get_full_path()}",
+        })
     except Calendar.DoesNotExist:
         raise Http404
 

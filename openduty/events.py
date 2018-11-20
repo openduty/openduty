@@ -1,6 +1,6 @@
 import datetime
 from django.contrib.auth.models import Group
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
@@ -41,7 +41,7 @@ def create_or_edit_event(request, calendar_slug, event_id=None, next=None,
     form = form_class(data=data or None, instance=instance, initial=initial_data)
     users = User.objects.all()
     groups = Group.objects.all()
-    #users = Item.groups.all();    
+    #users = Item.groups.all();
     if form.is_valid():
         event = form.save(commit=False)
         if instance is None:
@@ -71,7 +71,7 @@ def create_or_edit_event(request, calendar_slug, event_id=None, next=None,
         "users":users,
         "groups": groups,
         "form": form,
-    }, context_instance=RequestContext(request))
+    })
 
 @check_event_permissions
 def destroy_event(request, calendar_slug, event_id=None, next=None,

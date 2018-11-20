@@ -1,12 +1,12 @@
 from __future__ import absolute_import
 from notification.helper import NotificationHelper
+from celery import shared_task
+from openduty.models import Incident, IncidentSilenced, Service, ServiceSilenced
 
 __author__ = 'deathowl'
 
-from openduty.models import Incident, IncidentSilenced, Service, ServiceSilenced
-from openduty.celery import app
 
-@app.task(ignore_result=True)
+@shared_task
 def unsilence_incident(incident_id):
     incident = Incident.objects.get(id=incident_id)
     if incident.event_type == Incident.ACKNOWLEDGE:
@@ -17,7 +17,7 @@ def unsilence_incident(incident_id):
     silenced_incident.delete()
 
 
-@app.task(ignore_result=True)
+@shared_task
 def unsilence_service(service_id):
     service = Service.objects.get(id=service_id)
     silenced_service = ServiceSilenced.objects.filter(service=service)
