@@ -6,7 +6,7 @@ from notification.tasks import send_notifications
 from apps.incidents.escalation_helper import get_escalation_for_service
 from apps.incidents.models import Incident
 from django.utils import timezone
-from notification.models import ScheduledNotification
+from apps.notification.models import ScheduledNotification
 from django.conf import settings
 
 
