@@ -1,8 +1,8 @@
-from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout;
-from django.http import HttpResponse, HttpResponseRedirect
-from django.conf import settings
+from django.contrib.auth import authenticate, login as auth_login
+from django.utils.deprecation import MiddlewareMixin
 
-class BasicAuthMiddleware(object):
+
+class BasicAuthMiddleware(MiddlewareMixin):
 
     def process_request(self,request):
         authentication = request.META.get('HTTP_AUTHORIZATION')

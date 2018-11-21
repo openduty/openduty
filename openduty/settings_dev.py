@@ -4,17 +4,17 @@ DEBUG = True
 TEMPLATE_DEBUG = True
 
 # Database
-# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
+# https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 import sys
 if 'test' not in sys.argv:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.mysql',
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
             'NAME': 'openduty',
             'USER': 'openduty',
             'PASSWORD': 'secret',
             'HOST': '127.0.0.1',
-            'PORT': '3306'
+            'PORT': '5434'
         }
     }
 
@@ -52,8 +52,11 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + (
+MIDDLEWARE += [
     'openduty.middleware.basicauthmiddleware.BasicAuthMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
-)
+]
 
+INSTALLED_APPS += [
+    'debug_toolbar',
+]

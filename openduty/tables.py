@@ -4,6 +4,7 @@ from django_tables2_simplefilter import F
 from django_tables2.utils import A
 
 class IncidentTable(tables.Table):
+    pass
 
     selection = tables.CheckBoxColumn(verbose_name='selection', accessor='pk',
                                       attrs={

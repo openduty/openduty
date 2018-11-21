@@ -120,7 +120,7 @@ class EventLog(models.Model):
 
     user = models.ForeignKey(User, blank=True, default=None, null=True, related_name='users', on_delete=models.CASCADE)
     incident_key = models.ForeignKey('Incident', blank=True, null=True, on_delete=models.CASCADE)
-    action = models.CharField(choices=ACTIONS, default='log', max_length="100")
+    action = models.CharField(choices=ACTIONS, default='log', max_length=100)
     service_key = models.ForeignKey(Service, on_delete=models.CASCADE)
     data = models.TextField()
     occurred_at = models.DateTimeField()
