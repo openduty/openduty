@@ -64,6 +64,12 @@ STATICFILES_DIRS = (
 - [leventyalcin](https://github.com/leventyalcin)
 - [sheran-g](https://github.com/sheran-g)
 
+
+# Contributors at Openduty
+- [Catalin](https://github.com/catalincoroeanu)
+- [SysRex](https://github.com/sysrex)
+
+
 # Getting started:
 ```
 sudo easy_install pip
@@ -77,6 +83,41 @@ python manage.py migrate
 python manage.py collectstatic
 python manage.py runserver
 ```
+
+
+because of the `django_tables2` it is tricky to migrate the changes to the DB
+
+One `quick fix` would be to migrate in steps:
+
+First we do:
+
+```bash
+./ manage.py migrate notification
+```
+
+And the we do:
+
+```bash
+./ manage.py migrate openduty
+```
+
+Then we can check it by running the general `migrate`
+
+```bash
+./ manage.py migrate
+
+```
+
+```bash 
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, django_celery_beat, django_twilio, notification, openduty, schedule, sessions
+Running migrations:
+  No migrations to apply.
+(.venv) mac:catalin$ 
+
+```
+
+
 now, you can start hacking on it.
 
 # Running as a service with systemd
