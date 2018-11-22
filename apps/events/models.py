@@ -4,7 +4,6 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from django.contrib.auth.models import User
-from apps.services.models import Service
 
 
 @python_2_unicode_compatible
@@ -45,9 +44,9 @@ class EventLog(models.Model):
         return colort_dict[self.action]
 
     user = models.ForeignKey(User, blank=True, default=None, null=True, related_name='users', on_delete=models.CASCADE)
-    incident_key = models.ForeignKey('Incident', blank=True, null=True, on_delete=models.CASCADE)
+    incident_key = models.ForeignKey('incidents.Incident', blank=True, null=True, on_delete=models.CASCADE)
     action = models.CharField(choices=ACTIONS, default='log', max_length=100)
-    service_key = models.ForeignKey(Service, on_delete=models.CASCADE)
+    service_key = models.ForeignKey('services.Service', on_delete=models.CASCADE)
     data = models.TextField()
     occurred_at = models.DateTimeField()
 

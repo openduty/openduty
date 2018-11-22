@@ -23,7 +23,6 @@ class UserNotificationMethod(models.Model):
     METHOD_ROCKET = 'rocket'
     METHOD_HIPCHAT = 'hipchat'
 
-
     methods = [METHOD_XMPP, METHOD_PUSHOVER, METHOD_EMAIL, METHOD_TWILIO_SMS, METHOD_TWILIO_CALL, METHOD_SLACK, METHOD_PROWL, METHOD_ROCKET, METHOD_HIPCHAT]
 
     user = models.ForeignKey(User, related_name='notification_methods', on_delete=models.CASCADE)

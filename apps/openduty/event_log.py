@@ -24,6 +24,7 @@ def list(request):
         paginated = p.page(p.num_pages)
     return TemplateResponse(request, 'eventlog/list.html', {'services': services, 'events': paginated})
 
+
 @login_required()
 def get(request, id):
     services = Service.objects.all()

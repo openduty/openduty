@@ -53,10 +53,16 @@ AUTHENTICATION_BACKENDS = (
 )
 
 MIDDLEWARE += [
-    'openduty.middleware.basicauthmiddleware.BasicAuthMiddleware',
+    'apps.openduty.middleware.basicauthmiddleware.BasicAuthMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 INSTALLED_APPS += [
     'debug_toolbar',
 ]
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    }
+}

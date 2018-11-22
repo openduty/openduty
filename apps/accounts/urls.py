@@ -15,5 +15,5 @@ urlpatterns = [
     url(r'^save', views.save, name='openduty.users.save'),
     url(r'^testnotification', views.testnotification, name='openduty.users.testnotification'),
     url(r'^edit/(\d+)$', views.edit, name='openduty.users.edit'),
-    url(r'^delete/(\d+)$', views.delete),
+    url(r'^delete/(\d+)$', views.delete, name='openduty.users.delete'),
 ]

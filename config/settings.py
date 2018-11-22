@@ -12,8 +12,17 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 import ldap
 from django_auth_ldap.config import LDAPSearch, PosixGroupType
+import environ
 
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+root = environ.Path(__file__) - 2 # three folder back (/a/b/c/ - 3 = /)
+env = environ.Env()  # set default values and casting
+environ.Env.read_env()  # reading .env file
+
+SITE_ROOT = root()
+
+BASE_DIR = SITE_ROOT
+
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -23,13 +32,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 DEBUG = False
 TEMPLATE_DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 BROKER_URL = 'django://'
 
 LOGIN_URL = '/login/'
 
-PROFILE_MODULE = 'openduty.UserProfile'
+PROFILE_MODULE = 'apps.accounts.UserProfile'
+AUTH_PROFILE_MODULE = 'apps.accounts.UserProfile'
 
 
 # Application definition
@@ -46,9 +56,10 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'django_tables2',
     'django_tables2_simplefilter',
-    'bootstrap3',
+    'bootstrap4',
     "django_twilio",
     'schedule',
+    'django_admin_generator',
 
     # Local apps
     'apps.accounts',
@@ -56,7 +67,6 @@ INSTALLED_APPS = [
     'apps.incidents',
     'apps.notification',
     'apps.openduty',
-    'apps.openduty.templatetags',
     'apps.opsweekly',
     'apps.policies',
     'apps.schedules',
@@ -66,14 +76,18 @@ INSTALLED_APPS = [
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, "apps", "templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+                "django.contrib.auth.context_processors.auth",
+                "django.template.context_processors.debug",
+                "django.template.context_processors.i18n",
+                "django.template.context_processors.media",
+                "django.template.context_processors.static",
+                "django.template.context_processors.tz",
+                "django.template.context_processors.request",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
@@ -138,17 +152,18 @@ PAGINATION_DEFAULT_PAGINATION = 20 # The default amount of items to show on a pa
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
-STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static")
-MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "media")
+# STATIC_ROOT = os.path.join(BASE_DIR, "static")
+#
+# MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), os.path.join(BASE_DIR, 'static_schedule')]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), os.path.join(BASE_DIR, 'static', 'static_schedule')]
 
-# STATICFILES_FINDERS = (
-#     'django.contrib.staticfiles.finders.FileSystemFinder',
-#     'django.contrib.staticfiles.finders.AppDirectoriesFinder'
-# )
 
-AUTH_PROFILE_MODULE = 'openduty.UserProfile'
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder'
+)
+
 
 BASE_URL = ""
 
@@ -213,3 +228,38 @@ if 'test' in sys.argv:
 # CELERY STUFF
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+# BOOTSTRAP4_FOLDER
+
+BOOTSTRAP4_FOLDER = os.path.abspath(os.path.join(BASE_DIR, "..", "bootstrap4"))
+if BOOTSTRAP4_FOLDER not in sys.path:
+    sys.path.insert(0, BOOTSTRAP4_FOLDER)
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "filters": {"require_debug_false": {"()": "django.utils.log.RequireDebugFalse"}},
+    "handlers": {
+        "mail_admins": {
+            "level": "ERROR",
+            "filters": ["require_debug_false"],
+            "class": "django.utils.log.AdminEmailHandler",
+        }
+    },
+    "loggers": {
+        "django.request": {
+            "handlers": ["mail_admins"],
+            "level": "ERROR",
+            "propagate": True,
+        }
+    },
+}
+
+# Settings for django-bootstrap4
+BOOTSTRAP4 = {
+    "error_css_class": "bootstrap4-error",
+    "required_css_class": "bootstrap4-required",
+    "javascript_in_head": True,
+    "include_jquery": True,
+}

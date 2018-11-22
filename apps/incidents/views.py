@@ -25,7 +25,7 @@ from apps.accounts.auth import IsAuthenticatedOrCreateOnly
 from apps.incidents.serializers import IncidentSerializer
 from apps.incidents.escalation_helper import services_where_user_is_on_call
 from apps.incidents.models import Incident, IncidentSilenced
-# from apps.incidents.tables import IncidentTable
+from apps.incidents.tables import IncidentTable
 
 
 class IncidentViewSet(viewsets.ModelViewSet):
@@ -212,19 +212,19 @@ class IncidentViewSet(viewsets.ModelViewSet):
         return Response({"Incident successfully escalated to service " + service2.name + " escalation policy"},status=status.HTTP_200_OK,headers=headers)
 
 
-# class ServicesByMe(FilteredSingleTableView):
-#     model = Incident
-#     table_class = IncidentTable
-#     template_name = 'incidents/list2.html'
-#     table_pagination = {"per_page": 10}
-#
-#     def get_queryset(self):
-#         user = self.request.user
-#         q = super(ServicesByMe, self).get_queryset()
-#         services = services_where_user_is_on_call(user)
-#         incidents = q.filter(service_key__in=services)
-#         incidents = incidents.order_by("-occurred_at")
-#         return incidents
+class ServicesByMe(FilteredSingleTableView):
+    model = Incident
+    table_class = IncidentTable
+    template_name = 'incidents/list2.html'
+    table_pagination = {"per_page": 10}
+
+    def get_queryset(self):
+        user = self.request.user
+        q = super(ServicesByMe, self).get_queryset()
+        services = services_where_user_is_on_call(user)
+        incidents = q.filter(service_key__in=services)
+        incidents = incidents.order_by("-occurred_at")
+        return incidents
 
 
 @login_required()

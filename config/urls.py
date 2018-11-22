@@ -28,14 +28,17 @@ rest_router.register(r'oncall', OpsWeeklyOnCallViewSet)
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/', include(rest_router.urls)),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-
+    path('', event_log.list),
+    path('dashboard/', event_log.list, name='openduty.event_log.list'),
+    path('dashboard/service/(.*)', event_log.get),
     path('api-token-auth/', obtain_auth_token),
     path('login/', login, name='openduty.auth.login'),
     path('login/do/', do, name='openduty.auth.do'),
     path('logout/', logout, name='openduty.auth.logout'),
+
+    path('admin/', admin.site.urls),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('api/', include(rest_router.urls)),
 
     path('users/', include('apps.accounts.urls')),
     path('services/', include('apps.services.urls')),
@@ -46,17 +49,9 @@ urlpatterns = [
     path('services/', include('apps.services.urls')),
     path('incidents/', include('apps.incidents.urls')),
 
-    path('', event_log.list),
-    path('dashboard/', event_log.list, name='openduty.event_log.list'),
-    path('dashboard/service/(.*)', event_log.get),
-
     path('twilio/(\d+)/(\d+)', call_handler.read_notification),
     path('twilio/handle/(\d+)/(\d+)', call_handler.handle_key),
 ]
-
-
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 if settings.DEBUG:

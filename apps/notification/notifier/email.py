@@ -1,9 +1,8 @@
-from apps.incidents.models import Incident
-
 __author__ = 'deathowl'
 
 import smtplib
 from django.template.defaultfilters import truncatechars
+
 
 class EmailNotifier:
     def __init__(self, config):

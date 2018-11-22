@@ -1,22 +1,23 @@
 from __future__ import absolute_import
 
-from openduty.celery import app
+from celery import shared_task
 from notification.notifier.pushover import PushoverNotifier
 # from notification.notifier.xmpp import XmppNotifier
-from notification.notifier.email import EmailNotifier
-from notification.notifier.twilio_sms import TwilioSmsNotifier
-from notification.notifier.twilio_call import TwilioCallNotifier
-from notification.notifier.slack import SlackNotifier
-from notification.notifier.prowl import ProwlNotifier
-from notification.notifier.rocket import RocketNotifier
-from notification.notifier.hipchat import HipchatNotifier
-from notification.models import ScheduledNotification, UserNotificationMethod
+from apps.notification.notifier.email import EmailNotifier
+from apps.notification.notifier.twilio_sms import TwilioSmsNotifier
+from apps.notification.notifier.twilio_call import TwilioCallNotifier
+from apps.notification.notifier.slack import SlackNotifier
+from apps.notification.notifier.prowl import ProwlNotifier
+from apps.notification.notifier.rocket import RocketNotifier
+from apps.notification.notifier.hipchat import HipchatNotifier
+from apps.notification.models import ScheduledNotification, UserNotificationMethod
 from django.conf import settings
 from django.utils import timezone
 
-from openduty.models import EventLog
+from apps.events.models import EventLog
 
-@app.task(ignore_result=False)
+
+@shared_task
 def send_notifications(notification_id):
     try:
         notification = ScheduledNotification.objects.get(id = notification_id)

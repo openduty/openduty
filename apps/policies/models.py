@@ -3,7 +3,7 @@ __author__ = 'catalincoroeanu'
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group
 from schedule.models import Calendar
 from django.conf import settings
 
@@ -35,11 +35,11 @@ class SchedulePolicyRule(models.Model):
     """
     Schedule rule
     """
-    schedule_policy = models.ForeignKey(SchedulePolicy, related_name='rules', on_delete=models.CASCADE)
+    schedule_policy = models.ForeignKey('SchedulePolicy', related_name='rules', on_delete=models.CASCADE)
     position = models.IntegerField()
-    user_id = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
-    group_id = models.ForeignKey(Group, blank=True, null=True, on_delete=models.CASCADE)
-    schedule = models.ForeignKey(Calendar, blank=True, null=True, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(AUTH_USER_MODEL, blank=True, null=True, on_delete=models.CASCADE, related_name='rules')
+    group_id = models.ForeignKey(Group, blank=True, null=True, on_delete=models.CASCADE, related_name='rules')
+    schedule = models.ForeignKey(Calendar, blank=True, null=True, on_delete=models.CASCADE, related_name='rules')
     escalate_after = models.IntegerField()
 
     class Meta:

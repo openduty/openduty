@@ -4,6 +4,7 @@ from apps.incidents.models import Incident
 
 __author__ = 'gabo'
 
+
 class ProwlNotifier:
     def __init__(self, config):
         self.__config = config
@@ -19,7 +20,9 @@ class ProwlNotifier:
         conn.request("POST", "/publicapi/add",
           urlencode({
             "apikey": notification.user_to_notify.profile.prowl_api_key,
-            "application" : notification.user_to_notify.profile.prowl_application or self.__config.get('application', 'openduty'),
+            "application" : notification.user_to_notify.profile.prowl_application or self.__config.get(
+                'application', 'config'
+            ),
             "url" : notification.user_to_notify.profile.prowl_url or "",
             "priority" : self.__config.get('priority', 0),
             "event" : description,
