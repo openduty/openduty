@@ -1,7 +1,6 @@
 import httplib2
 from urllib.parse import urlencode
 
-__author__ = 'oker'
 
 class PushoverNotifier:
     def notify(self, notification):

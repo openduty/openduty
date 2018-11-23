@@ -1,5 +1,3 @@
-__author__ = 'catalincoroeanu'
-
 import datetime
 from django.contrib.auth.models import Group, User
 from django.urls import reverse

@@ -1,4 +1,4 @@
-__author__ = 'deathowl'
+
 
 from django.utils import timezone
 from django.core.management.base import BaseCommand

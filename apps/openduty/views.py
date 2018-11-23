@@ -1,4 +1,4 @@
-__author__ = 'deathowl'
+
 
 from time import sleep, time
 import datetime

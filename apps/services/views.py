@@ -1,5 +1,3 @@
-__author__ = 'catalincoroeanu'
-
 from django.utils import timezone
 from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse

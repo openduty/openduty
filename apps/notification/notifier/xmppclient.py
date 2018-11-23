@@ -1,4 +1,4 @@
-# __author__ = 'deathowl'
+
 #
 # import logging
 #

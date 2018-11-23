@@ -1,4 +1,4 @@
-__author__ = 'deathowl'
+
 
 from django.template.response import TemplateResponse
 from django.contrib.auth.decorators import login_required

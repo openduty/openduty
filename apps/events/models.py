@@ -1,5 +1,3 @@
-__author__ = 'catalincoroeanu'
-
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from django.db import models

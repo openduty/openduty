@@ -1,8 +1,5 @@
-__author__ = 'deathowl'
-
 from twilio.rest import TwilioRestClient
 from twilio.base.exceptions import TwilioRestException
-import twilio
 import sys
 
 class TwilioSmsNotifier:

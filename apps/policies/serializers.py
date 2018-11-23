@@ -1,4 +1,4 @@
-__author__ = 'deathowl'
+
 
 from rest_framework import serializers
 from apps.policies.models import SchedulePolicy, SchedulePolicyRule

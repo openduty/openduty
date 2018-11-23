@@ -1,4 +1,4 @@
-__author__ = 'deathowl'
+
 from django_twilio.decorators import twilio_view
 from twilio.twiml.voice_response import VoiceResponse
 from django.contrib.auth.models import User

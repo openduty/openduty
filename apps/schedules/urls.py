@@ -1,9 +1,6 @@
-__author__ = 'catalincoroeanu'
-
 from django.conf.urls import url
 from schedule.periods import Month
 from apps.schedules import views
-
 
 
 urlpatterns = [

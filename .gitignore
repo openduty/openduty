@@ -8,3 +8,5 @@ database.sql
 *.swp
 /venv/
 /.venv/
+*.coverage
+/*.sqlite3
