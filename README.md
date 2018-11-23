@@ -1,6 +1,6 @@
 # Build status
 
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ustream/openduty)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/openduty/opendutyweb)
 [![image](https://api.travis-ci.org/ustream/openduty.svg)](https://travis-ci.org/ustream/openduty)
 [![Requirements Status](https://requires.io/github/openduty/openduty/requirements.svg?branch=master)](https://requires.io/github/openduty/openduty/requirements/?branch=master)
 # What is this?
