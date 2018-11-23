@@ -4,7 +4,7 @@ from celery import shared_task
 from apps.incidents.models import Incident, IncidentSilenced
 from apps.services.models import  Service, ServiceSilenced
 
-__author__ = 'deathowl'
+
 
 
 @shared_task

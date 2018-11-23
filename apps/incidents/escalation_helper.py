@@ -1,6 +1,3 @@
-__author__ = 'catalincoroeanu'
-
-
 from django.contrib.auth.models import Group, User
 from datetime import datetime
 from django.utils import timezone

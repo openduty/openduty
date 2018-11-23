@@ -1,8 +1,6 @@
 from config import settings
-
-__author__ = 'deathowl'
-
 from twilio.rest import TwilioRestClient
+
 
 class TwilioCallNotifier:
 

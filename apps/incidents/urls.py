@@ -1,5 +1,3 @@
-__author__ = 'catalincoroeanu'
-
 from django.conf.urls import url
 from django_tables2_simplefilter import FilteredSingleTableView
 from apps.incidents.tables import IncidentTable

@@ -1,5 +1,3 @@
-__author__ = 'catalincoroeanu'
-
 from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.contrib.auth.decorators import login_required

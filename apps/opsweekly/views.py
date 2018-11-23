@@ -12,7 +12,7 @@ from schedule.models import Calendar
 from apps.incidents import escalation_helper
 from apps.opsweekly.serializers import OnCallSerializer
 
-__author__ = 'deathowl'
+
 
 
 class OpsWeeklyIncidentViewSet(viewsets.ReadOnlyModelViewSet):

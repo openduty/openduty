@@ -1,8 +1,5 @@
 import httplib2
 from urllib.parse import urlencode
-from apps.incidents.models import Incident
-
-__author__ = 'gabo'
 
 
 class ProwlNotifier:

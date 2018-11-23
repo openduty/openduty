@@ -1,5 +1,3 @@
-__author__ = 'catalincoroeanu'
-
 import hmac
 import uuid
 from hashlib import sha1

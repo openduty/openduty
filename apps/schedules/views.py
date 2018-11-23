@@ -1,5 +1,3 @@
-__author__ = 'catalincoroeanu'
-
 import pytz
 from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect

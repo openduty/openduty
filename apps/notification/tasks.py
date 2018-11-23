@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
 from celery import shared_task
-from notification.notifier.pushover import PushoverNotifier
+from apps.notification.notifier.pushover import PushoverNotifier
 # from notification.notifier.xmpp import XmppNotifier
 from apps.notification.notifier.email import EmailNotifier
 from apps.notification.notifier.twilio_sms import TwilioSmsNotifier

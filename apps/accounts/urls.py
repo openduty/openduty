@@ -1,5 +1,3 @@
-__author__ = 'catalincoroeanu'
-
 from django.conf.urls import url
 from rest_framework import routers as rest_routers
 from apps.accounts import views

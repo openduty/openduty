@@ -1,5 +1,3 @@
-__author__ = 'deathowl'
-
 import smtplib
 from django.template.defaultfilters import truncatechars
 

@@ -1,8 +1,8 @@
-__author__ = 'deathowl'
+
 
 from datetime import datetime, timedelta
 from django.db import transaction
-from notification.tasks import send_notifications
+from apps.notification.tasks import send_notifications
 from apps.incidents.escalation_helper import get_escalation_for_service
 from apps.incidents.models import Incident
 from django.utils import timezone
