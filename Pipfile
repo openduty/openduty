@@ -71,6 +71,7 @@ PyJWT = "==1.6.4"
 pyOpenSSL = "==18.0.0"
 PySocks = "==1.6.8"
 requires-io = "*"
+pytest = "*"
 
 [dev-packages]
 
