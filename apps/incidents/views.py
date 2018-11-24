@@ -57,7 +57,7 @@ class IncidentViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         try:
-            token = Token.objects.get(key=request.DATA["service_key"])
+            token = Token.objects.get(key=request.data["service_key"])
             serviceToken = ServiceTokens.objects.get(token_id=token)
             service = serviceToken.service_id
         except ServiceTokens.DoesNotExist:
@@ -68,19 +68,19 @@ class IncidentViewSet(viewsets.ModelViewSet):
         with transaction.atomic():
             try:
                 esc = False
-                incident = Incident.objects.get(incident_key=request.DATA["incident_key"],service_key=service)
-                print("Received %s for %s on service %s" % (request.DATA['event_type'],request.DATA['incident_key'],serviceToken.name))
+                incident = Incident.objects.get(incident_key=request.data["incident_key"],service_key=service)
+                print("Received %s for %s on service %s" % (request.data['event_type'],request.data['incident_key'],serviceToken.name))
                 #check if type is ACK or resolve and if there's an escalation to a different escalation policy, remove it
-                if request.DATA['event_type'] == Incident.ACKNOWLEDGE or request.DATA['event_type'] == Incident.RESOLVE:
+                if request.data['event_type'] == Incident.ACKNOWLEDGE or request.data['event_type'] == Incident.RESOLVE:
                     print("ACK or Resolve, removing specific escalation")
                     esc = True
                     incident.service_to_escalate_to = None
                     incident.save()
                 # check if incident is resolved and refuse to ACK
-                if not (incident.event_type == Incident.RESOLVE and request.DATA['event_type'] == Incident.ACKNOWLEDGE):
+                if not (incident.event_type == Incident.RESOLVE and request.data['event_type'] == Incident.ACKNOWLEDGE):
                     event_log_message = "%s api key changed %s from %s to %s" % (
                         serviceToken.name, incident.incident_key,
-                        incident.event_type, request.DATA['event_type'])
+                        incident.event_type, request.data['event_type'])
                     if esc:
                         event_log_message += ", unescalated"
                 else:
@@ -91,9 +91,9 @@ class IncidentViewSet(viewsets.ModelViewSet):
             except (Incident.DoesNotExist, KeyError):
                 incident = Incident()
                 try:
-                    incident.incident_key = request.DATA["incident_key"]
+                    incident.incident_key = request.data["incident_key"]
                 except KeyError:
-                    if request.DATA["event_type"] == Incident.TRIGGER:
+                    if request.data["event_type"] == Incident.TRIGGER:
                         incident.incident_key = base64.urlsafe_b64encode(
                             uuid.uuid1().bytes).replace(
                             '=',
@@ -108,12 +108,12 @@ class IncidentViewSet(viewsets.ModelViewSet):
                 incident.service_key = service
 
                 event_log_message = "%s api key created %s with status %s" % (
-                    serviceToken.name, incident.incident_key, request.DATA['event_type'])
+                    serviceToken.name, incident.incident_key, request.data['event_type'])
 
-            if self.is_relevant(incident, request.DATA['event_type']):
+            if self.is_relevant(incident, request.data['event_type']):
                 event_log = EventLog()
                 # Anonymous user for testing
-                if request.user.is_anonymous():
+                if request.user.is_anonymous:
                     user = None
                 else:
                     user = request.user
@@ -122,9 +122,9 @@ class IncidentViewSet(viewsets.ModelViewSet):
                 event_log.data = event_log_message
                 event_log.occurred_at = timezone.now()
 
-                incident.event_type = request.DATA["event_type"]
-                incident.description = request.DATA["description"][:100]
-                incident.details = request.DATA.get("details", "")
+                incident.event_type = request.data["event_type"]
+                incident.description = request.data["description"][:100]
+                incident.details = request.data.get("details", "")
                 incident.occurred_at = timezone.now()
                 try:
                     incident.full_clean()
@@ -159,7 +159,7 @@ class IncidentViewSet(viewsets.ModelViewSet):
     def escalate(self, request, *args, **kwargs):
         #get arguments
         try:
-            token = Token.objects.get(key=request.DATA["service_key"])
+            token = Token.objects.get(key=request.data["service_key"])
             serviceToken = ServiceTokens.objects.get(token_id=token)
             service = serviceToken.service_id
         except ServiceTokens.DoesNotExist:
@@ -168,7 +168,7 @@ class IncidentViewSet(viewsets.ModelViewSet):
             return Response({"No service key"}, status=status.HTTP_403_FORBIDDEN)
 
         try:
-            token2 = Token.objects.get(key=request.DATA["service_key_to_escalate_to"])
+            token2 = Token.objects.get(key=request.data["service_key_to_escalate_to"])
             serviceToken2 = ServiceTokens.objects.get(token_id=token2)
             service2 = serviceToken2.service_id
         except ServiceTokens.DoesNotExist:
@@ -180,11 +180,11 @@ class IncidentViewSet(viewsets.ModelViewSet):
         with transaction.atomic():
             try:
                 # get service_to_escalate to and modify incident object
-                incident = Incident.objects.get(incident_key=request.DATA["incident_key"],service_key=service)
+                incident = Incident.objects.get(incident_key=request.data["incident_key"],service_key=service)
                 incident.service_to_escalate_to = service2
                 incident.event_type = "escalated"
-                if request.DATA["incident_details"]:
-                    incident.details = request.DATA["incident_details"]
+                if request.data["incident_details"]:
+                    incident.details = request.data["incident_details"]
                 #                incident.description = "[escalated] " + incident.description
                 incident.save()
 

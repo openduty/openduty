@@ -31,7 +31,6 @@ class TestEventViews(LoggedInTestCase):
         except:
             pass
 
-    @pytest.mark.skip(reason="TO Be Fixed")
     def test_event_can_be_recurring(self):
         rule = Rule(
             name=random_string(),
@@ -41,15 +40,15 @@ class TestEventViews(LoggedInTestCase):
         rule.save()
         try:
             url = reverse(
-                'openduty.events.create_or_edit_event',
-                kwargs = {
+                'edit_event',
+                kwargs={
                     'calendar_slug': self.cal.slug,
                     'event_id': str(self.event.id),
                 },
             )
             response = self.client.post(
-                path = url,
-                data = {
+                path=url,
+                data={
                     "start_0": self.event.start.strftime('%Y-%m-%d'),
                     "start_1": "09:00",
                     "end_0": self.event.end.strftime('%Y-%m-%d'),

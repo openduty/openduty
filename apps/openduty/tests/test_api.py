@@ -40,7 +40,6 @@ class TestAPI(BaseTestCase):
         except:
             pass
 
-    @pytest.mark.skip(reason="TO Be Fixed")
     def test_create_event(self):
         try:
             client = APIClient()
@@ -62,7 +61,6 @@ class TestAPI(BaseTestCase):
         finally:
             pass
 
-    @pytest.mark.skip(reason="TO Be Fixed")
     def test_create_event_fails_with_invalid_key(self):
         try:
             client = APIClient()
@@ -80,7 +78,6 @@ class TestAPI(BaseTestCase):
         finally:
             pass
 
-    @pytest.mark.skip(reason="TO Be Fixed")
     def inject_incident(self):
         incident = Incident()
         incident.service_key = self.service
@@ -91,7 +88,6 @@ class TestAPI(BaseTestCase):
         incident.occurred_at = timezone.now()
         incident.save()
 
-    @pytest.mark.skip(reason="TO Be Fixed")
     def test_create_event_different_service(self):
         self.inject_incident()
         try:
@@ -112,7 +108,6 @@ class TestAPI(BaseTestCase):
         finally:
             pass
 
-    @pytest.mark.skip(reason="TO Be Fixed")
     def test_incident_recovery(self):
         self.inject_incident()
         try:
@@ -133,7 +128,6 @@ class TestAPI(BaseTestCase):
         finally:
             updated.delete()
 
-    @pytest.mark.skip(reason="TO Be Fixed")
     def test_incident_acknowledge(self):
         self.inject_incident()
         try:

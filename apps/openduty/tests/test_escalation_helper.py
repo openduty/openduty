@@ -42,10 +42,10 @@ class TestGetEscalation(BaseTestCase):
     @pytest.mark.skip(reason="TO Be Fixed")
     def test_get_escalation_works_with_no_recurrence(self):
         event = Event(
-            start = timezone.now() - timedelta(days=1),
-            end = timezone.now() + timedelta(days=1),
-            title = '{username},{username}'.format(username=self.username),
-            calendar = self.cal,
+            start=timezone.now() - timedelta(days=1),
+            end=timezone.now() + timedelta(days=1),
+            title='{username},{username}'.format(username=self.username),
+            calendar=self.cal,
         )
         event.save()
         try:
@@ -54,7 +54,6 @@ class TestGetEscalation(BaseTestCase):
         finally:
             event.delete()
 
-    @pytest.mark.skip(reason="TO Be Fixed")
     def test_get_escalation_fails_with_no_recurrence_after_event_end(self):
         event = Event(
             start = timezone.now() - timedelta(days=2),
@@ -69,7 +68,6 @@ class TestGetEscalation(BaseTestCase):
         finally:
             event.delete()
 
-    @pytest.mark.skip(reason="TO Be Fixed")
     def test_get_escalation_empty_when_recurrance_is_not_now(self):
         rule = Rule(
             name=random_string(),
@@ -109,7 +107,6 @@ class TestGetEscalation(BaseTestCase):
         events = get_escalation_for_service(self.service)
         self.assertEqual(2, len(events))
 
-    @pytest.mark.skip(reason="TO Be Fixed")
     def test_get_escalation_returns_empty_for_muted_services(self):
         event = Event(
             start = timezone.now() - timedelta(days=1),

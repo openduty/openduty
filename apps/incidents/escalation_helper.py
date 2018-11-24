@@ -20,6 +20,8 @@ from apps.services.models import Service
     return result
 
 """
+
+
 def get_current_events_users(calendar):
     now = timezone.make_aware(datetime.now(), timezone.get_current_timezone())
     result = []
@@ -36,7 +38,6 @@ def get_current_events_users(calendar):
                     result.append(User.objects.get(username=item.strip()))
                  #tache suivante apres add group calendar
     return result
-
 
 
 def get_events_users_inbetween(calendar, since, until):
@@ -84,10 +85,10 @@ def get_escalation_for_service(service):
     #TODO: This isnt de-deuped, is that right?
     return result
 
+
 def services_where_user_is_on_call(user):
     from django.db.models import Q
     services = Service.objects.filter(
         Q(policy__rules__user_id=user) | Q(policy__rules__schedule__event__title__icontains=user)
     )
     return services
-
