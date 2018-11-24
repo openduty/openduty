@@ -10,7 +10,7 @@ def random_string(size=6, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
 
-class TestCaseBase(TestCase):
+class BaseTestCase(TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -30,10 +30,8 @@ class TestCaseBase(TestCase):
             pass
 
 
-class TestLoggedIn(TestCaseBase):
+class LoggedInTestCase(BaseTestCase):
 
     def setUp(self):
         self.client = Client()
         self.client.login(username=self.username, password=self.password)
-
-
