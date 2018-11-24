@@ -9,7 +9,6 @@ services:
 env:
   - DJANGO_SETTINGS_MODULE=config.settings_dev
   - COVERALLS_REPO_TOKEN=e68nhDhgfatT74bDoMbKrH8cMba9WXqMH
-  - TESTING_ENV=TRAVIS
 install:
   - pip install -U pipenv
   - pipenv install --system --deploy
@@ -23,4 +22,4 @@ script: "pytest"
 
 after_success:
   - coverage report -m
-  - codecov
+  - coveralls
