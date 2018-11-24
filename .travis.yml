@@ -17,6 +17,7 @@ install:
 before_script:
   - psql -c "CREATE DATABASE openduty;" -U postgres
   - psql -c "CREATE USER openduty WITH PASSWORD 'secret';" -U postgres
+  - psql -c "ALTER USER openduty CREATEDB"
 
 script: "pytest"
 
