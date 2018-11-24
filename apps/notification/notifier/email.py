@@ -20,9 +20,16 @@ class EmailNotifier:
             SUBJECT = notification.message
         if truncate_length:
             SUBJECT = truncatechars(SUBJECT, truncate_length)
-        TEXT =  notification.message
-        message = """\From: %s\nTo: %s\nSubject: %s\n\n%s
-            """ % (FROM, ", ".join(TO), SUBJECT, TEXT)
+        TEXT=notification.message
+        message = """
+        From: {}
+        To: {}
+        Subject: 
+        {}
+        
+        Message: 
+        {}
+        """.format(FROM, (", ".join(TO)), SUBJECT, TEXT)
         try:
             server = smtplib.SMTP(host, int(port))
             if self.__config['tls']:
