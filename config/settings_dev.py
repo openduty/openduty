@@ -18,6 +18,7 @@ if 'test' not in sys.argv:
         }
     }
 
+
 BASE_URL = "http://localhost:8000"
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -47,10 +48,10 @@ AUTH_LDAP_USER_ATTR_MAP = {
 "email": "mail"
 }
 
-AUTHENTICATION_BACKENDS = (
+AUTHENTICATION_BACKENDS = [
     'django_auth_ldap.backend.LDAPBackend',
     'django.contrib.auth.backends.ModelBackend',
-)
+]
 
 MIDDLEWARE += [
     'apps.openduty.middleware.basicauthmiddleware.BasicAuthMiddleware',
