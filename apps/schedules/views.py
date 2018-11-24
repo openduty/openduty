@@ -16,6 +16,7 @@ from schedule.models import Calendar
 from schedule.utils import coerce_date_dict
 from schedule.periods import weekday_names
 
+
 @login_required()
 def list(request):
     schedules = Calendar.objects.all()
