@@ -1,6 +1,6 @@
 language: python
 python:
-  - "2.7"
+  - "3.6"
 env:
   - DJANGO_SETTINGS_MODULE=openduty.settings_dev
 install:
