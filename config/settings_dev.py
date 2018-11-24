@@ -14,9 +14,10 @@ if 'test' not in sys.argv:
             'USER': 'openduty',
             'PASSWORD': 'secret',
             'HOST': '127.0.0.1',
-            'PORT': '5434'
+            'PORT': '5432'
         }
     }
+
 
 BASE_URL = "http://localhost:8000"
 

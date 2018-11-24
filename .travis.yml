@@ -1,12 +1,24 @@
 language: python
 python:
   - "3.6"
+
+
+services:
+  - postgresql
+
 env:
   - DJANGO_SETTINGS_MODULE=config.settings_dev
   - COVERALLS_REPO_TOKEN=e68nhDhgfatT74bDoMbKrH8cMba9WXqMH
+  - TESTING_ENV=TRAVIS
 install:
   - pip install -U pipenv
   - pipenv install --system --deploy
+
+before_script:
+  - psql -c "CREATE DATABASE openduty;" -U postgres
+  - psql -c "CREATE USER openduty WITH PASSWORD 'secret';" -U postgres
+  - psql -c "ALTER USER openduty CREATEDB"
+
 script: "pytest"
 
 after_success:
