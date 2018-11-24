@@ -1,8 +1,10 @@
 # Build status
 
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/openduty/opendutyweb)
+
 [![image](https://api.travis-ci.org/openduty/openduty.svg)](https://travis-ci.org/openduty/openduty)
+[![Coverage Status](https://coveralls.io/repos/github/catalincoroeanu/openduty/badge.svg?branch=master)](https://coveralls.io/github/catalincoroeanu/openduty?branch=master)
 [![Requirements Status](https://requires.io/github/openduty/openduty/requirements.svg?branch=master)](https://requires.io/github/openduty/openduty/requirements/?branch=master)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/openduty/opendutyweb)
 # What is this?
 **Openduty** is an incident escalation tool, just like [Pagerduty](http://pagerduty.com) . It has a Pagerduty compatible API too. It's the result of the first [Ustream Hackathon](http://www.ustream.tv/blog/2014/03/27/hackathon-recap-21-ideas-11-teams-one-goal/). We enjoyed working on it.
 # Integrations
