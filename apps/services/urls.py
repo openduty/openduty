@@ -1,8 +1,6 @@
 from django.conf.urls import url
 from apps.services import views
-from apps.services.models import Service
 
-from apps.services import Service
 
 urlpatterns = [
     url(r'^token_delete/(.*)$', views.token_delete),

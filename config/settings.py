@@ -231,35 +231,35 @@ CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
 # BOOTSTRAP4_FOLDER
 
-# BOOTSTRAP4_FOLDER = os.path.abspath(os.path.join(BASE_DIR, "..", "bootstrap4"))
-# if BOOTSTRAP4_FOLDER not in sys.path:
-#     sys.path.insert(0, BOOTSTRAP4_FOLDER)
-#
-#
-# LOGGING = {
-#     "version": 1,
-#     "disable_existing_loggers": False,
-#     "filters": {"require_debug_false": {"()": "django.utils.log.RequireDebugFalse"}},
-#     "handlers": {
-#         "mail_admins": {
-#             "level": "ERROR",
-#             "filters": ["require_debug_false"],
-#             "class": "django.utils.log.AdminEmailHandler",
-#         }
-#     },
-#     "loggers": {
-#         "django.request": {
-#             "handlers": ["mail_admins"],
-#             "level": "ERROR",
-#             "propagate": True,
-#         }
-#     },
-# }
-#
-# # Settings for django-bootstrap4
-# BOOTSTRAP4 = {
-#     "error_css_class": "bootstrap4-error",
-#     "required_css_class": "bootstrap4-required",
-#     "javascript_in_head": True,
-#     "include_jquery": True,
-# }
+BOOTSTRAP4_FOLDER = os.path.abspath(os.path.join(BASE_DIR, "..", "bootstrap4"))
+if BOOTSTRAP4_FOLDER not in sys.path:
+    sys.path.insert(0, BOOTSTRAP4_FOLDER)
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "filters": {"require_debug_false": {"()": "django.utils.log.RequireDebugFalse"}},
+    "handlers": {
+        "mail_admins": {
+            "level": "ERROR",
+            "filters": ["require_debug_false"],
+            "class": "django.utils.log.AdminEmailHandler",
+        }
+    },
+    "loggers": {
+        "django.request": {
+            "handlers": ["mail_admins"],
+            "level": "ERROR",
+            "propagate": True,
+        }
+    },
+}
+
+# Settings for django-bootstrap4
+BOOTSTRAP4 = {
+    "error_css_class": "bootstrap4-error",
+    "required_css_class": "bootstrap4-required",
+    "javascript_in_head": True,
+    "include_jquery": True,
+}

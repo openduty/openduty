@@ -7,8 +7,10 @@ from schedule.forms import EventForm
 from schedule.models import Calendar, Event
 from schedule.utils import coerce_date_dict, check_event_permissions
 from schedule.views import get_next_url
+from django.views.decorators.csrf import csrf_protect
 
 
+@csrf_protect
 @check_event_permissions
 def create_or_edit_event(request, calendar_slug, event_id=None, next=None,
                          template_name='event/edit.html', form_class = EventForm):
@@ -57,7 +59,6 @@ def create_or_edit_event(request, calendar_slug, event_id=None, next=None,
             data["recurr_ymd"] = instance.end_recurring_period.date().isoformat()
         data["description"] = instance.description
         data["rule"] = (instance.rule and instance.rule.id) or ""
-
 
     next = get_next_url(request, next)
     return render_to_response(template_name, {
