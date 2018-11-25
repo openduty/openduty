@@ -3,24 +3,38 @@
 {% load arrowfilter %}
 
 {% block content %}
-    <div class="row header">
-        <div class="col-xs-8 col-md-10"><h2>Event log</h2></div>
-        <div class="col-xs-4 col-md-2 button">
-            <div class="btn-group">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    Services
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-right">
-                    <li><a href="{% url 'openduty.event_log.list' %}">All</a></li>
-                     <li role="presentation" class="divider"></li>
-                    {% for item in services %}
-                    <li><a href="{% url 'openduty.event_log.get' item.id %}">{{ item.name }}</a></li>
-                     {% endfor %}
-                </ul>
+
+    <section class="content-header">
+      <h1>
+        Event Log
+        <small>Version 2.0</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Dashboard</li>
+      </ol>
+    </section>
+
+    <section class="content">
+        <div class="row header">
+            <div class="col-xs-8 col-md-10"><h2>Event log</h2></div>
+            <div class="col-xs-4 col-md-2 button">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-flat" data-toggle="dropdown">
+                        Services
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        <li><a href="{% url 'openduty.event_log.list' %}">All</a></li>
+                         <li role="presentation" class="divider"></li>
+                        {% for item in services %}
+                        <li><a href="{% url 'openduty.event_log.get' item.id %}">{{ item.name }}</a></li>
+                         {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 
     {% if messages %}
     <div class="alert alert-danger">
