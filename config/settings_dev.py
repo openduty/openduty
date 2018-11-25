@@ -13,7 +13,7 @@ if 'test' not in sys.argv:
             'NAME': 'openduty',
             'USER': 'openduty',
             'PASSWORD': 'secret',
-            'HOST': '127.0.0.1',
+            'HOST': 'localhost',
             'PORT': '5432'
         }
     }
@@ -67,3 +67,6 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
 }
+
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'

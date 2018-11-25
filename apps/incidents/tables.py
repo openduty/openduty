@@ -34,14 +34,13 @@ class IncidentTable(tables.Table):
     event_type = tables.Column(verbose_name="Event type",attrs={"td": {"data-title": "Event type"}})
     details = tables.Column(verbose_name="Details",attrs={"td": {"data-title": "Details"}})
     id = tables.Column(attrs={"td": {"data-title": "Id"}})
-
-    filters = (F('service_key','Service filter',
-                 values_list=[ (str(x), str(x.id)) for x in Service.objects.all()]),
-               F('event_type', 'Event',
-                 values_list=EventLog.ACTIONS),
-               F('incident_key', 'Incident Key',
-                 values_list= [(i, i) for i in Incident.objects.values_list('incident_key', flat=True).order_by('-occurred_at')[:500] ])
-              )
+#    filters = (F('service_key','Service filter',
+#                 values_list=[ (str(x), str(x.id)) for x in Service.objects.all()]),
+#               F('event_type', 'Event',
+#                 values_list=EventLog.ACTIONS),
+#               F('incident_key', 'Incident Key',
+#                 values_list= [(i, i) for i in Incident.objects.values_list('incident_key', flat=True).order_by('-occurred_at')[:500] ])
+#              )
     tr_class = tables.Column(visible=False, empty_values=())
 
     def render_tr_class(self, record):
