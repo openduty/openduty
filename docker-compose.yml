@@ -1,25 +1,25 @@
 version: '3.2'
 
 volumes:
-  openduty_mysql_data: {}
+#  openduty_mysql_data: {}
   openduty_postgres_data: {}
   openduty_redis_data: {}
 
 services:
-  openduty-mysql:
-    container_name: openduty-mysql
-    build: ./devops/docker/mysql
-    restart: always
-    volumes:
-      - openduty_mysql_data:/var/lib/mysql
-    environment:
-      MYSQL_USER: openduty
-      MYSQL_PASSWORD: secret
-      MYSQL_DATABASE: openduty
-      MYSQL_ROOT_PASSWORD: topsecret
-    ports:
-      - 3306:3306
-    command: --default-authentication-plugin=mysql_native_password
+#  openduty-mysql:
+#    container_name: openduty-mysql
+#    build: ./devops/docker/mysql
+#    restart: always
+#    volumes:
+#      - openduty_mysql_data:/var/lib/mysql
+#    environment:
+#      MYSQL_USER: openduty
+#      MYSQL_PASSWORD: secret
+#      MYSQL_DATABASE: openduty
+#      MYSQL_ROOT_PASSWORD: topsecret
+#    ports:
+#      - 3306:3306
+#    command: --default-authentication-plugin=mysql_native_password
 
   openduty-postgres:
     container_name: openduty-postgres
