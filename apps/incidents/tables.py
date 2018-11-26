@@ -4,6 +4,7 @@ from apps.services.models import Service
 from apps.events.models import EventLog
 from django_tables2_simplefilter import F
 from django_tables2.utils import A
+from django.db.utils import ProgrammingError
 
 
 class IncidentTable(tables.Table):
@@ -45,24 +46,17 @@ class IncidentTable(tables.Table):
     id = tables.Column(attrs={"td": {"data-title": "Id"}})
 
     tr_class = tables.Column(visible=False, empty_values=())
-
-    @property
-    def filters(self):
-        from django.db.utils import ProgrammingError
-        try:
-            filters = (
-                F('service_key', 'Service filter', values_list=[(str(x), str(x.id)) for x in Service.objects.all()]),
-                F('event_type', 'Event', values_list=EventLog.ACTIONS),
-                F('incident_key', 'Incident Key', values_list=[
-                    (i, i) for i in
-                    Incident.objects.values_list('incident_key', flat=True).order_by('-occurred_at')[:500]
-                ])
-            )
-        except ProgrammingError:
-            filters = []
-        return filters
-
-
+    try:
+        filters = (
+            F('service_key', 'Service filter', values_list=[(str(x), str(x.id)) for x in Service.objects.all()]),
+            F('event_type', 'Event', values_list=EventLog.ACTIONS),
+            F('incident_key', 'Incident Key', values_list=[
+                (i, i) for i in
+                Incident.objects.values_list('incident_key', flat=True).order_by('-occurred_at')[:500]
+            ])
+        )
+    except ProgrammingError:
+        filters = []
 
     def render_tr_class(self, record):
         return record.color
