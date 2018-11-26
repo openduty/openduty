@@ -7,12 +7,12 @@ from schedule.forms import EventForm
 from schedule.models import Calendar, Event
 from schedule.utils import coerce_date_dict, check_event_permissions
 from schedule.views import get_next_url
-from django.views.decorators.csrf import csrf_protect
+from django.shortcuts import render
 
 
 @check_event_permissions
-def create_or_edit_event(request, calendar_slug, event_id=None, next=None,
-                         template_name='event/edit.html', form_class = EventForm):
+def create_or_edit_event(request, calendar_slug, event_id=None, next=None):
+
     date = coerce_date_dict(request.GET)
     initial_data = None
     if date:
@@ -31,21 +31,25 @@ def create_or_edit_event(request, calendar_slug, event_id=None, next=None,
     if event_id is not None:
         instance = get_object_or_404(Event, id=event_id)
 
+    print("\n\nINSTANCE: ", instance, "\n\n")
     calendar = get_object_or_404(Calendar, slug=calendar_slug)
+    print("\n\nCALENDAR: ", calendar, "\n\n")
     data = request.POST.copy()
+    print("\n\nDATA: ", data, "\n\n")
     if data:
         data["title"] = data["oncall"]+","+data["fallback"]
-    form = form_class(data=data or None, instance=instance, initial=initial_data)
+    form = EventForm(data=data or None, instance=instance, initial=initial_data)
     users = User.objects.all()
     groups = Group.objects.all()
-    #users = Item.groups.all();
-    if form.is_valid():
-        event = form.save(commit=False)
-        if instance is None:
-            event.creator = request.user
-            event.calendar = calendar
-        event.save()
-        return HttpResponseRedirect(reverse('calendar_details', kwargs={'calendar_slug': calendar.slug}))
+    if request.method == 'POST':
+        if form.is_valid():
+            print("\n\nFORM IS VALID: ", form, "\n\n")
+            event = form.save(commit=False)
+            if instance is None:
+                event.creator = request.user
+                event.calendar = calendar
+            event.save()
+            return HttpResponseRedirect(reverse('calendar_details', kwargs={'calendar_slug': calendar.slug}))
     if instance is not None:
         officers = instance.title.split(",")
         data["oncall"] = officers[0]
@@ -60,14 +64,17 @@ def create_or_edit_event(request, calendar_slug, event_id=None, next=None,
         data["rule"] = (instance.rule and instance.rule.id) or ""
 
     next = get_next_url(request, next)
-    return render_to_response(template_name, {
+    context = {
         "data": data,
         "calendar": calendar,
         "next":next,
         "users":users,
         "groups": groups,
-        "form": form,
-    }, re)
+        "form": form
+    }
+    template = 'event/edit.html'
+
+    return render(request, template, context)
 
 
 @check_event_permissions

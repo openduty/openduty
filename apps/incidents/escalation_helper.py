@@ -28,6 +28,7 @@ def get_current_events_users(calendar):
     day = Day(calendar.events.all(), now)
     for o in day.get_occurrences():
         if o.start <= now <= o.end:
+            print(o.event.title.split(','))
             items = o.event.title.split(',')
             for item in items:
                 if Group.objects.filter(name=item.strip()).exists():
@@ -35,6 +36,7 @@ def get_current_events_users(calendar):
                         user.came_from_group = item.strip()
                         result.append(user)
                 else:
+                    print("\n\nITEM>STRIP: ", item.strip())
                     result.append(User.objects.get(username=item.strip()))
                  #tache suivante apres add group calendar
     return result
