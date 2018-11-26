@@ -30,7 +30,7 @@ rest_router.register(r'oncall', OpsWeeklyOnCallViewSet)
 urlpatterns = [
     path('', event_log.list),
     path('dashboard/', event_log.list, name='openduty.event_log.list'),
-    path('dashboard/service/(.*)', event_log.get),
+    url(r'^dashboard/service/(.*)', event_log.get, name='openduty.event_log.get'),
     path('api-token-auth/', obtain_auth_token),
     path('login/', login, name='openduty.auth.login'),
     path('login/do/', do, name='openduty.auth.do'),
