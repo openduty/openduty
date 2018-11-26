@@ -1,0 +1,46 @@
+version: '3.2'
+
+volumes:
+#  openduty_mysql_data: {}
+  openduty_postgres_data: {}
+  openduty_redis_data: {}
+
+services:
+#  openduty-mysql:
+#    container_name: openduty-mysql
+#    build: ./devops/docker/mysql
+#    restart: always
+#    volumes:
+#      - openduty_mysql_data:/var/lib/mysql
+#    environment:
+#      MYSQL_USER: openduty
+#      MYSQL_PASSWORD: secret
+#      MYSQL_DATABASE: openduty
+#      MYSQL_ROOT_PASSWORD: topsecret
+#    ports:
+#      - 3306:3306
+#    command: --default-authentication-plugin=mysql_native_password
+
+  openduty-postgres:
+    container_name: openduty-postgres
+    build: ./devops/docker/postgres
+    restart: always
+    volumes:
+      - openduty_postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: openduty
+      POSTGRES_DB: openduty
+      POSTGRES_PASSWORD: secret
+    ports:
+      - 5432:5432
+    command: -c fsync=off -c synchronous_commit=off -c full_page_writes=off
+
+  openduty-redis:
+    container_name: openduty-redis
+    restart: always
+    build:
+      context: ./devops/docker/redis/
+    volumes:
+      - openduty_redis_data:/data
+    ports:
+      - 6379:6379

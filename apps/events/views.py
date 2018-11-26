@@ -10,7 +10,6 @@ from schedule.views import get_next_url
 from django.views.decorators.csrf import csrf_protect
 
 
-@csrf_protect
 @check_event_permissions
 def create_or_edit_event(request, calendar_slug, event_id=None, next=None,
                          template_name='event/edit.html', form_class = EventForm):
@@ -68,7 +67,7 @@ def create_or_edit_event(request, calendar_slug, event_id=None, next=None,
         "users":users,
         "groups": groups,
         "form": form,
-    })
+    }, re)
 
 
 @check_event_permissions
