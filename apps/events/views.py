@@ -31,11 +31,8 @@ def create_or_edit_event(request, calendar_slug, event_id=None, next=None):
     if event_id is not None:
         instance = get_object_or_404(Event, id=event_id)
 
-    print("\n\nINSTANCE: ", instance, "\n\n")
     calendar = get_object_or_404(Calendar, slug=calendar_slug)
-    print("\n\nCALENDAR: ", calendar, "\n\n")
     data = request.POST.copy()
-    print("\n\nDATA: ", data, "\n\n")
     if data:
         data["title"] = data["oncall"]+","+data["fallback"]
     form = EventForm(data=data or None, instance=instance, initial=initial_data)
@@ -43,7 +40,6 @@ def create_or_edit_event(request, calendar_slug, event_id=None, next=None):
     groups = Group.objects.all()
     if request.method == 'POST':
         if form.is_valid():
-            print("\n\nFORM IS VALID: ", form, "\n\n")
             event = form.save(commit=False)
             if instance is None:
                 event.creator = request.user

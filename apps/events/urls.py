@@ -2,7 +2,6 @@ from django.conf.urls import url
 from apps.events import views
 
 
-
 urlpatterns = [
     url(r'^create/(?P<calendar_slug>[-\w]+)/$', views.create_or_edit_event,
         name='openduty.events.create_or_edit_event'),
