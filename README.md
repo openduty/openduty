@@ -195,3 +195,24 @@ MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + (
 )
 
 ```
+
+
+---
+
+# DEMO DATA
+
+
+Having PSQL Docker container running, you can backup demo sql data:
+
+```bash
+pg_dump -h 127.0.0.1 -U openduty --data-only --column-inserts openduty > dummydata.sql
+
+```
+
+
+Load Demo data:
+
+```bash
+pg_dump  -h 127.0.0.1 -U openduty -c --column-inserts openduty < dummydata.sql
+```
+
