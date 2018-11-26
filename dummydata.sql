@@ -29,7 +29,8 @@ INSERT INTO public.accounts_token (key, created) VALUES ('0aa8fe734605e984500df3
 -- Data for Name: auth_user; Type: TABLE DATA; Schema: public; Owner: openduty
 --
 
-INSERT INTO public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) VALUES (1, 'pbkdf2_sha256$120000$IvDAiB0mm2xj$Z1v52Zwhfu5tIatYprsC2IS+tIL0Y1UmDSqSkevdLpg=', '2018-11-26 15:48:24.839323+00', true, 'demo', '', '', 'demo@openduty.com', true, true, '2018-11-26 15:46:53.569285+00');
+INSERT INTO public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) VALUES (1, 'pbkdf2_sha256$120000$IvDAiB0mm2xj$Z1v52Zwhfu5tIatYprsC2IS+tIL0Y1UmDSqSkevdLpg=', '2018-11-26 15:48:24+00', true, 'demo', 'Demo', 'User', 'demo@openduty.com', true, true, '2018-11-26 15:46:53+00');
+INSERT INTO public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) VALUES (2, 'pbkdf2_sha256$120000$p7K5dTgl8OuX$6OMNa2+HrZy1geEkCjNMbP3Lj3WdaVPOEV87Bgbld80=', NULL, false, 'demo2', 'Demo2', 'User2', 'demo2@openduty.com', true, true, '2018-11-26 21:47:32+00');
 
 
 --
@@ -37,12 +38,14 @@ INSERT INTO public.auth_user (id, password, last_login, is_superuser, username, 
 --
 
 INSERT INTO public.accounts_userprofile (id, phone_number, pushover_user_key, pushover_app_key, slack_room_name, prowl_api_key, prowl_application, prowl_url, rocket_webhook_url, hipchat_room_name, hipchat_room_url, send_resolve_enabled, user_id) VALUES (1, '+41764744645', 'qwertyuiop', 'qwertyuiop', 'qwertyuiop', 'qwertyuiop', 'qwertyuiop', 'qwertyuiop', 'qwertyuiop', 'qwertyuiop', 'qwertyuiop', true, 1);
+INSERT INTO public.accounts_userprofile (id, phone_number, pushover_user_key, pushover_app_key, slack_room_name, prowl_api_key, prowl_application, prowl_url, rocket_webhook_url, hipchat_room_name, hipchat_room_url, send_resolve_enabled, user_id) VALUES (2, '+44764744645', 'qwertyuiop', 'qwertyuiop', 'qwertyuiop', 'qwertyuiop', 'qwertyuiop', 'qwertyuiop', 'qwertyuiop', 'qwertyuiop', 'qwertyuiop', true, 2);
 
 
 --
 -- Data for Name: auth_group; Type: TABLE DATA; Schema: public; Owner: openduty
 --
 
+INSERT INTO public.auth_group (id, name) VALUES (1, 'Demo Group');
 
 
 --
@@ -232,6 +235,8 @@ INSERT INTO public.auth_permission (id, name, content_type_id, codename) VALUES 
 -- Data for Name: auth_user_groups; Type: TABLE DATA; Schema: public; Owner: openduty
 --
 
+INSERT INTO public.auth_user_groups (id, user_id, group_id) VALUES (1, 1, 1);
+INSERT INTO public.auth_user_groups (id, user_id, group_id) VALUES (2, 2, 1);
 
 
 --
@@ -261,6 +266,29 @@ INSERT INTO public.django_admin_log (id, action_time, object_id, object_repr, ac
 INSERT INTO public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) VALUES (15, '2018-11-26 15:55:34.466675+00', '1', 'qwerty1', 1, '[{"added": {}}]', 23, 1);
 INSERT INTO public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) VALUES (16, '2018-11-26 15:56:25.069339+00', '7bece19f-057e-4db8-b6a4-5275b6c916d9', 'Demo Service 2', 1, '[{"added": {}}]', 31, 1);
 INSERT INTO public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) VALUES (17, '2018-11-26 15:56:29.668895+00', '1', 'Some demo data about this Event', 1, '[{"added": {}}]', 22, 1);
+INSERT INTO public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) VALUES (18, '2018-11-26 20:28:12.623997+00', '1', 'Rule Schedule Rule 1 params Demo content description about Schedule Rule 1', 1, '[{"added": {}}]', 19, 1);
+INSERT INTO public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) VALUES (19, '2018-11-26 20:28:24.846336+00', '1', 'Event 1: Nov. 26, 2018 - Nov. 27, 2018', 1, '[{"added": {}}]', 16, 1);
+INSERT INTO public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) VALUES (20, '2018-11-26 21:04:06.164748+00', '1', 'Demo Group', 1, '[{"added": {}}]', 3, 1);
+INSERT INTO public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) VALUES (21, '2018-11-26 21:04:27.213775+00', '1', 'demo', 2, '[{"changed": {"fields": ["first_name", "last_name", "groups"]}}]', 4, 1);
+INSERT INTO public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) VALUES (22, '2018-11-26 21:11:25.196285+00', '2', 'Rule Rule 2 params a = 2', 1, '[{"added": {}}]', 19, 1);
+INSERT INTO public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) VALUES (23, '2018-11-26 21:12:02.046779+00', '2', 'Event 2: Nov. 26, 2018 - Dec. 20, 2018', 1, '[{"added": {}}]', 16, 1);
+INSERT INTO public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) VALUES (24, '2018-11-26 21:39:10.386583+00', '3', 'demo,demo: Nov. 28, 2018 - Nov. 29, 2018', 2, '[{"changed": {"fields": ["color_event", "calendar"]}}]', 16, 1);
+INSERT INTO public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) VALUES (25, '2018-11-26 21:39:22.230672+00', '3', 'Demo 2: Nov. 28, 2018 - Nov. 29, 2018', 2, '[{"changed": {"fields": ["title"]}}]', 16, 1);
+INSERT INTO public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) VALUES (26, '2018-11-26 21:40:53.808705+00', '3', 'demo, demo: Nov. 28, 2018 - Nov. 29, 2018', 2, '[{"changed": {"fields": ["title"]}}]', 16, 1);
+INSERT INTO public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) VALUES (27, '2018-11-26 21:41:21.811351+00', '2', 'Event 2: Nov. 26, 2018 - Dec. 20, 2018', 2, '[{"changed": {"fields": ["creator"]}}]', 16, 1);
+INSERT INTO public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) VALUES (28, '2018-11-26 21:43:54.404499+00', '2', 'Event 2: Nov. 28, 2018 - Dec. 29, 2018', 2, '[{"changed": {"fields": ["start", "end", "creator"]}}]', 16, 1);
+INSERT INTO public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) VALUES (29, '2018-11-26 21:44:16.499212+00', '3', 'demo, demo: Nov. 27, 2018 - Nov. 28, 2018', 2, '[{"changed": {"fields": ["start", "end", "calendar"]}}]', 16, 1);
+INSERT INTO public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) VALUES (30, '2018-11-26 21:47:52.987577+00', '2', 'demo2', 2, '[{"changed": {"fields": ["is_superuser"]}}]', 4, 1);
+INSERT INTO public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) VALUES (31, '2018-11-26 21:48:20.353045+00', '2', 'demo2', 2, '[{"changed": {"fields": ["first_name", "last_name", "groups"]}}]', 4, 1);
+INSERT INTO public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) VALUES (32, '2018-11-26 21:49:10.073107+00', '2', 'UserProfile object (2)', 1, '[{"added": {}}]', 21, 1);
+INSERT INTO public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) VALUES (33, '2018-11-26 21:52:23.277052+00', '2', '+40764744645', 1, '[{"added": {}}]', 12, 1);
+INSERT INTO public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) VALUES (34, '2018-11-26 21:52:39.822091+00', '2', 'demo2 - qwertyuiop', 1, '[{"added": {}}]', 13, 1);
+INSERT INTO public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) VALUES (35, '2018-11-26 21:53:10.538438+00', '2', 'The password is too similar to the email address.
+This password is too short. It must contain at least 8 characters.', 1, '[{"added": {}}]', 22, 1);
+INSERT INTO public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) VALUES (36, '2018-11-26 21:53:35.242361+00', '3', 'The password is too similar to the email address.
+This password is too short. It must contain at least 8 characters.', 1, '[{"added": {}}]', 22, 1);
+INSERT INTO public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) VALUES (37, '2018-11-26 21:53:56.25153+00', '4', 'The password is too similar to the email address.', 1, '[{"added": {}}]', 22, 1);
+INSERT INTO public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) VALUES (38, '2018-11-26 21:54:47.35401+00', '5', 'GRANT ALL ON SCHEMA public TO PUBLIC;', 1, '[{"added": {}}]', 22, 1);
 
 
 --
@@ -358,6 +386,7 @@ INSERT INTO public.django_session (session_key, session_data, expire_date) VALUE
 --
 
 INSERT INTO public.django_twilio_caller (id, blacklisted, phone_number) VALUES (1, false, '+41764744645');
+INSERT INTO public.django_twilio_caller (id, blacklisted, phone_number) VALUES (2, false, '+40764744645');
 
 
 --
@@ -365,6 +394,7 @@ INSERT INTO public.django_twilio_caller (id, blacklisted, phone_number) VALUES (
 --
 
 INSERT INTO public.django_twilio_credential (id, name, account_sid, auth_token, user_id) VALUES (1, 'demo', 'qwertyuiop', 'qwertyuiop', 1);
+INSERT INTO public.django_twilio_credential (id, name, account_sid, auth_token, user_id) VALUES (2, 'demo2', 'qwertyuiop', 'qwertyuiop', 2);
 
 
 --
@@ -399,6 +429,12 @@ INSERT INTO public.incidents_incident (id, incident_key, event_type, description
 --
 
 INSERT INTO public.events_eventlog (id, action, data, occurred_at, incident_key_id, service_key_id, user_id) VALUES (1, 'log', 'Some demo data about this Event', '2018-11-26 15:55:40+00', 1, '7bece19f-057e-4db8-b6a4-5275b6c916d9', 1);
+INSERT INTO public.events_eventlog (id, action, data, occurred_at, incident_key_id, service_key_id, user_id) VALUES (2, 'notified', 'The password is too similar to the email address.
+This password is too short. It must contain at least 8 characters.', '2018-11-26 21:53:09+00', 1, 'ebc956ad-5f0f-4385-8781-9290e4e06902', 2);
+INSERT INTO public.events_eventlog (id, action, data, occurred_at, incident_key_id, service_key_id, user_id) VALUES (3, 'resolve', 'The password is too similar to the email address.
+This password is too short. It must contain at least 8 characters.', '2018-11-26 21:53:30+00', 1, '7bece19f-057e-4db8-b6a4-5275b6c916d9', 1);
+INSERT INTO public.events_eventlog (id, action, data, occurred_at, incident_key_id, service_key_id, user_id) VALUES (4, 'unsilence_incident', 'The password is too similar to the email address.', '2018-11-26 22:53:50+00', 1, '7bece19f-057e-4db8-b6a4-5275b6c916d9', 2);
+INSERT INTO public.events_eventlog (id, action, data, occurred_at, incident_key_id, service_key_id, user_id) VALUES (5, 'unsilence_incident', 'GRANT ALL ON SCHEMA public TO PUBLIC;', '2018-11-25 06:00:00+00', 1, 'acaede8f-1f05-4d9b-a9e2-747d4140eabf', 1);
 
 
 --
@@ -423,6 +459,9 @@ INSERT INTO public.events_eventlog (id, action, data, occurred_at, incident_key_
 -- Data for Name: policies_schedulepolicy; Type: TABLE DATA; Schema: public; Owner: openduty
 --
 
+INSERT INTO public.policies_schedulepolicy (id, name, repeat_times) VALUES (1, 'Policy 1', 3);
+INSERT INTO public.policies_schedulepolicy (id, name, repeat_times) VALUES (2, 'Policy 2', 5);
+INSERT INTO public.policies_schedulepolicy (id, name, repeat_times) VALUES (3, 'Policy 3', 2);
 
 
 --
@@ -430,12 +469,16 @@ INSERT INTO public.events_eventlog (id, action, data, occurred_at, incident_key_
 --
 
 INSERT INTO public.schedule_calendar (id, name, slug) VALUES (1, 'Demo', 'demo-1');
+INSERT INTO public.schedule_calendar (id, name, slug) VALUES (2, 'Calendar 2', 'calendar-2');
 
 
 --
 -- Data for Name: policies_schedulepolicyrule; Type: TABLE DATA; Schema: public; Owner: openduty
 --
 
+INSERT INTO public.policies_schedulepolicyrule (id, "position", escalate_after, group_id_id, schedule_id, schedule_policy_id, user_id_id) VALUES (1, 1, 0, NULL, 1, 1, NULL);
+INSERT INTO public.policies_schedulepolicyrule (id, "position", escalate_after, group_id_id, schedule_id, schedule_policy_id, user_id_id) VALUES (2, 1, 0, NULL, NULL, 2, 1);
+INSERT INTO public.policies_schedulepolicyrule (id, "position", escalate_after, group_id_id, schedule_id, schedule_policy_id, user_id_id) VALUES (3, 1, 0, NULL, 1, 3, NULL);
 
 
 --
@@ -448,12 +491,17 @@ INSERT INTO public.schedule_calendar (id, name, slug) VALUES (1, 'Demo', 'demo-1
 -- Data for Name: schedule_rule; Type: TABLE DATA; Schema: public; Owner: openduty
 --
 
+INSERT INTO public.schedule_rule (id, name, description, frequency, params) VALUES (1, 'Schedule Rule 1', 'Demo content description about Schedule Rule 1', 'HOURLY', 'Demo content description about Schedule Rule 1');
+INSERT INTO public.schedule_rule (id, name, description, frequency, params) VALUES (2, 'Rule 2', 'description rule 2', 'MINUTELY', 'a = 2');
 
 
 --
 -- Data for Name: schedule_event; Type: TABLE DATA; Schema: public; Owner: openduty
 --
 
+INSERT INTO public.schedule_event (id, start, "end", title, description, created_on, updated_on, end_recurring_period, calendar_id, creator_id, rule_id, color_event) VALUES (1, '2018-11-26 20:27:28+00', '2018-11-27 20:27:35+00', 'Event 1', 'Demo content description about event 1', '2018-11-26 20:28:24.843332+00', '2018-11-26 20:28:24.843348+00', '2018-11-30 20:28:23+00', 1, 1, 1, '#000000');
+INSERT INTO public.schedule_event (id, start, "end", title, description, created_on, updated_on, end_recurring_period, calendar_id, creator_id, rule_id, color_event) VALUES (2, '2018-11-28 00:00:00+00', '2018-12-29 00:00:00+00', 'Event 2', '', '2018-11-26 21:12:02.045208+00', '2018-11-26 21:43:54.401932+00', '2018-12-09 21:11:28+00', 2, 1, 2, '#000000');
+INSERT INTO public.schedule_event (id, start, "end", title, description, created_on, updated_on, end_recurring_period, calendar_id, creator_id, rule_id, color_event) VALUES (3, '2018-11-27 00:00:00+00', '2018-11-28 00:00:00+00', 'demo, demo', 'wqertyu', '2018-11-26 21:33:54.074665+00', '2018-11-26 21:44:16.496715+00', '2018-11-30 00:00:00+00', 2, 1, 2, '#000000');
 
 
 --
@@ -493,14 +541,14 @@ INSERT INTO public.services_servicetokens (id, name, service_id_id, token_id_id)
 -- Name: accounts_userprofile_id_seq; Type: SEQUENCE SET; Schema: public; Owner: openduty
 --
 
-SELECT pg_catalog.setval('public.accounts_userprofile_id_seq', 1, true);
+SELECT pg_catalog.setval('public.accounts_userprofile_id_seq', 2, true);
 
 
 --
 -- Name: auth_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: openduty
 --
 
-SELECT pg_catalog.setval('public.auth_group_id_seq', 1, false);
+SELECT pg_catalog.setval('public.auth_group_id_seq', 1, true);
 
 
 --
@@ -521,14 +569,14 @@ SELECT pg_catalog.setval('public.auth_permission_id_seq', 132, true);
 -- Name: auth_user_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: openduty
 --
 
-SELECT pg_catalog.setval('public.auth_user_groups_id_seq', 1, false);
+SELECT pg_catalog.setval('public.auth_user_groups_id_seq', 2, true);
 
 
 --
 -- Name: auth_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: openduty
 --
 
-SELECT pg_catalog.setval('public.auth_user_id_seq', 1, true);
+SELECT pg_catalog.setval('public.auth_user_id_seq', 2, true);
 
 
 --
@@ -542,7 +590,7 @@ SELECT pg_catalog.setval('public.auth_user_user_permissions_id_seq', 1, false);
 -- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: openduty
 --
 
-SELECT pg_catalog.setval('public.django_admin_log_id_seq', 17, true);
+SELECT pg_catalog.setval('public.django_admin_log_id_seq', 38, true);
 
 
 --
@@ -591,21 +639,21 @@ SELECT pg_catalog.setval('public.django_migrations_id_seq', 47, true);
 -- Name: django_twilio_caller_id_seq; Type: SEQUENCE SET; Schema: public; Owner: openduty
 --
 
-SELECT pg_catalog.setval('public.django_twilio_caller_id_seq', 1, true);
+SELECT pg_catalog.setval('public.django_twilio_caller_id_seq', 2, true);
 
 
 --
 -- Name: django_twilio_credential_id_seq; Type: SEQUENCE SET; Schema: public; Owner: openduty
 --
 
-SELECT pg_catalog.setval('public.django_twilio_credential_id_seq', 1, true);
+SELECT pg_catalog.setval('public.django_twilio_credential_id_seq', 2, true);
 
 
 --
 -- Name: events_eventlog_id_seq; Type: SEQUENCE SET; Schema: public; Owner: openduty
 --
 
-SELECT pg_catalog.setval('public.events_eventlog_id_seq', 1, true);
+SELECT pg_catalog.setval('public.events_eventlog_id_seq', 5, true);
 
 
 --
@@ -640,21 +688,21 @@ SELECT pg_catalog.setval('public.openduty_usernotificationmethod_id_seq', 1, fal
 -- Name: policies_schedulepolicy_id_seq; Type: SEQUENCE SET; Schema: public; Owner: openduty
 --
 
-SELECT pg_catalog.setval('public.policies_schedulepolicy_id_seq', 1, false);
+SELECT pg_catalog.setval('public.policies_schedulepolicy_id_seq', 3, true);
 
 
 --
 -- Name: policies_schedulepolicyrule_id_seq; Type: SEQUENCE SET; Schema: public; Owner: openduty
 --
 
-SELECT pg_catalog.setval('public.policies_schedulepolicyrule_id_seq', 1, false);
+SELECT pg_catalog.setval('public.policies_schedulepolicyrule_id_seq', 3, true);
 
 
 --
 -- Name: schedule_calendar_id_seq; Type: SEQUENCE SET; Schema: public; Owner: openduty
 --
 
-SELECT pg_catalog.setval('public.schedule_calendar_id_seq', 1, true);
+SELECT pg_catalog.setval('public.schedule_calendar_id_seq', 2, true);
 
 
 --
@@ -668,7 +716,7 @@ SELECT pg_catalog.setval('public.schedule_calendarrelation_id_seq', 1, false);
 -- Name: schedule_event_id_seq; Type: SEQUENCE SET; Schema: public; Owner: openduty
 --
 
-SELECT pg_catalog.setval('public.schedule_event_id_seq', 1, false);
+SELECT pg_catalog.setval('public.schedule_event_id_seq', 3, true);
 
 
 --
@@ -689,7 +737,7 @@ SELECT pg_catalog.setval('public.schedule_occurrence_id_seq', 1, false);
 -- Name: schedule_rule_id_seq; Type: SEQUENCE SET; Schema: public; Owner: openduty
 --
 
-SELECT pg_catalog.setval('public.schedule_rule_id_seq', 1, false);
+SELECT pg_catalog.setval('public.schedule_rule_id_seq', 2, true);
 
 
 --
