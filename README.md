@@ -216,3 +216,32 @@ Load Demo data:
 pg_dump  -h 127.0.0.1 -U openduty -c --column-inserts openduty < dummydata.sql
 ```
 
+
+#### Django way to `Dump Database` and `Load Database`
+
+```bash
+python manage.py dumpdata --exclude=contenttypes --exclude=sessions -o demodata.json
+
+
+```
+
+**Usually `contenttypes` and `sessions` will cause you: **
+
+`IntegrityError: Problem installing fixture 'demodata.json': Could not load     contenttypes.ContentType(pk=2)`
+
+
+** so we exclude that data since it is not relevant for us anyway.
+
+
+
+
+Load Demo data:
+
+```bash
+# Make sure you have a clean DB and  everything migrated
+python manage.py fushall
+
+# Load data from demodata.json
+python manage.py loaddata demodata.json
+
+```
