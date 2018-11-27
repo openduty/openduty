@@ -22,6 +22,7 @@ def list(request):
     schedules = Calendar.objects.all()
     return TemplateResponse(request, 'schedule/list.html', {'schedules': schedules})
 
+
 @login_required()
 def delete(request, calendar_slug):
     try:
@@ -31,12 +32,14 @@ def delete(request, calendar_slug):
     except Calendar.DoesNotExist:
         raise Http404
 
+
 @login_required()
 def new(request):
     try:
         return TemplateResponse(request, 'schedule/edit.html', {})
     except Calendar.DoesNotExist:
         raise Http404
+
 
 @login_required()
 def details(request, calendar_slug,  periods=None):
@@ -77,15 +80,15 @@ def details(request, calendar_slug,  periods=None):
                                       'periods': period_objects,
                                       'calendar': sched,
                                       'weekday_names': weekday_names,
-                                      'currently_oncall_1' : oncall1,
-                                      'currently_oncall_2' : oncall2,
+                                      'currently_oncall_1': oncall1,
+                                      'currently_oncall_2': oncall2,
                                       'local_timezone': local_timezone,
                                       'current_date': timezone.now(),
-
-                                      'here':f"{request.get_full_path()}",
+                                      'here': f"{request.get_full_path()}",
                                   })
     except Calendar.DoesNotExist:
         raise Http404
+
 
 @login_required()
 def edit(request, calendar_slug):
@@ -94,6 +97,7 @@ def edit(request, calendar_slug):
         return TemplateResponse(request, 'schedule/edit.html', {'item': sched, 'edit': True})
     except Calendar.DoesNotExist:
         raise Http404
+
 
 @login_required()
 @require_http_methods(["POST"])

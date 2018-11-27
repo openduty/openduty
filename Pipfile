@@ -85,6 +85,7 @@ Faker = "==0.9.1"
 PyJWT = "==1.6.4"
 pyOpenSSL = "==18.0.0"
 PySocks = "==1.6.8"
+django-bower = "*"
 
 [dev-packages]
 

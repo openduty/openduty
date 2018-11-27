@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
-{% load scheduletags %}
-{% load staticfiles %}
-{% load static %}
+{% load static scheduletags staticfiles %}
 {% block content %}
     <script>
     function openDetail(node){
@@ -17,7 +15,6 @@
 
     $( document ).ready(function() {
         $("tr a").attr("href", "#")
-
     });
     </script>
     <link rel="stylesheet" href="{% static "schedule/css/schedule.css" %}" type="text/css" media="screen" />
@@ -29,13 +26,20 @@
       <div class="col-xs-12 col-md-8">Primary on-call engineer: {{ currently_oncall_1 }}</div>
       <div class="col-xs-12 col-md-8">Fallback on-call engineer: {{ currently_oncall_2 }}</div>
       <div class="col-xs-12 col-md-8">Current date: {{ current_date }} {{ local_timezone }} </div>
-      
-      <div class="col-xs-6 col-md-4 button"><a href="{% url 'openduty.events.create_or_edit_event' calendar.slug %}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> New Event</a></div>
+    {% with calendar_slug=calendar.slug periods_month=periods.month %}
+      <div class="col-xs-6 col-md-4 button">
+          <a href="{% url 'openduty.events.create_or_edit_event' calendar_slug %}" class="btn btn-default">
+              <span class="glyphicon glyphicon-plus"></span>
+              New Event
+          </a>
+      </div>
     </div>
     <div style="align-content: center">
         <div class="tablewrapper">
-          {% prevnext "calendar_details" calendar.slug periods.month "F Y" %}
+
+            {% prevnext "calendar_details" calendar periods_month "F Y" %}
         </div>
-        {% month_table calendar periods.month "regular" %}
+        {% month_table calendar periods_month "regular" %}
     </div>
+    {% endwith %}
 {% endblock %}
