@@ -61,7 +61,7 @@ INSTALLED_APPS = [
     "django_twilio",
     'schedule',
     'django_admin_generator',
-    'djangobower',
+    # 'djangobower',
 
     # Local apps
     'apps.accounts',
@@ -252,24 +252,24 @@ LOGGING = {
 }
 
 # Settings for django-bootstrap4
-BOOTSTRAP4 = {
-    "error_css_class": "bootstrap4-error",
-    "required_css_class": "bootstrap4-required",
-    "javascript_in_head": True,
-    "include_jquery": True,
-}
+# BOOTSTRAP4 = {
+#     "error_css_class": "bootstrap4-error",
+#     "required_css_class": "bootstrap4-required",
+#     "javascript_in_head": True,
+#     "include_jquery": True,
+# }
 
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'djangobower.finders.BowerFinder',
+    # 'djangobower.finders.BowerFinder',
 ]
 
-BOWER_INSTALLED_APPS = (
-    'jquery',
-    'jquery-ui',
-    'bootstrap',
-    'fullcalendar'
-)
-
-BOWER_COMPONENTS_ROOT = os.path.join(BASE_DIR, "static", "components")
+# BOWER_INSTALLED_APPS = (
+#     'jquery',
+#     'jquery-ui',
+#     'bootstrap',
+#     'fullcalendar'
+# )
+#
+# BOWER_COMPONENTS_ROOT = os.path.join(BASE_DIR, "static", "components")

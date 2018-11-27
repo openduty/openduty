@@ -55,7 +55,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 MIDDLEWARE += [
-    'apps.openduty.middleware.basicauthmiddleware.BasicAuthMiddleware',
+    # 'apps.openduty.middleware.basicauthmiddleware.BasicAuthMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
