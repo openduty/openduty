@@ -36,9 +36,8 @@ def get_current_events_users(calendar):
                         user.came_from_group = item.strip()
                         result.append(user)
                 else:
-                    print("\n\nITEM>STRIP: ", item.strip())
                     result.append(User.objects.get(username=item.strip()))
-                 #tache suivante apres add group calendar
+                 # tache suivante apres add group calendar
     return result
 
 

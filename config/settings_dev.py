@@ -6,6 +6,7 @@ TEMPLATE_DEBUG = True
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 import sys
+
 if 'test' not in sys.argv:
     DATABASES = {
         'default': {
@@ -54,7 +55,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 MIDDLEWARE += [
-    'apps.openduty.middleware.basicauthmiddleware.BasicAuthMiddleware',
+    # 'apps.openduty.middleware.basicauthmiddleware.BasicAuthMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 

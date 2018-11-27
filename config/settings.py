@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 import ldap
 from django_auth_ldap.config import LDAPSearch, PosixGroupType
+from django.conf.global_settings import STATICFILES_FINDERS
 import environ
 
 root = environ.Path(__file__) - 2 # three folder back (/a/b/c/ - 3 = /)
@@ -56,10 +57,11 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'django_tables2',
     'django_tables2_simplefilter',
-    'bootstrap3',
+    # 'bootstrap4',
     "django_twilio",
     'schedule',
     'django_admin_generator',
+    # 'djangobower',
 
     # Local apps
     'apps.accounts',
@@ -153,16 +155,10 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
 # STATIC_ROOT = os.path.join(BASE_DIR, "static")
-#
-# MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), os.path.join(BASE_DIR, 'static', 'static_schedule')]
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-
-STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder'
-)
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 
 BASE_URL = ""
@@ -219,7 +215,6 @@ if 'test' in sys.argv:
         }
     }
 
-
     PASSWORD_HASHERS = (
         'django.contrib.auth.hashers.MD5PasswordHasher',
         'django.contrib.auth.hashers.SHA1PasswordHasher',
@@ -257,9 +252,24 @@ LOGGING = {
 }
 
 # Settings for django-bootstrap4
-BOOTSTRAP4 = {
-    "error_css_class": "bootstrap4-error",
-    "required_css_class": "bootstrap4-required",
-    "javascript_in_head": True,
-    "include_jquery": True,
-}
+# BOOTSTRAP4 = {
+#     "error_css_class": "bootstrap4-error",
+#     "required_css_class": "bootstrap4-required",
+#     "javascript_in_head": True,
+#     "include_jquery": True,
+# }
+
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    # 'djangobower.finders.BowerFinder',
+]
+
+# BOWER_INSTALLED_APPS = (
+#     'jquery',
+#     'jquery-ui',
+#     'bootstrap',
+#     'fullcalendar'
+# )
+#
+# BOWER_COMPONENTS_ROOT = os.path.join(BASE_DIR, "static", "components")
