@@ -23,12 +23,11 @@ from apps.services.models import Service
 
 
 def get_current_events_users(calendar):
-    now = timezone.make_aware(datetime.now(), timezone.get_current_timezone())
+    now = timezone.now()
     result = []
     day = Day(calendar.events.all(), now)
     for o in day.get_occurrences():
         if o.start <= now <= o.end:
-            print(o.event.title.split(','))
             items = o.event.title.split(',')
             for item in items:
                 if Group.objects.filter(name=item.strip()).exists():
@@ -37,7 +36,6 @@ def get_current_events_users(calendar):
                         result.append(user)
                 else:
                     result.append(User.objects.get(username=item.strip()))
-                 # tache suivante apres add group calendar
     return result
 
 

@@ -10,9 +10,6 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-import ldap
-from django_auth_ldap.config import LDAPSearch, PosixGroupType
-from django.conf.global_settings import STATICFILES_FINDERS
 import environ
 
 root = environ.Path(__file__) - 2 # three folder back (/a/b/c/ - 3 = /)
@@ -57,11 +54,9 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'django_tables2',
     'django_tables2_simplefilter',
-    # 'bootstrap4',
     "django_twilio",
     'schedule',
     'django_admin_generator',
-    # 'djangobower',
 
     # Local apps
     'apps.accounts',
@@ -127,9 +122,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en-gb'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/London'
 
 USE_I18N = True
 
@@ -224,13 +219,6 @@ if 'test' in sys.argv:
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
-# BOOTSTRAP4_FOLDER
-
-BOOTSTRAP4_FOLDER = os.path.abspath(os.path.join(BASE_DIR, "..", "bootstrap4"))
-if BOOTSTRAP4_FOLDER not in sys.path:
-    sys.path.insert(0, BOOTSTRAP4_FOLDER)
-
-
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -251,25 +239,8 @@ LOGGING = {
     },
 }
 
-# Settings for django-bootstrap4
-# BOOTSTRAP4 = {
-#     "error_css_class": "bootstrap4-error",
-#     "required_css_class": "bootstrap4-required",
-#     "javascript_in_head": True,
-#     "include_jquery": True,
-# }
 
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    # 'djangobower.finders.BowerFinder',
 ]
-
-# BOWER_INSTALLED_APPS = (
-#     'jquery',
-#     'jquery-ui',
-#     'bootstrap',
-#     'fullcalendar'
-# )
-#
-# BOWER_COMPONENTS_ROOT = os.path.join(BASE_DIR, "static", "components")
