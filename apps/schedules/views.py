@@ -68,14 +68,11 @@ def details(request, calendar_slug,  periods=None):
         else:
             local_timezone = timezone.get_default_timezone()
         period_objects = {}
-        print("\n\nDATE: ", date)
-        print("\n\nPERIOD 1: ", periods[0].__name__.lower() == 'month')
         for period in periods:
             if period.__name__.lower() == 'year':
                 period_objects[period.__name__.lower()] = Year(event_list, date, None, local_timezone)
             else:
                 period_objects[period.__name__.lower()] = Month(event_list, date, None, None, local_timezone)
-        print("PERIOD OBJECTS: ", period_objects)
         template = 'schedules/detail.html'
         month = period_objects['month']
         shift = None

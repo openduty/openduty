@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
-{% load static scheduletags staticfiles %}
+{% load static scheduletags staticfiles i18n %}
 {% block static %}
     <link rel="stylesheet" href="{% static "schedule/css/schedule.css" %}" type="text/css" media="screen" />
     <link rel="stylesheet" href="{% static "schedule/css/jquery-ui.css" %}" type="text/css" media="screen" />
 {% endblock %}
 {% block content %}
-    {% with calendar_slug=calendar.slug periods_month=periods.month %}
+    {% with calendar_slug=calendar.slug %}
     <div class="row header">
       <div class="col-xs-12 col-md-8"><h2>On-Call Schedule: {{ calendar.name }}</h2></div>
       <div class="col-xs-12 col-md-8">Primary on-call engineer: {{ currently_oncall_1 }}</div>
@@ -23,7 +23,172 @@
         <div class="tablewrapper">
             {% prevnext "calendar_details" calendar month "F Y" %}
         </div>
-        {% month_table calendar periods_month "regular" %}
+{#        {% month_table calendar periods_month "regular" %}#}
+        <table class="table-condensed table-striped">
+            {% if day_names %}
+                <thead>
+                <th>&nbsp;</th>
+                {% for day_name in day_names %}
+                    <th>{{ day_name }}</th>
+                {% endfor %}
+                </thead>
+            {% endif %}
+            <tbody>
+            {% for week in month.get_weeks %}
+                <tr>
+                    <td>
+                        <a href="{% url "week_calendar" calendar_slug %}{% querystring_for_date week.start 3 %}">
+                            {{week.start|date:"W"}}
+                        </a>
+                    </td>
+                    {% for day in week.get_days %}
+
+{#                        {% day_cell calendar day month size %}#}
+
+                        {% ifnotequal day.start.month month.start.month %}
+                            <td class="muted"></td>
+                        {% else %}
+                            {% if day.has_occurrences %}
+                                <td class="btn-primary gradient">
+                            {% else %}
+                                <td>
+                            {% endif %}
+                                <a href="{% url "day_calendar" calendar_slug %}{% querystring_for_date day.start 3 %}">
+                                    <strong>{{day.start.day}}</strong>
+                                </a>
+                                {% ifnotequal size "small" %}
+                                    <div>
+                                        {% if day.has_occurrences %}{% for o in day.get_occurrence_partials %}
+                                            <button
+                                                type="button"
+                                                class="btn btn-primary btn-lg"
+                                                data-toggle="modal" data-target="#occurrenceModal">
+                                                <div class="starttime">
+                                                    {% ifequal o.class 0 %}{{ o.occurrence.start|time:"G:i" }}{% endifequal %}
+                                                    {% ifequal o.class 1 %}{{ o.occurrence.start|time:"G:i" }}{% endifequal %}
+                                                    {% ifequal o.class 2 %}(All day){% endifequal %}
+                                                    {% ifequal o.class 3 %}Ends at {{ o.occurrence.end|time:"G:i" }}{% endifequal %}
+                                                </div>
+                                                <div class="eventdesc">
+                                                    {% title o.occurrence %}
+                                                </div>
+                                            </div>
+                                            <div
+                                                class="modal fade"
+                                                id="occurrenceModal"
+                                                tabindex="-1"
+                                                role="dialog"
+                                                aria-labelledby="occurrence_detailsl">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button"
+                                                                class="close"
+                                                                data-dismiss="modal"
+                                                                aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                        <h4 class="modal-title" id="myModalLabel">
+                                                            {{ occurrence.title }}
+                                                        </h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        {% with occurrence=o.occurrence %}
+                                                        <div
+                                                            class="modal fade"
+                                                            id="{% hash_occurrence occurrence %}"
+                                                            tabindex="-1"
+                                                            role="dialog" >
+                                                            <div class="modal-dialog" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <button
+                                                                            type="button"
+                                                                            class="close"
+                                                                            data-dismiss="modal"
+                                                                            aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                        <h4 class="modal-title" id="myModalLabel">
+                                                                            {{occurrence.title}}
+                                                                        </h4>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <table class="table table-striped">
+                                                                            <tr>
+                                                                                <td class="left">{% trans "Starts" %}</td>
+                                                                                <td>
+                                                                                    {% blocktrans with occurrence.start|date:_("DATETIME_FORMAT") as start_date %}{{ start_date }}{% endblocktrans %}
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td class="left">{% trans "Ends" %}</td>
+                                                                                <td>
+                                                                                    {% blocktrans with occurrence.end|date:_("DATETIME_FORMAT") as end_date %}{{ end_date }}{% endblocktrans %}
+                                                                                </td>
+                                                                            </tr>
+                                                                            {% if occurrence.event.rule %}
+                                                                                {% if not occurrence.id %}
+                                                                                    <tr>
+                                                                                        <td class="left">
+                                                                                            {% trans "Reoccurs" %}
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            {{occurrence.event.rule}}
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                    {% if occurrence.event.end_recurring_period %}
+                                                                                        <tr>
+                                                                                            <td class="left">
+                                                                                                {% trans "Until" %}
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                {% blocktrans with occurrence.event.end_recurring_period|date:_("DATETIME_FORMAT") as end_date %}{{ end_date }}{% endblocktrans %}
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    {% endif %}
+                                                                                {% endif %}
+                                                                            {% endif %}
+                                                                        </table>
+                                                                        {% if occurrence.description %}
+                                                                            <h3>{% trans "Description" %}</h3>
+                                                                            <p>{{occurrence.description}}</p>
+                                                                        {% endif %}
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button
+                                                                            type="button"
+                                                                            class="btn btn-default"
+                                                                            data-dismiss="modal">
+                                                                            {% trans "Close" %}
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        {% endwith %}
+
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-default"
+                                                            data-dismiss="modal">
+                                                            Close
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}{% endif %}
+                                    </div>
+                                {% endifnotequal %}
+                            </td>
+                        {% endifnotequal %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
     {% endwith %}
 {% endblock %}
