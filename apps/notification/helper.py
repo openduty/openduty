@@ -1,5 +1,3 @@
-
-
 from datetime import datetime, timedelta
 from django.db import transaction
 from apps.notification.tasks import send_notifications
@@ -88,7 +86,7 @@ class NotificationHelper(object):
         return notifications
 
     @staticmethod
-    def generate_notifications_for_user(incident, user, delay=None, preparedmsg = None):
+    def generate_notifications_for_user(incident, user, delay=None, preparedmsg=None):
 
         now = timezone.make_aware(datetime.now(), timezone.get_current_timezone())
         current_time = now
