@@ -76,14 +76,13 @@ STATICFILES_DIRS = (
 # Getting started:
 ```
 sudo easy_install pip
-sudo pip install virtualenv
-virtualenv env --python python3.6
-. env/bin/activate
-pip install -r requirements.txt
-export DJANGO_SETTINGS_MODULE=openduty.settings_dev
-python manage.py syncdb
+sudo pip install pipenv
+pipenv install
+pipenv shell
+export DJANGO_SETTINGS_MODULE=config.settings_dev
+docker-compose up
 python manage.py migrate
-python manage.py collectstatic
+python manage.py createsuperuser
 python manage.py runserver
 ```
 
@@ -152,9 +151,6 @@ sudo systemctl enable gunicorn
 ```
 ./manage.py migrate
 ```
-
-# Default login:
-root/toor
 
 # Celery worker:
 ```
