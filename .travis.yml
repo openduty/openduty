@@ -22,5 +22,5 @@ script: "pytest"
 
 after_success:
   - coverage report -m
-  - coveralls
+  - COVERALLS_REPO_TOKEN=e68nhDhgfatT74bDoMbKrH8cMba9WXqMH DJANGO_SETTINGS_MODULE=config.settings_dev  coveralls
   - codecov
