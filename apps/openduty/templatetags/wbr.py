@@ -1,4 +1,3 @@
-import string
 from django.template.defaultfilters import stringfilter, register
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
@@ -12,11 +11,11 @@ def wbr(value, what, autoescape=None):
     else:
         esc = lambda x: x
 
-    parts = string.split(value, what)
+    parts = str(value).split(what)
 
     safe_parts = map(esc, parts)
 
-    result = string.join(safe_parts, what + '<wbr/>')
+    result = f'{what}<wbr/>'.join(safe_parts)
 
     return mark_safe(result)
 

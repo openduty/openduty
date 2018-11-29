@@ -198,8 +198,38 @@ MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + (
 
 # DEMO DATA
 
+1. Migrate
+2. `flush` current db content
+3. Repopulate `db`
 
-Having PSQL Docker container running, you can backup demo sql data:
+
+
+```bash
+python manage.py install_demo
+
+```
+
+
+```bash
+Running Migrating on DB.....
+Operations to perform:
+  Apply all migrations: accounts, admin, auth, contenttypes, django_celery_beat, django_twilio, events, incidents, notification, policies, schedule, schedules, services, sessions
+Running migrations:
+  No migrations to apply.
+Preparing to clear the db.....
+All is clean, installing new data...
+Installed 52 object(s) from 1 fixture(s)
+Successfully installed dummy environment
+
+```
+
+
+
+----
+
+### Manual ways
+
+Having `PSQL Docker container` running, you can backup demo sql data:
 
 ```bash
 pg_dump -h 127.0.0.1 -U openduty --data-only --column-inserts openduty > dummydata.sql

@@ -3,7 +3,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
 from apps.accounts.models import Token
-from apps.schedules.models import SchedulePolicy
+from apps.policies.models import SchedulePolicy
 
 
 @python_2_unicode_compatible
