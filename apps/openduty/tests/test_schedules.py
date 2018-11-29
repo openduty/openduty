@@ -23,7 +23,6 @@ class TestSchedulesViews(LoggedInTestCase):
         except Exception:
             pass
 
-    @pytest.mark.skip(reason="TO Be Fixed")
     def test_schedule_detail_view_works_with_query_args(self):
         assert self.cal.id
         response = self.client.get(

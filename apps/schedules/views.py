@@ -1,5 +1,5 @@
 import pytz
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.contrib.auth.decorators import login_required
@@ -13,14 +13,16 @@ from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from apps.incidents import escalation_helper
 from schedule.models import Calendar
+from schedule.periods import Month, Year
 from schedule.utils import coerce_date_dict
-from schedule.periods import weekday_names
+from schedule.periods import weekday_abbrs, weekday_names
 
 
 @login_required()
 def list(request):
     schedules = Calendar.objects.all()
-    return TemplateResponse(request, 'schedule/list.html', {'schedules': schedules})
+    return TemplateResponse(request, 'schedules/list.html', {'schedules': schedules})
+
 
 @login_required()
 def delete(request, calendar_slug):
@@ -31,18 +33,20 @@ def delete(request, calendar_slug):
     except Calendar.DoesNotExist:
         raise Http404
 
+
 @login_required()
 def new(request):
     try:
-        return TemplateResponse(request, 'schedule/edit.html', {})
+        return TemplateResponse(request, 'schedules/edit.html', {})
     except Calendar.DoesNotExist:
         raise Http404
+
 
 @login_required()
 def details(request, calendar_slug,  periods=None):
     try:
-        sched = get_object_or_404(Calendar, slug=calendar_slug)
-        date = coerce_date_dict(request.GET)
+        schedule = get_object_or_404(Calendar, slug=calendar_slug)
+        date = coerce_date_dict(request.GET) or None
         if date:
             try:
                 date = datetime(**date)
@@ -50,13 +54,11 @@ def details(request, calendar_slug,  periods=None):
                 raise Http404
         else:
             date = timezone.now()
-        event_list = sched.event_set.all()
-        currently_oncall_users = escalation_helper.get_current_events_users(sched)
+        event_list = schedule.event_set.all()
+        currently_oncall_users = escalation_helper.get_current_events_users(schedule)
         if len(currently_oncall_users) >= 2:
-            oncall1 = "%s, Phone Number:%s" % (currently_oncall_users[0].username,
-                                               currently_oncall_users[0].profile.phone_number)
-            oncall2 = "%s,  Phone Number:%s" % (currently_oncall_users[1].username,
-                                                currently_oncall_users[1].profile.phone_number)
+            oncall1 = f"{currently_oncall_users[0].username}, Phone Number: {currently_oncall_users[0].profile.phone_number}"
+            oncall2 = f"{currently_oncall_users[1].username}, Phone Number: {currently_oncall_users[1].profile.phone_number}"
         else:
             oncall1 = "Nobody"
             oncall2 = "Nobody"
@@ -66,34 +68,56 @@ def details(request, calendar_slug,  periods=None):
         else:
             local_timezone = timezone.get_default_timezone()
         period_objects = {}
+        print("\n\nDATE: ", date)
+        print("\n\nPERIOD 1: ", periods[0].__name__.lower() == 'month')
         for period in periods:
             if period.__name__.lower() == 'year':
-                period_objects[period.__name__.lower()] = period(event_list, date, None, local_timezone)
+                period_objects[period.__name__.lower()] = Year(event_list, date, None, local_timezone)
             else:
-                period_objects[period.__name__.lower()] = period(event_list, date, None, None, local_timezone)
-        return render_to_response('schedule/detail.html',
-                                  {
-                                      'date': date,
-                                      'periods': period_objects,
-                                      'calendar': sched,
-                                      'weekday_names': weekday_names,
-                                      'currently_oncall_1' : oncall1,
-                                      'currently_oncall_2' : oncall2,
-                                      'local_timezone': local_timezone,
-                                      'current_date': timezone.now(),
+                period_objects[period.__name__.lower()] = Month(event_list, date, None, None, local_timezone)
+        print("PERIOD OBJECTS: ", period_objects)
+        template = 'schedules/detail.html'
+        month = period_objects['month']
+        shift = None
+        if shift:
+            if shift == -1:
+                month = month.prev()
+            if shift == 1:
+                month = next(month)
+        size = 'regular'
+        if size == 'small':
+            day_names = weekday_abbrs
+        else:
+            day_names = weekday_names
 
-                                      'here':f"{request.get_full_path()}",
-                                  })
+        context = {
+            'day_names': day_names,
+            'month': month,
+            'size': size,
+
+            'date': date,
+            'periods': period_objects,
+            'calendar': schedule,
+            'weekday_names': weekday_names,
+            'currently_oncall_1': oncall1,
+            'currently_oncall_2': oncall2,
+            'local_timezone': local_timezone,
+            'current_date': timezone.now(),
+            'here': f"{request.get_full_path()}",
+        }
+        return render(request, template, context)
     except Calendar.DoesNotExist:
         raise Http404
+
 
 @login_required()
 def edit(request, calendar_slug):
     try:
         sched = get_object_or_404(Calendar, slug=calendar_slug)
-        return TemplateResponse(request, 'schedule/edit.html', {'item': sched, 'edit': True})
+        return TemplateResponse(request, 'schedules/edit.html', {'item': sched, 'edit': True})
     except Calendar.DoesNotExist:
         raise Http404
+
 
 @login_required()
 @require_http_methods(["POST"])

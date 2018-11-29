@@ -11,9 +11,10 @@
 Has been tested with Nagios, works well for us. Any Pagerduty Notifier using the Pagerduty API should work without a problem.
 [Icinga2 config](https://github.com/deathowl/OpenDuty-Icinga2) for openduty integration
 
-#Notifications
+# Notifications
 XMPP, email, SMS, Phone(Thanks Twilio for being awesome!), Push notifications(thanks Pushover, Prowl as well!)and Slack, HipChat, Rocket.chat are supported at the moment.
-#Current status
+
+# Current status
 Openduty is in Beta status, it can be considered stable at the moment, however major structural changes can appear anytime (not affecting the API, or the Notifier structure)
 
 # Contribution guidelines
@@ -75,14 +76,13 @@ STATICFILES_DIRS = (
 # Getting started:
 ```
 sudo easy_install pip
-sudo pip install virtualenv
-virtualenv env --python python3.6
-. env/bin/activate
-pip install -r requirements.txt
-export DJANGO_SETTINGS_MODULE=openduty.settings_dev
-python manage.py syncdb
+sudo pip install pipenv
+pipenv install
+pipenv shell
+export DJANGO_SETTINGS_MODULE=config.settings_dev
+docker-compose up
 python manage.py migrate
-python manage.py collectstatic
+python manage.py createsuperuser
 python manage.py runserver
 ```
 
@@ -152,9 +152,6 @@ sudo systemctl enable gunicorn
 ./manage.py migrate
 ```
 
-# Default login:
-root/toor
-
 # Celery worker:
 ```
 celery -A openduty worker -l info
@@ -193,5 +190,85 @@ AUTHENTICATION_BACKENDS = (
 MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + (
   'openduty.middleware.basicauthmiddleware.BasicAuthMiddleware',
 )
+
+```
+
+
+---
+
+# DEMO DATA
+
+1. Migrate
+2. `flush` current db content
+3. Repopulate `db`
+
+
+
+```bash
+python manage.py install_demo
+
+```
+
+
+```bash
+Running Migrating on DB.....
+Operations to perform:
+  Apply all migrations: accounts, admin, auth, contenttypes, django_celery_beat, django_twilio, events, incidents, notification, policies, schedule, schedules, services, sessions
+Running migrations:
+  No migrations to apply.
+Preparing to clear the db.....
+All is clean, installing new data...
+Installed 52 object(s) from 1 fixture(s)
+Successfully installed dummy environment
+
+```
+
+
+
+----
+
+### Manual ways
+
+Having `PSQL Docker container` running, you can backup demo sql data:
+
+```bash
+pg_dump -h 127.0.0.1 -U openduty --data-only --column-inserts openduty > dummydata.sql
+
+```
+
+
+Load Demo data:
+
+```bash
+pg_dump  -h 127.0.0.1 -U openduty -c --column-inserts openduty < dummydata.sql
+```
+
+
+#### Django way to `Dump Database` and `Load Database`
+
+```bash
+python manage.py dumpdata --exclude=contenttypes --exclude=sessions -o demodata.json
+
+
+```
+
+**Usually `contenttypes` and `sessions` will cause you: **
+
+`IntegrityError: Problem installing fixture 'demodata.json': Could not load     contenttypes.ContentType(pk=2)`
+
+
+** so we exclude that data since it is not relevant for us anyway.
+
+
+
+
+Load Demo data:
+
+```bash
+# Make sure you have a clean DB and  everything migrated
+python manage.py fushall
+
+# Load data from demodata.json
+python manage.py loaddata demodata.json
 
 ```

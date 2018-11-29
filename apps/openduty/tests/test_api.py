@@ -1,7 +1,7 @@
 from django.utils import timezone
 from apps.services.models import Service, ServiceTokens
 from apps.accounts.models import Token
-from apps.schedules.models import SchedulePolicy
+from apps.policies.models import SchedulePolicy
 from apps.incidents.models import Incident
 from rest_framework.test import APIClient
 from .shared import BaseTestCase, random_string

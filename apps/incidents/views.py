@@ -218,10 +218,12 @@ class ServicesByMe(FilteredSingleTableView):
     template_name = 'incidents/list2.html'
     table_pagination = {"per_page": 10}
 
-    def get_queryset(self):
+    def get_queryset(self, *args, **kwargs):
         user = self.request.user
+        print("\n\n", user, "\n\n\n")
         q = super(ServicesByMe, self).get_queryset()
         services = services_where_user_is_on_call(user)
+
         incidents = q.filter(service_key__in=services)
         incidents = incidents.order_by("-occurred_at")
         return incidents

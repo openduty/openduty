@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static scheduletags staticfiles %}
+{% block static %}
+    <link rel="stylesheet" href="{% static "schedule/css/schedule.css" %}" type="text/css" media="screen" />
+    <link rel="stylesheet" href="{% static "schedule/css/jquery-ui.css" %}" type="text/css" media="screen" />
+{% endblock %}
+{% block content %}
+    {% with calendar_slug=calendar.slug periods_month=periods.month %}
+    <div class="row header">
+      <div class="col-xs-12 col-md-8"><h2>On-Call Schedule: {{ calendar.name }}</h2></div>
+      <div class="col-xs-12 col-md-8">Primary on-call engineer: {{ currently_oncall_1 }}</div>
+      <div class="col-xs-12 col-md-8">Fallback on-call engineer: {{ currently_oncall_2 }}</div>
+      <div class="col-xs-12 col-md-8">Current date: {{ current_date }} {{ local_timezone }} </div>
+
+      <div class="col-xs-6 col-md-4 button">
+          <a href="{% url 'openduty.events.create_or_edit_event' calendar_slug %}" class="btn btn-default">
+              <span class="glyphicon glyphicon-plus"></span>
+              New Event
+          </a>
+      </div>
+    </div>
+    <div >
+        <div class="tablewrapper">
+            {% prevnext "calendar_details" calendar month "F Y" %}
+        </div>
+        {% month_table calendar periods_month "regular" %}
+    </div>
+    {% endwith %}
+{% endblock %}

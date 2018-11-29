@@ -1,8 +1,11 @@
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip()
-})
+
 
 $(document).ready(function() {
+    var toggleTooltip = $('[data-toggle="tooltip"]');
+    if  (toggleTooltip != null) {
+        toggleTooltip.attr('tooltip');
+    }
+
     $('.table-selectable tr').click(function(event) {
         if (event.target.type !== 'checkbox') {
             $(':checkbox', this).trigger('click');
@@ -13,7 +16,7 @@ $(document).ready(function() {
     });
     $('.bulk-op').on('click', function(e){
         $('#no-more-tables tbody input[type=checkbox]:checked').each(function() {
-           var value = $(this).val()
+           var value = $(this).val();
            var input = $("<input>")
                .attr("type", "hidden")
                .attr("name", "selection").val(value);

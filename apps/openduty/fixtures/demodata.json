@@ -1,0 +1,599 @@
+[
+  {
+    "model": "auth.group",
+    "pk": 1,
+    "fields": {
+      "name": "Demo Group",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$120000$IvDAiB0mm2xj$Z1v52Zwhfu5tIatYprsC2IS+tIL0Y1UmDSqSkevdLpg=",
+      "last_login": "2018-11-29T15:25:54.138Z",
+      "is_superuser": true,
+      "username": "demo",
+      "first_name": "Demo",
+      "last_name": "User",
+      "email": "demo@openduty.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2018-11-26T15:46:53Z",
+      "groups": [
+        1
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$120000$p7K5dTgl8OuX$6OMNa2+HrZy1geEkCjNMbP3Lj3WdaVPOEV87Bgbld80=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "demo2",
+      "first_name": "Demo2",
+      "last_name": "User2",
+      "email": "demo2@openduty.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2018-11-26T21:47:32Z",
+      "groups": [
+        1
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "django_twilio.caller",
+    "pk": 1,
+    "fields": {
+      "blacklisted": false,
+      "phone_number": "+41764744645"
+    }
+  },
+  {
+    "model": "django_twilio.caller",
+    "pk": 2,
+    "fields": {
+      "blacklisted": false,
+      "phone_number": "+40764744645"
+    }
+  },
+  {
+    "model": "django_twilio.credential",
+    "pk": 1,
+    "fields": {
+      "name": "demo",
+      "user": 1,
+      "account_sid": "qwertyuiop",
+      "auth_token": "qwertyuiop"
+    }
+  },
+  {
+    "model": "django_twilio.credential",
+    "pk": 2,
+    "fields": {
+      "name": "demo2",
+      "user": 2,
+      "account_sid": "qwertyuiop",
+      "auth_token": "qwertyuiop"
+    }
+  },
+  {
+    "model": "schedule.calendar",
+    "pk": 1,
+    "fields": {
+      "name": "Calendar Demo",
+      "slug": "calendar-demo-1"
+    }
+  },
+  {
+    "model": "schedule.rule",
+    "pk": 1,
+    "fields": {
+      "name": "Daily",
+      "description": "Daily",
+      "frequency": "DAILY",
+      "params": ""
+    }
+  },
+  {
+    "model": "schedule.rule",
+    "pk": 2,
+    "fields": {
+      "name": "Weekly",
+      "description": "Weekly",
+      "frequency": "WEEKLY",
+      "params": ""
+    }
+  },
+  {
+    "model": "schedule.rule",
+    "pk": 3,
+    "fields": {
+      "name": "Monthly",
+      "description": "Monthly",
+      "frequency": "MONTHLY",
+      "params": ""
+    }
+  },
+  {
+    "model": "schedule.event",
+    "pk": 4,
+    "fields": {
+      "start": "2018-11-30T00:00:00Z",
+      "end": "2018-11-30T18:00:00Z",
+      "title": "demo,demo",
+      "description": "test demo",
+      "creator": 1,
+      "created_on": "2018-11-26T21:56:40.174Z",
+      "updated_on": "2018-11-28T19:31:20.150Z",
+      "rule": null,
+      "end_recurring_period": null,
+      "calendar": 1,
+      "color_event": "#000000"
+    }
+  },
+  {
+    "model": "schedule.event",
+    "pk": 5,
+    "fields": {
+      "start": "2018-11-28T06:00:00Z",
+      "end": "2018-11-29T00:00:00Z",
+      "title": "demo,demo",
+      "description": "test",
+      "creator": 1,
+      "created_on": "2018-11-27T16:14:26.800Z",
+      "updated_on": "2018-11-28T19:31:43.049Z",
+      "rule": null,
+      "end_recurring_period": null,
+      "calendar": 1,
+      "color_event": "#000000"
+    }
+  },
+  {
+    "model": "schedule.event",
+    "pk": 6,
+    "fields": {
+      "start": "2018-11-17T00:00:00Z",
+      "end": "2018-11-28T06:00:00Z",
+      "title": "demo2,demo2",
+      "description": "test demo2",
+      "creator": 2,
+      "created_on": "2018-11-27T16:19:34.312Z",
+      "updated_on": "2018-11-28T18:23:24.090Z",
+      "rule": null,
+      "end_recurring_period": null,
+      "calendar": 1,
+      "color_event": "#000000"
+    }
+  },
+  {
+    "model": "schedule.event",
+    "pk": 7,
+    "fields": {
+      "start": "2018-11-01T00:00:00Z",
+      "end": "2018-11-17T00:00:00Z",
+      "title": "demo,demo",
+      "description": "testing",
+      "creator": 1,
+      "created_on": "2018-11-27T19:20:51.359Z",
+      "updated_on": "2018-11-28T18:14:43.306Z",
+      "rule": null,
+      "end_recurring_period": null,
+      "calendar": 1,
+      "color_event": "#000000"
+    }
+  },
+  {
+    "model": "accounts.token",
+    "pk": "0aa8fe734605e984500df39f756fc925af1b46e4",
+    "fields": {
+      "created": "2018-11-26T16:18:31.396Z"
+    }
+  },
+  {
+    "model": "accounts.token",
+    "pk": "4bb275bcb4ca991da2dff78e548278c890ed6f96",
+    "fields": {
+      "created": "2018-11-26T16:18:12.910Z"
+    }
+  },
+  {
+    "model": "accounts.token",
+    "pk": "cda95a1a396ddf028d040355a534e746e980ce6d",
+    "fields": {
+      "created": "2018-11-26T16:18:28.888Z"
+    }
+  },
+  {
+    "model": "accounts.token",
+    "pk": "qwertyuiop",
+    "fields": {
+      "created": "2018-11-26T15:49:59.102Z"
+    }
+  },
+  {
+    "model": "accounts.userprofile",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "phone_number": "+41764744645",
+      "pushover_user_key": "qwertyuiop",
+      "pushover_app_key": "qwertyuiop",
+      "slack_room_name": "qwertyuiop",
+      "prowl_api_key": "qwertyuiop",
+      "prowl_application": "qwertyuiop",
+      "prowl_url": "qwertyuiop",
+      "rocket_webhook_url": "qwertyuiop",
+      "hipchat_room_name": "qwertyuiop",
+      "hipchat_room_url": "qwertyuiop",
+      "send_resolve_enabled": true
+    }
+  },
+  {
+    "model": "accounts.userprofile",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "phone_number": "+44764744645",
+      "pushover_user_key": "qwertyuiop",
+      "pushover_app_key": "qwertyuiop",
+      "slack_room_name": "qwertyuiop",
+      "prowl_api_key": "qwertyuiop",
+      "prowl_application": "qwertyuiop",
+      "prowl_url": "qwertyuiop",
+      "rocket_webhook_url": "qwertyuiop",
+      "hipchat_room_name": "qwertyuiop",
+      "hipchat_room_url": "qwertyuiop",
+      "send_resolve_enabled": true
+    }
+  },
+  {
+    "model": "notification.usernotificationmethod",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "position": 1,
+      "method": "email"
+    }
+  },
+  {
+    "model": "notification.usernotificationmethod",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "position": 1,
+      "method": "slack"
+    }
+  },
+  {
+    "model": "policies.schedulepolicy",
+    "pk": 1,
+    "fields": {
+      "name": "Policy 1",
+      "repeat_times": 3
+    }
+  },
+  {
+    "model": "policies.schedulepolicy",
+    "pk": 2,
+    "fields": {
+      "name": "Policy 2",
+      "repeat_times": 5
+    }
+  },
+  {
+    "model": "policies.schedulepolicy",
+    "pk": 3,
+    "fields": {
+      "name": "Policy 3",
+      "repeat_times": 2
+    }
+  },
+  {
+    "model": "policies.schedulepolicy",
+    "pk": 4,
+    "fields": {
+      "name": "Escalation policy 1",
+      "repeat_times": 0
+    }
+  },
+  {
+    "model": "policies.schedulepolicyrule",
+    "pk": 2,
+    "fields": {
+      "schedule_policy": 2,
+      "position": 1,
+      "user_id": 1,
+      "group_id": null,
+      "schedule": null,
+      "escalate_after": 0
+    }
+  },
+  {
+    "model": "policies.schedulepolicyrule",
+    "pk": 3,
+    "fields": {
+      "schedule_policy": 3,
+      "position": 1,
+      "user_id": null,
+      "group_id": null,
+      "schedule": 1,
+      "escalate_after": 0
+    }
+  },
+  {
+    "model": "policies.schedulepolicyrule",
+    "pk": 4,
+    "fields": {
+      "schedule_policy": 1,
+      "position": 1,
+      "user_id": null,
+      "group_id": null,
+      "schedule": 1,
+      "escalate_after": 0
+    }
+  },
+  {
+    "model": "policies.schedulepolicyrule",
+    "pk": 5,
+    "fields": {
+      "schedule_policy": 1,
+      "position": 2,
+      "user_id": 2,
+      "group_id": null,
+      "schedule": null,
+      "escalate_after": 0
+    }
+  },
+  {
+    "model": "policies.schedulepolicyrule",
+    "pk": 6,
+    "fields": {
+      "schedule_policy": 1,
+      "position": 3,
+      "user_id": 1,
+      "group_id": null,
+      "schedule": null,
+      "escalate_after": 0
+    }
+  },
+  {
+    "model": "services.service",
+    "pk": "2b1e704d-616d-48a6-bfbf-a73382c69deb",
+    "fields": {
+      "name": "Demo Service key 3",
+      "retry": 3,
+      "policy": 3,
+      "escalate_after": 4,
+      "notifications_disabled": false,
+      "send_resolve_enabled": true
+    }
+  },
+  {
+    "model": "services.service",
+    "pk": "7bece19f-057e-4db8-b6a4-5275b6c916d9",
+    "fields": {
+      "name": "Demo Service 2",
+      "retry": 3,
+      "policy": 2,
+      "escalate_after": 3,
+      "notifications_disabled": false,
+      "send_resolve_enabled": true
+    }
+  },
+  {
+    "model": "services.service",
+    "pk": "acaede8f-1f05-4d9b-a9e2-747d4140eabf",
+    "fields": {
+      "name": "Demo Service key 1",
+      "retry": 3,
+      "policy": 2,
+      "escalate_after": 2,
+      "notifications_disabled": false,
+      "send_resolve_enabled": true
+    }
+  },
+  {
+    "model": "services.service",
+    "pk": "ff99dd87-2036-4966-97ed-c47a62f5b929",
+    "fields": {
+      "name": "Service New 1",
+      "retry": 1,
+      "policy": 4,
+      "escalate_after": 1,
+      "notifications_disabled": false,
+      "send_resolve_enabled": false
+    }
+  },
+  {
+    "model": "services.servicetokens",
+    "pk": 2,
+    "fields": {
+      "name": "",
+      "service_id": "acaede8f-1f05-4d9b-a9e2-747d4140eabf",
+      "token_id": "cda95a1a396ddf028d040355a534e746e980ce6d"
+    }
+  },
+  {
+    "model": "services.servicetokens",
+    "pk": 3,
+    "fields": {
+      "name": "",
+      "service_id": "acaede8f-1f05-4d9b-a9e2-747d4140eabf",
+      "token_id": "0aa8fe734605e984500df39f756fc925af1b46e4"
+    }
+  },
+  {
+    "model": "incidents.incident",
+    "pk": 2,
+    "fields": {
+      "service_key": "ff99dd87-2036-4966-97ed-c47a62f5b929",
+      "incident_key": "qwerty1",
+      "event_type": "acknowledge",
+      "description": "Demo Description Incident 1",
+      "details": "Lorem ipsum dolorem Demo Description Incident 1 Lorem ipsum dolorem Demo Description Incident 1 Lorem ipsum dolorem Demo Description Incident 1 Lorem ipsum dolorem Demo Description Incident 1 Lorem ipsum dolorem Demo Description Incident 1 Lorem ipsum dolorem Demo Description Incident 1 Lorem ipsum dolorem Demo Description Incident 1",
+      "occurred_at": "2018-11-29T15:38:21Z",
+      "service_to_escalate_to": "ff99dd87-2036-4966-97ed-c47a62f5b929"
+    }
+  },
+  {
+    "model": "incidents.incident",
+    "pk": 3,
+    "fields": {
+      "service_key": "acaede8f-1f05-4d9b-a9e2-747d4140eabf",
+      "incident_key": "qwerty1",
+      "event_type": "resolve",
+      "description": "Description Incident 2",
+      "details": "Lorem ipsum dolorem Demo Description Incident 2 Lorem ipsum dolorem Demo Description Incident 2 Lorem ipsum dolorem Demo Description Incident 2 Lorem ipsum dolorem Demo Description Incident 2 Lorem ipsum dolorem Demo Description Incident.\r\n 2 Lorem ipsum dolorem Demo Description Incident 2 Lorem ipsum dolorem Demo Description Incident 2 Lorem ipsum dolorem Demo Description Incident 2.",
+      "occurred_at": "2018-11-27T00:00:00Z",
+      "service_to_escalate_to": "ff99dd87-2036-4966-97ed-c47a62f5b929"
+    }
+  },
+  {
+    "model": "incidents.incident",
+    "pk": 4,
+    "fields": {
+      "service_key": "7bece19f-057e-4db8-b6a4-5275b6c916d9",
+      "incident_key": "qwerty1",
+      "event_type": "trigger",
+      "description": "Incident logged 1",
+      "details": "[29/Nov/2018 15:41:28] \"GET /static/css/bootstrap.min.css HTTP/1.1\" 200 99961\r\n[29/Nov/2018 15:41:28] \"GET /robots.txt HTTP/1.1\" 404 4575\r\n[29/Nov/2018 15:41:28] \"GET /static/fonts/glyphicons-halflings-regular.woff HTTP/1.1\" 200 23320\r\n[29/Nov/2018 15:41:29] \"POST /incidents/forward_incident HTTP/1.1\" 302 0\r\n[29/Nov/2018 15:41:29] \"GET /incidents/details/3 HTTP/1.1\" 200 9521\r\n[29/Nov/2018 15:41:29] \"GET /static/js/jquery.plugin.min.js HTTP/1.1\" 200 3195\r\n[29/Nov/2018 15:41:29] \"GET /static/css/base.css HTTP/1.1\" 200 370\r\n[29/Nov/2018 15:41:29] \"GET /static/js/bootstrap.min.js HTTP/1.1\" 200 29110\r\n[29/Nov/2018 15:41:29] \"GET /static/js/jquery.min.js HTTP/1.1\" 200 83615\r\n[29/Nov/2018 15:41:29] \"GET /static/js/basic.js HTTP/1.1\" 200 790\r\n[29/Nov/2018 15:41:29] \"GET /static/css/bootstrap.min.css HTTP/1.1\" 200 99961\r\n[29/Nov/2018 15:41:29] \"GET /static/fonts/glyphicons-halflings-regular.woff HTTP/1.1\" 200 23320\r\n[29/Nov/2018 15:41:34] \"GET /admin/incidents/incident/add/ HTTP/1.1\" 200 9332\r\n[29/Nov/2018 15:41:34] \"GET /admin/jsi18n/ HTTP/1.1\" 200 5737",
+      "occurred_at": "2018-11-22T15:42:20Z",
+      "service_to_escalate_to": null
+    }
+  },
+  {
+    "model": "incidents.incident",
+    "pk": 5,
+    "fields": {
+      "service_key": "2b1e704d-616d-48a6-bfbf-a73382c69deb",
+      "incident_key": "qwerty1",
+      "event_type": "unacknowledge",
+      "description": "Incident 5",
+      "details": "ACTIONS = (('acknowledge', 'acknowledge'),\r\n               ('unacknowledge', 'unacknowledge'),\r\n               ('resolve', 'resolve'),\r\n               ('silence_service', 'silence service'),\r\n               ('unsilence_service', 'unsilence service'),\r\n               ('silence_incident', 'silence incident'),\r\n               ('unsilence_incident', 'unsilence incident'),\r\n               ('forward', 'forward'),\r\n               ('log', 'log'),\r\n               ('notified','notified'),\r\n               ('notification_failed', 'notification failed'),\r\n               ('trigger', 'trigger'))",
+      "occurred_at": "2018-11-19T15:43:11Z",
+      "service_to_escalate_to": "7bece19f-057e-4db8-b6a4-5275b6c916d9"
+    }
+  },
+  {
+    "model": "events.eventlog",
+    "pk": 6,
+    "fields": {
+      "user": 1,
+      "incident_key": 2,
+      "action": "forward",
+      "service_key": "ff99dd87-2036-4966-97ed-c47a62f5b929",
+      "data": "demo  changed assignee of incident :  qwerty1  to demo",
+      "occurred_at": "2018-11-29T15:41:05.198Z"
+    }
+  },
+  {
+    "model": "events.eventlog",
+    "pk": 7,
+    "fields": {
+      "user": 1,
+      "incident_key": 2,
+      "action": "forward",
+      "service_key": "ff99dd87-2036-4966-97ed-c47a62f5b929",
+      "data": "demo  changed assignee of incident :  qwerty1  to demo",
+      "occurred_at": "2018-11-29T15:41:11.080Z"
+    }
+  },
+  {
+    "model": "events.eventlog",
+    "pk": 8,
+    "fields": {
+      "user": 1,
+      "incident_key": 2,
+      "action": "forward",
+      "service_key": "ff99dd87-2036-4966-97ed-c47a62f5b929",
+      "data": "demo  changed assignee of incident :  qwerty1  to demo2",
+      "occurred_at": "2018-11-29T15:41:13.414Z"
+    }
+  },
+  {
+    "model": "events.eventlog",
+    "pk": 9,
+    "fields": {
+      "user": 1,
+      "incident_key": 3,
+      "action": "forward",
+      "service_key": "acaede8f-1f05-4d9b-a9e2-747d4140eabf",
+      "data": "demo  changed assignee of incident :  qwerty1  to demo2",
+      "occurred_at": "2018-11-29T15:41:28.139Z"
+    }
+  },
+  {
+    "model": "events.eventlog",
+    "pk": 10,
+    "fields": {
+      "user": 1,
+      "incident_key": 3,
+      "action": "forward",
+      "service_key": "acaede8f-1f05-4d9b-a9e2-747d4140eabf",
+      "data": "demo  changed assignee of incident :  qwerty1  to demo2",
+      "occurred_at": "2018-11-29T15:41:29.359Z"
+    }
+  },
+  {
+    "model": "notification.schedulednotification",
+    "pk": 1,
+    "fields": {
+      "notifier": "email",
+      "message": "This is a notification test message, just ignore it",
+      "user_to_notify": 1,
+      "send_at": "2018-11-29T15:54:17.900Z",
+      "incident": null
+    }
+  },
+  {
+    "model": "notification.schedulednotification",
+    "pk": 2,
+    "fields": {
+      "notifier": "slack",
+      "message": "This is a notification test message, just ignore it",
+      "user_to_notify": 2,
+      "send_at": "2018-11-29T15:54:54.238Z",
+      "incident": null
+    }
+  },
+  {
+    "model": "notification.schedulednotification",
+    "pk": 3,
+    "fields": {
+      "notifier": "email",
+      "message": "This is a notification test message, just ignore it",
+      "user_to_notify": 1,
+      "send_at": "2018-11-29T15:54:55.284Z",
+      "incident": null
+    }
+  },
+  {
+    "model": "notification.schedulednotification",
+    "pk": 4,
+    "fields": {
+      "notifier": "slack",
+      "message": "This is a notification test message, just ignore it",
+      "user_to_notify": 2,
+      "send_at": "2018-11-29T15:54:56.136Z",
+      "incident": null
+    }
+  },
+  {
+    "model": "notification.schedulednotification",
+    "pk": 5,
+    "fields": {
+      "notifier": "email",
+      "message": "This is a notification test message, just ignore it",
+      "user_to_notify": 1,
+      "send_at": "2018-11-29T15:54:56.827Z",
+      "incident": null
+    }
+  }
+]

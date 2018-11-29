@@ -1,11 +1,10 @@
 from schedule.models import Calendar, Event, Rule
 from apps.services.models import Service
-from apps.schedules.models import SchedulePolicy, SchedulePolicyRule
+from apps.policies.models import SchedulePolicy, SchedulePolicyRule
 from .shared import BaseTestCase, random_string
 from django.utils import timezone
 from datetime import timedelta
 from apps.incidents.escalation_helper import get_escalation_for_service
-import pytest
 
 
 class TestGetEscalation(BaseTestCase):
@@ -39,7 +38,6 @@ class TestGetEscalation(BaseTestCase):
         except:
             pass
 
-    @pytest.mark.skip(reason="TO Be Fixed")
     def test_get_escalation_works_with_no_recurrence(self):
         event = Event(
             start=timezone.now() - timedelta(days=1),
@@ -87,7 +85,6 @@ class TestGetEscalation(BaseTestCase):
         events = get_escalation_for_service(self.service)
         self.assertEqual(0, len(events))
 
-    @pytest.mark.skip(reason="TO Be Fixed")
     def test_get_escalation_works_when_recurrance_is_now(self):
         rule = Rule(
             name=random_string(),
