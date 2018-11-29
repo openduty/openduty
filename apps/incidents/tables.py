@@ -20,7 +20,6 @@ class IncidentTable(tables.Table):
         attrs={"td": {"data-title": "Controls"}}
     )
 
-    #service_name = tables.TemplateColumn(template_name="incidents/column_service.html")
     service_key = tables.LinkColumn(
         'openduty.services.edit', args=[A('service_key.id')],
         verbose_name="Service name",
@@ -44,7 +43,6 @@ class IncidentTable(tables.Table):
     event_type = tables.Column(verbose_name="Event type",attrs={"td": {"data-title": "Event type"}})
     details = tables.Column(verbose_name="Details",attrs={"td": {"data-title": "Details"}})
     id = tables.Column(attrs={"td": {"data-title": "Id"}})
-
     tr_class = tables.Column(visible=False, empty_values=())
     try:
         filters = (
