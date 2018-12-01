@@ -2,7 +2,7 @@
 
 
 [![image](https://api.travis-ci.org/openduty/openduty.svg)](https://travis-ci.org/openduty/openduty)
-[![Coverage Status](https://coveralls.io/repos/github/catalincoroeanu/openduty/badge.svg)](https://coveralls.io/github/catalincoroeanu/openduty)
+[![Coverage Status](https://coveralls.io/repos/github/openduty/openduty/badge.svg)](https://coveralls.io/github/openduty/openduty)
 [![Requirements Status](https://requires.io/github/openduty/openduty/requirements.svg?branch=master)](https://requires.io/github/openduty/openduty/requirements/?branch=master)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/openduty/opendutyweb)
 # What is this?
