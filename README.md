@@ -6,13 +6,13 @@
 [![Requirements Status](https://requires.io/github/openduty/openduty/requirements.svg?branch=master)](https://requires.io/github/openduty/openduty/requirements/?branch=master)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/openduty/opendutyweb)
 # What is this?
-**Openduty** is an incident escalation tool, just like [Pagerduty](http://pagerduty.com) . It has a Pagerduty compatible API too. It's the result of the first [Ustream Hackathon](http://www.ustream.tv/blog/2014/03/27/hackathon-recap-21-ideas-11-teams-one-goal/). We enjoyed working on it.
+**Openduty** is an incident escalation tool, just like [Pagerduty](http://pagerduty.com) . It has a Pagerduty compatible API too. 
 # Integrations
 Has been tested with Nagios, works well for us. Any Pagerduty Notifier using the Pagerduty API should work without a problem.
 [Icinga2 config](https://github.com/deathowl/OpenDuty-Icinga2) for openduty integration
 
 # Notifications
-XMPP, email, SMS, Phone(Thanks Twilio for being awesome!), Push notifications(thanks Pushover, Prowl as well!)and Slack, HipChat, Rocket.chat are supported at the moment.
+Email, SMS, Phone(Thanks Twilio for being awesome!), Push notifications(thanks Pushover, Prowl as well!)and Slack, HipChat, Rocket.chat are supported at the moment.
 
 # Current status
 Openduty is in Beta status, it can be considered stable at the moment, however major structural changes can appear anytime (not affecting the API, or the Notifier structure)
@@ -23,7 +23,7 @@ Yes, please. You are welcome.
 Any feedback is welcome
 
 # Try it
-go to http://openduty.herokuapp.com , log in with root/toor , create your own user.
+go to http://demo.openduty.com , log in with root/toor , create your own user.
 In heroku demo mode user edit feature is disabled, so you can't misbehave.
 
 # Running on Heroku
@@ -50,6 +50,10 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 ```
+# Contributors at Openduty
+- [Catalin](https://github.com/catalincoroeanu)
+- [deathowl](http://github.com/deathowl)
+- [SysRex](https://github.com/sysrex)
 
 # Contributors at Ustream
 - [oker](http://github.com/oker1)
@@ -58,19 +62,11 @@ STATICFILES_DIRS = (
 - [ecsy](https://github.com/ecsy)
 - [akos](https://github.com/gyim)
 
-![The team](http://deathowlsnest.com/images/cod.jpg)
-# Main contributors
-- [deathowl](http://github.com/deathowl) 
 
 # Other contributors
 - [DazWorrall](https://github.com/DazWorrall)
 - [leventyalcin](https://github.com/leventyalcin)
 - [sheran-g](https://github.com/sheran-g)
-
-
-# Contributors at Openduty
-- [Catalin](https://github.com/catalincoroeanu)
-- [SysRex](https://github.com/sysrex)
 
 
 # Getting started:
