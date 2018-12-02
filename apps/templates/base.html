@@ -6,19 +6,19 @@
     {% load static %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
-    <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}" >
-    <link rel="stylesheet" href="{% static "css/AdminLTE.min.css" %}" >
-    <link rel="stylesheet" href="{% static "css/skin-blue.min.css" %}" >
-    <link rel="stylesheet" href="{% static "css/font-awesome.min.css" %}" >
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
+    <link rel="stylesheet" href="{% static "css/AdminLTE.min.css" %}">
+    <link rel="stylesheet" href="{% static "css/skin-blue.min.css" %}">
+    <link rel="stylesheet" href="{% static "css/font-awesome.min.css" %}">
     <link rel="stylesheet" href="{% static "css/ionicons.min.css" %}">
 
 
     <script type="text/javascript" src="{% static "js/jquery.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/adminlte.min.js"%}"></script>
+    <script type="text/javascript" src="{% static "js/adminlte.min.js" %}"></script>
     <script type="text/javascript" src="{% static "js/bootstrap.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/jquery.plugin.min.js"%}"></script>
-    <script type="text/javascript" src="{% static "js/basic.js"%}"></script>
+    <script type="text/javascript" src="{% static "js/jquery.plugin.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/basic.js" %}"></script>
 
     {% block static %}
     {% endblock %}
@@ -28,107 +28,114 @@
     <header class="main-header">
 
         <a href="/" class="logo">
-          <!-- mini logo for sidebar mini 50x50 pixels -->
-          <span class="logo-mini"><b>O</b>D</span>
-          <!-- logo for regular state and mobile devices -->
-          <span class="logo-lg"><b>Open</b>duty</span>
+            <!-- mini logo for sidebar mini 50x50 pixels -->
+            <span class="logo-mini"><b>O</b>D</span>
+            <!-- logo for regular state and mobile devices -->
+            <span class="logo-lg"><b>Open</b>duty</span>
         </a>
 
         <nav class="navbar navbar-static-top">
-      <!-- Sidebar toggle button-->
-      <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
-        <span class="sr-only">Toggle navigation</span>
-      </a>
-      <!-- Navbar Right Menu -->
-      <div class="navbar-custom-menu">
-        <ul class="nav navbar-nav">
-          <!-- User Account: style can be found in dropdown.less -->
-          <li class="dropdown user user-menu">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <img src="https://via.placeholder.com/160" class="user-image" alt="User Image">
-              <span class="hidden-xs">{{ user.username }}</span>
+            <!-- Sidebar toggle button-->
+            <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                <span class="sr-only">Toggle navigation</span>
             </a>
-            <ul class="dropdown-menu">
-              <!-- User image -->
-              <li class="user-header">
-                <img src="https://via.placeholder.com/160" class="img-circle" alt="User Image">
+            <!-- Navbar Right Menu -->
+            <div class="navbar-custom-menu">
+                <ul class="nav navbar-nav">
+                    <!-- User Account: style can be found in dropdown.less -->
+                    <li class="dropdown user user-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <img src="https://via.placeholder.com/160" class="user-image" alt="User Image">
+                            <span class="hidden-xs">{{ user.username }}</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <!-- User image -->
+                            <li class="user-header">
+                                <img src="https://via.placeholder.com/160" class="img-circle" alt="User Image">
 
-                <p>
-                  {{ user.username }} - Web Developer
-                  <small>Member since Nov. 2012</small>
-                </p>
-              </li>
-              <!-- Menu Body -->
-              <li class="user-body">
-                <div class="row">
-                  <div class="col-xs-4 text-center">
-                    <a href="#">Followers</a>
-                  </div>
-                </div>
-                <!-- /.row -->
-              </li>
-              <!-- Menu Footer-->
-              <li class="user-footer">
-                <div class="pull-left">
-                  <a href="#" class="btn btn-default btn-flat">Profile</a>
-                </div>
-                <div class="pull-right">
-                  <a href="#" class="btn btn-default btn-flat">Sign out</a>
-                </div>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </div>
+                                <p>
+                                    {{ user.username }} - Web Developer
+                                    <small>Member since Nov. 2012</small>
+                                </p>
+                            </li>
+                            <!-- Menu Body -->
+                            <li class="user-body">
+                                <div class="row">
+                                    <div class="col-xs-4 text-center">
+                                        <a href="#">Followers</a>
+                                    </div>
+                                </div>
+                                <!-- /.row -->
+                            </li>
+                            <!-- Menu Footer-->
+                            <li class="user-footer">
+                                <div class="pull-left">
+                                    <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                </div>
+                                <div class="pull-right">
+                                    <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
 
-    </nav>
+        </nav>
     </header>
 
     <aside class="main-sidebar">
-    <!-- sidebar: style can be found in sidebar.less -->
-    <section class="sidebar">
-      <!-- Sidebar user panel -->
-      <div class="user-panel">
-        <div class="pull-left image">
-          <img src="https://via.placeholder.com/150" class="img-circle" alt="User Image">
-        </div>
-        <div class="pull-left info">
-          <p>{{ user.username }}</p>
-          <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
-        </div>
-      </div>
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+            <!-- Sidebar user panel -->
+            <div class="user-panel">
+                <div class="pull-left image">
+                    <img src="https://via.placeholder.com/150" class="img-circle" alt="User Image">
+                </div>
+                <div class="pull-left info">
+                    <p>{{ user.username }}</p>
+                    <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                </div>
+            </div>
 
-      <!-- sidebar menu: : style can be found in sidebar.less -->
-      <ul class="sidebar-menu" data-widget="tree">
-        <li class="header">MAIN NAVIGATION</li>
-        <li><a href="{% url 'openduty.event_log.list' %}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
-        <li class="treeview">
-          <a href="#">
-            <i class="fa fa-files-o"></i>
-            <span>Incidents</span>
-            <span class="pull-right-container">
-              <span class="label label-primary pull-right">4</span>
-            </span>
-          </a>
-          <ul class="treeview-menu">
-            <li><a href="{% url 'incidents_on_call' %}?event_type=trigger"><i class="fa fa-circle-o"></i> Unhandled (for me)</a></li>
-            <li><a href="{% url 'incident_list' %}?event_type=trigger"><i class="fa fa-circle-o"></i> Unhandled (all services)</a></li>
-            <li><a href="{% url 'incident_list' %}?event_type=acknowledge"><i class="fa fa-circle-o"></i> Acknowledged</a></li>
-            <li><a href="{% url 'incident_list' %}"><i class="fa fa-circle-o"></i> All</a></li>
-          </ul>
-        </li>
-        <li><a href="{% url 'openduty.services.list' %}"><i class="fa fa-phone"></i> <span>Services</span></a></li>
-        <li><a href="{% url 'openduty.escalation.list' %}"><i class="fa fa-plane"></i> <span>Escalation</span></a></li>
-        <li><a href="{% url 'openduty.schedules.list' %}"><i class="fa fa-calendar"></i> <span>Schedules</span></a></li>
-      </ul>
-    </section>
-    <!-- /.sidebar -->
-  </aside>
+            <!-- sidebar menu: : style can be found in sidebar.less -->
+            <ul class="sidebar-menu" data-widget="tree">
+                <li class="header">MAIN NAVIGATION</li>
+                <li><a href="{% url 'openduty.event_log.list' %}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a>
+                </li>
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-files-o"></i>
+                        <span>Incidents</span>
+                        <span class="pull-right-container">
+                            <span class="label label-primary pull-right">4</span>
+                        </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="{% url 'incidents_on_call' %}?event_type=trigger"><i class="fa fa-circle-o"></i>
+                            Unhandled (for me)</a></li>
+                        <li><a href="{% url 'incident_list' %}?event_type=trigger"><i class="fa fa-circle-o"></i>
+                            Unhandled (all services)</a></li>
+                        <li><a href="{% url 'incident_list' %}?event_type=acknowledge"><i class="fa fa-circle-o"></i>
+                            Acknowledged</a></li>
+                        <li><a href="{% url 'incident_list' %}"><i class="fa fa-circle-o"></i> All</a></li>
+                    </ul>
+                </li>
+                <li><a href="{% url 'openduty.services.list' %}"><i class="fa fa-phone"></i> <span>Services</span></a>
+                </li>
+                <li><a href="{% url 'openduty.escalation.list' %}"><i class="fa fa-plane"></i>
+                    <span>Escalation</span></a></li>
+                <li><a href="{% url 'openduty.schedules.list' %}"><i class="fa fa-calendar"></i> <span>Schedules</span></a>
+                </li>
+            </ul>
+        </section>
+        <!-- /.sidebar -->
+    </aside>
 
     <div class="content-wrapper">
         <div class="content">
-        {% block content %}
-        {% endblock %}
+            {% block content %}
+            {% endblock %}
         </div>
     </div>
 </div>
