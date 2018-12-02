@@ -51,22 +51,27 @@
               </tbody></table>
             </div>
             <!-- /.box-body -->
-            <ul class="pagination pagination-sm no-margin pull-right">
-                <li>
-                <span class="step-links">
-                {% if events.has_previous %}
-                <a href="?page={{ events.previous_page_number }}">previous</a>
-                {% endif %}
-                </li>
-                <span class="current">
-                Page {{ events.number }} of {{ events.paginator.num_pages }}.
-                </span>
+            <div class="col-sm-7">
+                <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
+                    <ul class="pagination pagination-sm no-margin pull-right" id="example2_previous">
+                        <li class="paginate_button previous disabled">
+                        <span class="step-links">
+                        {% if events.has_previous %}
+                        <a href="?page={{ events.previous_page_number }}">previous</a>
+                        {% endif %}
+                        </li>
+                        <span class="current">
+                        Page {{ events.number }} of {{ events.paginator.num_pages }}.
+                        </span>
 
-                {% if events.has_next %}
-                    <a href="?page={{ events.next_page_number }}">next</a>
-                {% endif %}
-                </span>
-            </ul>
+                        {% if events.has_next %}
+                            <a href="?page={{ events.next_page_number }}">next</a>
+                        {% endif %}
+                        </span>
+                    </ul>
+                </div>
+            </div>
+
           </div>
           <!-- /.box -->
         </div>
