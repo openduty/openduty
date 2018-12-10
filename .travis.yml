@@ -7,14 +7,7 @@ services:
   - postgresql
 
 env:
-  - DJANGO_SETTINGS_MODULE=config.settings
-  - COVERALLS_REPO_TOKEN=e68nhDhgfatT74bDoMbKrH8cMba9WXqMH
-  - DATABASE_URL=postgresql://openduty:secret@localhost:5432/openduty
-  - ALLOWED_HOSTS=*,
-  - PREPEND_WWW=False
-  - SECURE_SSL_REDIRECT=False
-  - BASE_URL=http://localhost:8000
-  - HOST=localhost:8000
+  - DJANGO_SETTINGS_MODULE=config.settings ENV=test
 
 install:
   - pip install -U pipenv
@@ -29,5 +22,5 @@ script: "pytest"
 
 after_success:
   - coverage report -m
-  - COVERALLS_REPO_TOKEN=Dfte1yhEZ2ZkIC9974EX6H5kh54cpZNwV DJANGO_SETTINGS_MODULE=config.settings_dev  coveralls
+  - COVERALLS_REPO_TOKEN=Dfte1yhEZ2ZkIC9974EX6H5kh54cpZNwV DJANGO_SETTINGS_MODULE=config.settings coveralls
   - codecov

@@ -279,6 +279,11 @@ TWILIO_AUTH_TOKEN = TWILIO_SETTINGS.get("token", "disabled")
 CELERY_BROKER_URL = env('CELERY_BROKER_URL', default='redis://localhost:6379/0')
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
+if ENV == 'test':
+    DATABASES = {
+        'default': env.db('DATABASE_URL', default='postgresql://openduty:secret@postgresql:5432/openduty')
+    }
+
 
 if ENV == 'local':
     MIDDLEWARE += [
