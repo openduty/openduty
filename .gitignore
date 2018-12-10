@@ -9,3 +9,5 @@ database.sql
 /venv/
 /.venv/
 /*.sqlite3
+/celery.log
+/logfile*
