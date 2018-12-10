@@ -295,7 +295,7 @@ if ENV == 'local':
         pass
 
 
-if 'test' not in sys.argv:
+if ENV == 'test':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
