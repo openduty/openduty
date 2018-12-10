@@ -7,8 +7,8 @@ services:
   - postgresql
 
 env:
-  - DJANGO_SETTINGS_MODULE=config.settings_dev
-  - COVERALLS_REPO_TOKEN=e68nhDhgfatT74bDoMbKrH8cMba9WXqMH
+  - DJANGO_SETTINGS_MODULE=config.settings ENV=test ALLOWED_HOSTS=*, SECURE_SSL_REDIRECT=False PREPEND_WWW=False BASE_URL=http://localhost:8000 HOST=localhost:8000
+
 install:
   - pip install -U pipenv
   - pipenv install --system --deploy
@@ -22,5 +22,5 @@ script: "pytest"
 
 after_success:
   - coverage report -m
-  - COVERALLS_REPO_TOKEN=Dfte1yhEZ2ZkIC9974EX6H5kh54cpZNwV DJANGO_SETTINGS_MODULE=config.settings_dev  coveralls
+  - COVERALLS_REPO_TOKEN=Dfte1yhEZ2ZkIC9974EX6H5kh54cpZNwV DJANGO_SETTINGS_MODULE=config.settings coveralls
   - codecov
