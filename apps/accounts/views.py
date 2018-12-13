@@ -10,7 +10,7 @@ from django.core.exceptions import PermissionDenied
 from rest_framework import viewsets
 from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
-from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout;
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 from django.contrib.auth.models import User, Group
 from apps.accounts.serializers import UserSerializer, GroupSerializer
@@ -18,6 +18,25 @@ from apps.accounts.models import UserProfile
 from apps.notification.helper import NotificationHelper
 from apps.notification.models import UserNotificationMethod
 from apps.notification.notifier.hipchat import HipchatNotifier
+
+from django.urls import reverse_lazy
+from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import (
+    LoginView,
+    LogoutView,
+    PasswordChangeView,
+    PasswordChangeDoneView,
+    PasswordResetView,
+    PasswordResetConfirmView,
+    PasswordResetCompleteView,
+    PasswordResetDoneView,
+)
+from apps.accounts.forms import (
+    CustomAuthenticationForm,
+    CustomPasswordResetForm,
+    CustomSetPasswordForm
+)
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -58,13 +77,20 @@ def edit(request, id):
     if not request.user.is_staff and int(request.user.id) != int(id):
         raise PermissionDenied("User " + str(request.user.id) + " isn't staff")
     try:
-        user = User.objects.get(id = id)
-        user_methods = UserNotificationMethod.objects.filter(user = user).order_by('position')
+        user = User.objects.get(id=int(id))
+        user_methods = UserNotificationMethod.objects.filter(user=user).order_by('position')
         all_groups = Group.objects.all()
         user_groups = [str(x.name) for x in User.objects.get(id=id).groups.all()]
+        context = {
+            'item': user, 'all_groups': all_groups,
+            'user_groups': user_groups,
+            'methods': UserNotificationMethod.methods,
+            'user_methods': user_methods,
+            'empty_user_method': UserNotificationMethod(),
+            'hipchat_rooms': HipchatNotifier(settings.HIPCHAT_SETTINGS).get_all_rooms()
+        }
         return TemplateResponse(
-            request, 'users/edit.html',
-            {'item': user, 'all_groups': all_groups, 'user_groups': user_groups, 'methods': UserNotificationMethod.methods, 'user_methods': user_methods, 'empty_user_method': UserNotificationMethod(), 'hipchat_rooms': HipchatNotifier(settings.HIPCHAT_SETTINGS).get_all_rooms()}
+            request, 'users/edit.html', context
         )
     except User.DoesNotExist:
         raise Http404
@@ -82,7 +108,7 @@ def save(request):
     if not request.user.is_staff and int(request.user.id) != int(request.POST['id']):
         raise PermissionDenied("User " + str(request.user.id) + " isn't staff")
     try:
-        user = User.objects.get(id = request.POST['id'])
+        user = User.objects.get(id=int(request.POST['id']))
     except User.DoesNotExist:
         user = User()
         user.is_active = True
@@ -115,8 +141,8 @@ def save(request):
         user.save()
         try:
             UserNotificationMethod.objects.filter(user=user).delete()
-        except UserNotificationMethod.DoesNotExist:
-            pass #Nothing to clear
+        except UserNotificationMethod.DoesNotExist:  # pragma: no cover
+            pass  # Nothing to clear
         methods = request.POST.getlist('methods[]')
         for idx, item in enumerate(methods):
             method = UserNotificationMethod()
@@ -125,11 +151,12 @@ def save(request):
             method.position = idx +1
             method.save()
 
-        if user.profile is None:
+        try:
+            profile = user.profile
+        except ObjectDoesNotExist:
             profile = UserProfile()
             profile.user = user
-        else:
-            profile = user.profile
+            profile.save()
 
         profile.phone_number = request.POST['phone_number']
         profile.pushover_user_key = request.POST['pushover_user_key']
@@ -148,9 +175,9 @@ def save(request):
     except IntegrityError:
         messages.error(request, 'Username already exists.')
         if int(request.POST['id']) > 0:
-            return HttpResponseRedirect(reverse('openduty.users.edit', None, [str(request.POST['id'])]))
+            return HttpResponseRedirect(reverse('edit_profile', None, [str(request.POST['id'])]))
         else:
-            return HttpResponseRedirect(reverse('openduty.users.new'))
+            return HttpResponseRedirect(reverse('add_user'))
 
 
 @login_required()
@@ -163,9 +190,12 @@ def testnotification(request):
     return HttpResponseRedirect(reverse('openduty.users.list'))
 
 
-def login(request):
-    redirect_to = request.GET.get("next", "/dashboard/")
-    return TemplateResponse(request, 'auth/login.html', {"redirect_to": redirect_to})
+class UserLoginView(LoginView):
+    template_name = 'auth/login.html'
+    form_class = CustomAuthenticationForm
+
+    def get_success_url(self):
+        return self.request.GET.get("next", "/dashboard/")
 
 
 def do(request):

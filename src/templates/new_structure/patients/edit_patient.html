@@ -1,0 +1,157 @@
+{% extends 'base.html' %}{% load static %}
+{% block content %}
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                {% if user.pharmacist.pk %}
+                    Edit Patient
+                {% else %}
+                    Edit Profile
+                {% endif %}
+            </h1>
+            <ol class="breadcrumb">
+                {% if user.pharmacist.pk %}
+                    <li><a href="{% url 'dashboard_pharmacist' %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+                    <li class="active">Edit Patient</li>
+                {% else %}
+                    <li><a href="{% url 'dashboard_patient' %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+                    <li class="active">Edit Profile</li>
+                {% endif %}
+
+            </ol>
+        </section>
+        <!-- Main content -->
+        <section class="content">
+            <!-- Main row -->
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="col-lg-4 col-lg-push-4 col-md-6 col-md-push-3 col-xs-10 col-xs-push-1">
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <h3 class="box-title text-center">
+                                    {% if form.non_field_errors %}
+                                        <ul class="list-unstyled">
+                                            {% for error in form.subject.errors %}
+                                                <li><strong>{{ error|escape }}</strong></li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% else %}
+                                        Edit Patient <strong>{{ object.get_full_name }}</strong>
+                                    {% endif %}
+                                </h3>
+                            </div>
+                            <form role="form" method="post">
+                                <div class="box-body">
+                                    {% csrf_token %}
+                                    <div class="form-group {%if form.first_name.errors %}has-error{% endif %}">
+                                        <label for="{{ form.first_name.id_for_label }}">
+                                            {% if form.first_name.errors %}
+                                                <ul class="list-unstyled">
+                                                    {% for error in form.first_name.errors %}
+                                                        <li>
+                                                            <i class="fa fa-times-circle-o"></i>
+                                                            <strong>{{ error|escape }}</strong>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% else %}
+                                                {{ form.first_name.label }}
+                                            {% endif %}
+                                        </label>
+                                        {{ form.first_name }}
+                                    </div>
+                                    <div class="form-group {%if form.last_name.errors %}has-error{% endif %}">
+                                        <label for="{{ form.last_name.id_for_label }}">
+                                            {% if form.last_name.errors %}
+                                                <ul class="list-unstyled">
+                                                    {% for error in form.last_name.errors %}
+                                                        <li>
+                                                            <i class="fa fa-times-circle-o"></i>
+                                                            <strong>{{ error|escape }}</strong>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% else %}
+                                                {{ form.last_name.label }}
+                                            {% endif %}
+                                        </label>
+                                        {{ form.last_name }}
+                                    </div>
+                                    <div class="form-group {%if form.email.errors %}has-error{% endif %}">
+                                        <label for="{{ form.email.id_for_label }}">
+                                            {% if form.email.errors %}
+                                                <ul class="list-unstyled">
+                                                    {% for error in form.email.errors %}
+                                                        <li>
+                                                            <i class="fa fa-times-circle-o"></i>
+                                                            <strong>{{ error|escape }}</strong>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% else %}
+                                                {{ form.email.label }}
+                                            {% endif %}
+                                        </label>
+                                        {{ form.email }}
+                                    </div>
+                                    <div class="form-group {%if form.tel.errors %}has-error{% endif %}">
+                                        <label for="{{ form.tel.id_for_label }}">
+                                            {% if form.tel.errors %}
+                                                <ul class="list-unstyled">
+                                                    {% for error in form.tel.errors %}
+                                                        <li>
+                                                            <i class="fa fa-times-circle-o"></i>
+                                                            <strong>{{ error|escape }}</strong>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% else %}
+                                                {{ form.tel.label }}
+                                            {% endif %}
+                                        </label>
+                                        {{ form.tel }}
+                                    </div>
+                                    <div class="form-group {%if form.birth_date.errors %}has-error{% endif %}">
+                                        <label for="{{ form.birth_date.id_for_label }}">
+                                            {% if form.birth_date.errors %}
+                                                <ul class="list-unstyled">
+                                                    {% for error in form.birth_date.errors %}
+                                                        <li>
+                                                            <i class="fa fa-times-circle-o"></i>
+                                                            <strong>{{ error|escape }}</strong>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% else %}
+                                                {{ form.birth_date.label }}
+                                            {% endif %}
+                                        </label>
+                                        <div class="input-group date">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                            {{ form.birth_date }}
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class>
+                                            {{ form.is_active }}
+                                             Grant access
+                                        </label>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Update</button>
+                                    <a href="{% url 'list_pharmacist' %}" class="btn btn-default pull-right">Cancel</a>
+                                </div>
+                                <!-- /.box-body -->
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.row (main row) -->
+        </section>
+        <!-- /.content -->
+    </div>
+{% endblock %}

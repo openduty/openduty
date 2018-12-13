@@ -11,3 +11,4 @@ database.sql
 /*.sqlite3
 /celery.log
 /logfile*
+/node_modules/*

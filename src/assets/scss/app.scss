@@ -1,0 +1,30 @@
+@charset "utf-8";
+@import "adminlte";
+@import "variables";
+@import "font-awesome/font-awesome";
+@import "ionicons/ionicons";
+@import 'datepicker';
+@import 'iCheck/all';
+@import 'dataTables.bootstrap';
+@import "calendar/schedule";
+@import "calendar/fullcalendar";
+@import "calendar/fullcalendar.print";
+
+
+/******* CUSTOM STYLE *******/
+.edit {
+  color: $yellow;
+}
+.edit:hover, .edit:active, .edit:focus{
+  color: $orange;
+}
+.delete {
+  color: $red;
+}
+.delete:hover, .delete:active, .delete:focus {
+  color: $maroon
+}
+.content-header {
+  position: relative;
+  padding: 15px 15px 40px 15px;
+}

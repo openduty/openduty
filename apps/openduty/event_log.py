@@ -22,7 +22,11 @@ def list(request):
         paginated = p.page(1)
     except EmptyPage:
         paginated = p.page(p.num_pages)
-    return TemplateResponse(request, 'eventlog/list.html', {'services': services, 'events': paginated})
+    context = {
+        'services': services,
+        'events': events
+    }
+    return TemplateResponse(request, 'eventlog/list.html', context)
 
 
 @login_required()
@@ -31,7 +35,6 @@ def get(request, id):
     page = request.GET.get('page')
     events = []
     actualService = None
-
     try:
         actualService = Service.objects.get(id = id)
         events = EventLog.objects.filter(service_key = actualService).order_by('-occurred_at')
@@ -45,6 +48,10 @@ def get(request, id):
         paginated = p.page(1)
     except EmptyPage:
         paginated = p.page(p.num_pages)
-
-    return TemplateResponse(request, 'eventlog/list.html', {'services': services, 'events' : paginated,
-                                                            'actual' : actualService})
+    context = {
+        "title": "Event Log filtered by: '{}'".format(actualService),
+        'services': services,
+        'events' : events,
+        'actual' : actualService
+    }
+    return TemplateResponse(request, 'eventlog/list.html', context)

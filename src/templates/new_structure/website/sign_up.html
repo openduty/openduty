@@ -1,0 +1,145 @@
+{% extends 'base.html' %}{% load static %}
+{% block custom_style %}
+    <style>
+        .main-footer, .content-wrapper {margin-left: 0;}
+        .skin-blue .wrapper {background-color: #ecf0f4;}
+    </style>
+{% endblock %}
+{% block body_tag %}
+    <body class="hold-transition skin-blue login-page">
+{% endblock %}
+{% block sidebar %}{% endblock %}
+{% block content %}
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>Signup</h1>
+            <ol class="breadcrumb">
+                <li><a href="/"><i class="fa fa-home"></i> Home</a></li>
+                <li class="active">Signup</li>
+            </ol>
+        </section>
+        <section class="content-header">
+            <div class="login-box">
+                <div class="login-logo">
+                    <a href="/"><b>Sign UP</b> Page</a>
+                </div>
+                <!-- /.login-logo -->
+                <div class="login-box-body">
+                    {% if form.non_field_errors %}
+                        <div class="form-group has-error">
+                            <label for="">
+                                {% for error in form.non_field_errors %}
+                                    <span>
+                                        <i class="fa fa-times-circle-o"></i>
+                                        <strong>{{ error|escape }}</strong>
+                                    </span>
+                                {% endfor %}
+                            </label>
+                        </div>
+                    {% endif %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group {%if form.first_name.errors %}has-error{% endif %}">
+                            <label for="{{ form.first_name.id_for_label }}">
+                                {% if form.first_name.errors %}
+                                    <ul class="list-unstyled">
+                                        {% for error in form.first_name.errors %}
+                                            <li>
+                                                <i class="fa fa-times-circle-o"></i>
+                                                <strong>{{ error|escape }}</strong>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            </label>
+                            {{ form.first_name }}
+                        </div>
+                        <div class="form-group {%if form.last_name.errors %}has-error{% endif %}">
+                            <label for="{{ form.last_name.id_for_label }}">
+                                {% if form.last_name.errors %}
+                                    <ul class="list-unstyled">
+                                        {% for error in form.last_name.errors %}
+                                            <li>
+                                                <i class="fa fa-times-circle-o"></i>
+                                                <strong>{{ error|escape }}</strong>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            </label>
+                            {{ form.last_name }}
+                        </div>
+                        <div class="form-group  has-feedback {%if form.email.errors %}has-error{% endif %}">
+                            <label for="{{ form.email.id_for_label }}">
+                                {% if form.email.errors %}
+                                    <ul class="list-unstyled">
+                                        {% for error in form.email.errors %}
+                                            <li>
+                                                <i class="fa fa-times-circle-o"></i>
+                                                <strong>{{ error|escape }}</strong>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            </label>
+                            {{ form.email }}
+                            <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                        </div>
+
+                        <div class="form-group has-feedback">
+                            <label for="{{ form.password.id_for_label }}">
+                                {% if form.password.errors %}
+                                    <ul class="list-unstyled">
+                                        {% for error in form.password.errors %}
+                                            <li>
+                                                <i class="fa fa-times-circle-o"></i>
+                                                <strong>{{ error|escape }}</strong>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            </label>
+                            {{ form.password }}
+                            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                        </div>
+                        <div class="form-group has-feedback">
+                            <label for="{{ form.password2.id_for_label }}">
+                                {% if form.password2.errors %}
+                                    <ul class="list-unstyled">
+                                        {% for error in form.password.errors %}
+                                            <li>
+                                                <i class="fa fa-times-circle-o"></i>
+                                                <strong>{{ error|escape }}</strong>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            </label>
+                            {{ form.password2 }}
+                            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-8"></div>
+                            <!-- /.col -->
+                            <div class="col-xs-4">
+                                <button type="submit" class="btn btn-primary btn-block btn-flat">SignUp!</button>
+                            </div>
+                            <!-- /.col -->
+                        </div>
+                    </form>
+                    <a href="{% url 'password_reset' %}">I forgot my password (working)</a>
+                    <br><br>
+                    <a href="{% url 'login' %}" class="text-center">Login (working)</a>
+                </div>
+                <!-- /.login-box-body -->
+            </div>
+        </section>
+
+    </div>
+    <!-- /.row (main row) -->
+{% endblock %}
+
+</body>
+

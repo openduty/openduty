@@ -5,7 +5,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from rest_framework import routers as rest_routers
 from rest_framework.authtoken.views import obtain_auth_token
-from apps.accounts.views import login, do, logout, UserViewSet, GroupViewSet
+from apps.accounts.views import do, logout, UserViewSet, GroupViewSet, UserLoginView
 from apps.policies.views import SchedulePolicyViewSet, SchedulePolicyRuleViewSet
 from apps.incidents.views import IncidentViewSet
 from apps.openduty.views import HealthCheckViewSet, CeleryHealthCheckViewSet
@@ -29,12 +29,12 @@ rest_router.register(r'oncall', OpsWeeklyOnCallViewSet)
 
 urlpatterns = [
     path('', event_log.list),
-    path('dashboard/', event_log.list, name='openduty.event_log.list'),
-    url(r'^dashboard/service/(.*)', event_log.get, name='openduty.event_log.get'),
+    path('dashboard/', event_log.list, name='dashboard'),
+    url(r'^dashboard/service/(.*)', event_log.get, name='event_log_detail'),
     path('api-token-auth/', obtain_auth_token),
-    path('login/', login, name='openduty.auth.login'),
+    path('login/', UserLoginView.as_view(), name='login'),
     path('login/do/', do, name='openduty.auth.do'),
-    path('logout/', logout, name='openduty.auth.logout'),
+    path('logout/', logout, name='logout'),
 
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),

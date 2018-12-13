@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+{#{% load render_table from django_tables2 %}#}
+{#{% block static %}#}
+{#        {% load static %}#}
+{#        <link rel="stylesheet" href="{% static "css/no-more-tables.css" %}" >#}
+{#{% endblock %}#}
+
+{% load wbr arrowfilter %}
+{% block title %}Incidents{% endblock %}
+
+{% block content %}
+    <script language="JavaScript">
+        function toggle(source) {
+            checkboxes = document.getElementsByName('selection');
+            for(var i in checkboxes)
+                checkboxes[i].checked = source.checked;
+        }
+    </script>
+
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            Incidents list
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+            <li class="active">All Incidents</li>
+        </ol>
+    </section>
+    <!-- Main content -->
+    <section class="content">
+
+        <!-- Main row -->
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="row header">
+                    {% include "incidents/incident_filter.html" with filters=filters only %}
+                    <form id="tform" action="/incidents/update_type/" method="post">
+                        <input type="hidden" name="url" value="{{ request.get_full_path }}">
+                        <div class="col-xs-4 col-xs-offset-8">
+                            <button type="submit"
+                                id="ack_all" class="bulk-op btn btn-warning"
+                                name="event_type" value="acknowledge">Acknowledge</button>
+                            <button type="submit" id="res_all"
+                                class="bulk-op btn btn-success"
+                                name="event_type" value="resolve">Resolve</button>
+                        </div>
+                        {% csrf_token %}
+                    </form>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        {% if messages %}
+                            <div class="alert alert-success alert-dismissible">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                {% for message in messages %}
+                                    <h4>
+                                        {% if message.tags %}<i class="icon fa fa-check {{ message.tags }}"></i>{% endif %}
+                                        {{ message }}
+                                    </h4>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title">Incidents list</h3>
+
+                        <div class="box-tools">
+{#                            <div class="input-group input-group-sm" style="width: 150px;">#}
+{#                                <div class="input-group-btn">#}
+{#                                    <button type="button" class="btn btn-default btn-flat" data-toggle="dropdown">#}
+{#                                        Services#}
+{#                                        <span class="caret"></span>#}
+{#                                    </button>#}
+{#                                    <ul class="dropdown-menu dropdown-menu-right">#}
+{#                                        <li><a href="{% url 'dashboard' %}">All</a></li>#}
+{#                                        <li role="presentation" class="divider"></li>#}
+{#                                        {% for item in services %}#}
+{#                                            <li><a href="{% url 'event_log_detail' item.id %}">{{ item.name }}</a>#}
+{#                                            </li>#}
+{#                                        {% endfor %}#}
+{#                                    </ul>#}
+{#                                </div>#}
+{#                            </div>#}
+                        </div>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body table-responsive">
+                        <table  id="incidents" class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>DateTime</th>
+                                <th>Service type</th>
+                                <th>Incident type</th>
+                                <th>Event type</th>
+                                <th>Description</th>
+                                <th>Details</th>
+                                <th>Escalate to</th>
+                                <th>Controls</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for item in all_incidents %}
+                                <tr class="{{ item.color }}">
+                                    <td>{{ item.id }}</td>
+                                    <td>
+                                        <div
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="{{ item.occurred_at|default:"-" }}"
+                                        >
+                                            {{ item.occurred_at|arrowfilter }}
+                                        </div>
+                                    </td>
+                                    <td>{{ item.service_key.name|default:"-" }}</td>
+                                    <td>{{ item.incident_key|default:"-" }}</td>
+                                    <td>{{ item.event_type|default:"-" }}</td>
+                                    <td>{{ item.description|default:"-" }}</td>
+                                    <td>{{ item.details|default:"-" }}</td>
+                                    <td>{{ item.service_to_escalate_to|default:"-" }}</td>
+                                    <td>
+                                        <a
+                                            href="{% url 'incident_details' item.id %}"
+                                            class="btn btn-default btn-sm"
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="Edit"
+                                        >
+                                            <span class="glyphicon glyphicon-edit"></span>
+                                        </a>
+                                        <form method="post" action="{% url 'openduty.incidents.update_type' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="url" value="{{ request.get_full_path }}">
+                                            <input type="hidden" name="id" value="{{ item.id }}">
+                                            <button  type="submit" class="btn btn-default btn-sm" name="event_type" value="resolve"
+                                                     data-toggle="tooltip" data-placement="top" title="Resolve">
+                                                <span class="glyphicon glyphicon-ok"></span>
+                                            </button>
+                                            <button  type="submit" class="btn btn-default btn-sm" name="event_type" value="acknowledge"
+                                                     data-toggle="tooltip" data-placement="top" title="Acknowledge">
+                                                <span class="glyphicon glyphicon-volume-off"></span>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>DateTime</th>
+                                    <th>Service type</th>
+                                    <th>Incident type</th>
+                                    <th>Event type</th>
+                                    <th>Description</th>
+                                    <th>Details</th>
+                                    <th>Escalate to</th>
+                                    <th>Controls</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+{#        <div class="row">#}
+{##}
+{#            <div class="col-xs-12">#}
+{#                <div class="box">#}
+{#                    <div class="box-header">#}
+{#                        <h3 class="box-title">Incidents list (Old display)</h3>#}
+{##}
+{#                        <div class="box-tools">#}
+{#                            <div class="input-group input-group-sm" style="width: 150px;"></div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                    <!-- /.box-header -->#}
+{#                    <div class="box-body table-responsive no-padding">#}
+{#                        {% render_table table %}#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+    </section>
+</div>
+
+
+
+
+{% endblock %}

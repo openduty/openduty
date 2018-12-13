@@ -1,0 +1,36 @@
+{% extends 'base.html' %}{% load static %}
+{% block content %}
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                {% if user.pharmacist.pk %}
+                    Delete Patient
+                {% else %}
+                    Delete Profile
+                {% endif %}
+            </h1>
+            <ol class="breadcrumb">
+                {% if user.pharmacist.pk %}
+                    <li><a href="{% url 'dashboard_pharmacist' %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+                    <li class="active">Delete Patient</li>
+                {% else %}
+                    <li><a href="{% url 'dashboard_patient' %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+                    <li class="active">Delete Profile</li>
+                {% endif %}
+
+            </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <!-- Main row -->
+            <div class="row">
+
+            </div>
+            <!-- /.row (main row) -->
+        </section>
+        <!-- /.content -->
+    </div>
+{% endblock %}

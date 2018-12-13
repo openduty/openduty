@@ -1,0 +1,96 @@
+{% extends 'base.html' %}{% load arrowfilter static %}
+{% block title %}{% if title %}{{ title }}{% else %}Event Log{% endif %}{% endblock %}
+{% block content %}
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            {% if title %}{{ title }}{% else %}Event Log{% endif %}
+        </h1>
+        <ol class="breadcrumb">
+            <li><i class="fa fa-dashboard"></i> Dashboard</li>
+        </ol>
+    </section>
+    <div class="content">
+        {% if messages %}
+            <div class="alert alert-success alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                {% for message in messages %}
+                    <h4>
+                        {% if message.tags %}<i class="icon fa fa-check {{ message.tags }}"></i>{% endif %}
+                        {{ message }}
+                    </h4>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title">{% if title %}{{ title }}{% else %}Event Log{% endif %}</h3>
+
+                        <div class="box-tools">
+                            <div class="input-group input-group-sm" style="width: 150px;">
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-default btn-flat" data-toggle="dropdown">
+                                        Services
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right">
+                                        <li><a href="{% url 'dashboard' %}">All</a></li>
+                                        <li role="presentation" class="divider"></li>
+                                        {% for item in services %}
+                                            <li><a href="{% url 'event_log_detail' item.id %}">{{ item.name }}</a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table  id="event_logs" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Time</th>
+                                    <th>User</th>
+                                    <th>Service</th>
+                                    <th>Event</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in events %}
+                                    <tr class="{{ item.color }}">
+                                    <td>{{ item.id }}</td>
+                                        <td>
+                                            <div data-toggle="tooltip" data-placement="top" title="{{ item.occurred_at }}">
+                                                {{ item.occurred_at|arrowfilter }}
+                                            </div>
+                                        </td>
+                                        <td>{{ item.user|default:"system" }}</td>
+                                        <td>{{ item.service_key.name }}</td>
+                                        <td>{{ item.data }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Time</th>
+                                    <th>User</th>
+                                    <th>Service</th>
+                                    <th>Event</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    <!-- /.box-body -->
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
