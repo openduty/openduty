@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+{% load arrowfilter %}
+{% block title %}{% if item %}Incident: {{ item.incident_key }}{% else %}Incident Detail{% endif %}{% endblock %}
+{% block content %}
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                {% if item %}Incident: <strong>{{ item.incident_key }}</strong>{% else %}Incident Detail{% endif %}
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+                <li><a href="{% url 'incident_list' %}"><i class="fa fa-list"></i> Incidents</a></li>
+                <li class="active">
+                    {% if item %}Incident: {{ item.incident_key }}{% else %}Incident Detail{% endif %}
+                </li>
+            </ol>
+        </section>
+
+        <div class="content">
+            {% if messages %}
+                <div class="alert alert-success alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    {% for message in messages %}
+                        <h4>
+                            {% if message.tags %}<i class="icon fa fa-check {{ message.tags }}"></i>{% endif %}
+                            {{ message }}
+                        </h4>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="row">
+                <div class="col-lg-8 col-lg-push-2 col-md-8 col-md-push-2 col-xs-10 col-xs-push-1">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">
+                                {% if item %}{{ item.name }}{% else %}Incident Detail{% endif %}
+                            </h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="col-sm-6 control-label">Service name</label>
+
+                                    <div class="col-sm-6">
+                                        <p class="form-control-static"><a href="{% url 'openduty.services.edit' item.service_key.id  %}">{{ item.service_key.name }}</a>
+                                            {% if service_silenced %}
+                                                <span class="label label-danger">Silenced</span>
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-6 control-label">Occurred at</label>
+
+                                    <div class="col-sm-6">
+                                        <p class="form-control-static">{{ item.occurred_at }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-6 control-label">Incident key</label>
+
+                                    <div class="col-sm-6">
+                                        <p class="form-control-static">{{ item.incident_key }}
+                                            {% if incident_silenced %}
+                                                <span class="label label-danger"> Silenced for {{ incident_silenced}} </span>
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-6 control-label">Incident event type</label>
+
+                                    <div class="col-sm-6">
+                                        <p class="form-control-static">{{ item.event_type }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-6 control-label">Incident description</label>
+
+                                    <div class="col-sm-6">
+                                        <p class="form-control-static">{{ item.description }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-6 control-label">Incident details</label>
+
+                                    <div class="col-sm-6">
+                                        <p class="form-control-static">{{ item.details }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-horizontal">
+                                    <form method="post" action="{% url 'openduty.incidents.update_type' %}">
+                                        <input type="hidden" name="id" value="{{ item.id }}">
+                                        <input type="hidden" name="url" value="{{ url }}">
+                                        {% csrf_token %}
+                                        <div class="form-group" style="text-align: center">
+                                            <button name="event_type" value="acknowledge" type="submit" class="btn btn-warning">Acknowledge</button>
+                                            <button name="event_type" value="resolve" type="submit" class="btn btn-success">Resolve</button>
+                                        </div>
+                                    </form>
+                                    {% if incident_silenced %}
+                                        <div class="form-group" style="text-align: center">
+                                            <form method="post" action="{% url 'openduty.incidents.unsilence' item.id %}">
+                                                <button type="submit" class="btn btn-danger">Remove silence</button>
+                                                {% csrf_token %}
+                                                <input type="hidden" name="url" value="{{ url }}">
+                                            </form>
+                                        </div>
+                                    {% else %}
+                                        </div>
+                                        </div>
+                                        <div class="form-horizontal" style ="padding-left: 50px;">
+
+                                            <div class="form-group">
+                                                <label class="col-sm-5 control-label">Silence incident for</label>
+                                                <form class="form-horizontal" role="form" method="post" action="{% url 'openduty.incidents.silence' item.id %}">
+                                                    <input type="hidden" name="url" value="{{ url }}">
+                                                    <div class="col-sm-2">
+                                                        <input type="number" class="form-control" name="silence_for" id="silence_for" placeholder="Silence for x hours">
+                                                    </div>
+                                                    {% csrf_token %}
+                                                    <input type="submit" value="Silence Incident"  class="btn btn-inverse">
+                                                </form>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                            <div class="form-horizontal" style ="padding-left: 50px;">
+                                <div class="form-group">
+                                    <label class="col-sm-5 control-label">Forward to</label>
+                                    <form class="form-horizontal" role="form" method="post" action="{% url 'openduty.incidents.forward_incident' %}">
+                                        <input type="hidden" name="id" value="{{ item.id }}">
+                                        <input type="hidden" name="url" value="{{ url }}">
+                                        {% csrf_token %}
+                                        <select name="user_id">
+                                            {% for user in users %}
+                                                <option value="{{user.id}}">{{user.username}}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <input type="submit" value="Forward"  class="btn btn-info">
+                                    </form>
+                                </div>
+                            </div>
+                            <table class="table table">
+                                <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>User</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for h in history_list %}
+                                    <tr class="{{ h.color }}">
+                                        <td>
+                                            <div data-toggle="tooltip" data-placement="top" title="{{ h.occurred_at }}">
+                                                {{ h.occurred_at|arrowfilter }}
+                                            </div>
+                                        </td>
+                                        <td>{{ h.user|default:"system" }}</td>
+                                        <td>{{ h.action }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <!-- /.box-body -->
+                        </div>
+                    </div>
+                    <!-- /.box -->
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

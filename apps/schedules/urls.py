@@ -4,7 +4,7 @@ from apps.schedules import views
 
 
 urlpatterns = [
-    url(r'^$', views.list, name='openduty.schedules.list'),
+    url(r'^$', views.list, name='schedules_list'),
     url(r'^new$', views.new, name='openduty.schedules.new'),
     url(r'^save', views.save, name='openduty.schedules.save'),
     url(r'^edit/(?P<calendar_slug>[-\w]+)/$', views.edit, name='openduty.schedules.edit'),

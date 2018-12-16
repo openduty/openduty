@@ -1,0 +1,256 @@
+{% extends 'base.html' %}{% load static %}
+{% block title %}{% if item %}Edit user{% else%}New user{% endif %}{% endblock %}
+{% block content %}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            {% if item %}Edit user{% else%}New user{% endif %}
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+            <li class="active">{% if item %}Edit user{% else%}New user{% endif %}</li>
+        </ol>
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <!-- Main row -->
+        <div class="row">
+            <div class="col-xs-12">
+                {% if messages %}
+                    <div class="alert alert-success alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        {% for message in messages %}
+                            <h4>
+                                {% if message.tags %}
+                                    <i class="icon fa fa-check {{ message.tags }}"></i>
+                                {% endif %}
+                                {{ message }}
+                            </h4>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <div class="col-lg-6 col-lg-push-3 col-md-8 col-md-push-2 col-xs-10 col-xs-push-1">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title text-center">
+                                {% if form.non_field_errors %}
+                                    <ul class="list-unstyled">
+                                        {% for error in form.subject.errors %}
+                                            <li><strong>{{ error|escape }}</strong></li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    {% if item %}Edit user{% else%}New user{% endif %}
+                                {% endif %}
+                            </h3>
+                        </div>
+                        <form
+                            role="form"
+                            method="post"
+                            action="{% url 'openduty.users.save' %}"
+                        >
+                            <div class="box-body">
+                                {% csrf_token %}
+                                <input type="hidden" name="id"
+                                       value="{% if item %}{{ item.id }}{% else%}0{% endif %}">
+                                <div class="form-group">
+                                    <label for="username">Username</label>
+                                    <input type="text" class="form-control" name="username"
+                                           id="username" placeholder="Username"
+                                           value="{% if item %}{{ item.username }}{% endif %}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                        <input type="email" class="form-control"
+                                               name="email" id="email" placeholder="Email"
+                                               value="{% if item %}{{ item.email }}{% endif %}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">Password</label>
+                                        <input type="password" class="form-control"
+                                               name="password" id="password" placeholder="Password">
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">Phone number</label>
+                                        <input type="text" class="form-control" name="phone_number"
+                                               id="phone" placeholder="+33"
+                                               value="{% if item %}{{ item.profile.phone_number }}{% endif %}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="groups">Groups</label>
+                                        {% if all_groups %}
+                                            {% for group in all_groups %}
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" name="groups[]"
+                                                               value="{{group.id}}"
+                                                            {% if group.name in user_groups %} checked="checked" {% endif %} >
+                                                        {{group.name}}
+                                                    </label>
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
+                                </div>
+                                <div class="form-group">
+                                    <label for="pushover_user_key">Pushover user key</label>
+                                        <input type="text" class="form-control"
+                                               name="pushover_user_key"
+                                               value="{% if item %}{{ item.profile.pushover_user_key }}{% endif %}" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="pushover_app_key">Pushover application key</label>
+                                        <input type="text" class="form-control" name="pushover_app_key"
+                                               value="{% if item %}{{ item.profile.pushover_app_key }}{% endif %}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="slack_room_name">Slack room name</label>
+                                        <input type="text" class="form-control" name="slack_room_name"
+                                               value="{% if item %}{{ item.profile.slack_room_name }}{% endif %}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="prowl_api_key">Prowl api key</label>
+                                        <input type="text" class="form-control" name="prowl_api_key"
+                                               value="{% if item %}{{ item.profile.prowl_api_key }}{% endif %}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="prowl_application">Prowl application name</label>
+                                        <input type="text" class="form-control" name="prowl_application"
+                                               placeholder="openduty"
+                                               value="{% if item %}{{ item.profile.prowl_application }}{% endif %}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="prowl_url">Prowl url (optional)</label>
+                                        <input type="text" class="form-control" name="prowl_url"
+                                            value="{% if item %}{{ item.profile.prowl_url }}{% endif %}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="rocket_webhook_url">Rocket Webhook Url(optional)</label>
+                                        <input type="text" class="form-control" name="rocket_webhook_url"
+                                            value="{% if item %}{{ item.profile.rocket_webhook_url }}{% endif %}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="hipchat_room_name">HipChat room name</label>
+                                        <select name="hipchat_room_name" class="form-control">
+                                            <optgroup label="Room">
+                                                {% for room in hipchat_rooms %}
+                                                    <option
+                                                        value="{{room}}"
+                                                        {% if item.profile.hipchat_room_name == room %}selected{% endif %}>
+                                                        {{room}}
+                                                    </option>
+                                                {% endfor %}
+                                            </optgroup>
+                                        </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="hipchat_room_url">
+                                        Hipchat Room URL (secondary to room name)
+                                    </label>
+                                        <input type="text" class="form-control" name="hipchat_room_url"
+                                            value="{% if item %}{{ item.profile.hipchat_room_url }}{% endif %}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="username">Notification methods</label>
+                                </div>
+                                <div class="form-group">
+                                        <ol id="list" class="list-group">
+                                            {% for row in user_methods %}
+                                                <li class="list-group-item">
+                                                    <label for="method" class="col-sm-4 control-label">
+                                                        Method:
+                                                    </label>
+                                                    <div class="col-sm-3">
+                                                        <select name="methods[]" class="form-control">
+                                                            <optgroup label="Methods">
+                                                                {% for item in methods %}
+                                                                    <option
+                                                                        value="{{ item }}"
+                                                                        {% if row.method == item %}selected{% endif %} >
+                                                                        {{ item }}
+                                                                    </option>
+                                                                {% endfor %}
+                                                            </optgroup>
+                                                        </select>
+                                                    </div>
+                                                    <button  class="remove btn btn-default btn-sm">
+                                                        <span class="glyphicon glyphicon-remove"></span>
+                                                    </button>
+                                                </li>
+
+                                            {% endfor %}
+                                        </ol>
+                                        <button type="button" id="add_method" class="btn btn-default pull-right">
+                                            Add new notification method
+                                        </button>
+                                    </div>
+                                <div class="form-group create-new">
+                                    <label class>
+                                        <input
+                                            type="checkbox"
+                                            class="flat-red"
+                                            id="send_resolve_notification"
+                                            name="send_resolve_notification"
+                                            {% if item.profile.send_resolve_enabled  %} checked {% endif %}>
+                                        Send Resolve Notifications
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                </div>
+                            </div>
+                            <!-- /.box-body -->
+                        </form>
+                        <div style="display:none" id="empty-row">
+                            <li class="list-group-item">
+                                <label for="method" class="col-sm-4 control-label">
+                                    Method:
+                                </label>
+                                <div class="col-sm-3">
+                                    <select name="methods[]" class="form-control">
+                                        <optgroup label="Methods">
+                                            {% for item in methods %}
+                                                <option
+                                                    value="{{ item }}"
+                                                    {% if empty_user_method.method == item %}selected{% endif %} >
+                                                    {{ item }}
+                                                </option>
+                                            {% endfor %}
+                                        </optgroup>
+                                    </select>
+                                </div>
+                                <button  class="remove btn btn-default btn-sm">
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                </button>
+                            </li>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+        <!-- /.row (main row) -->
+    </section>
+    <!-- /.content -->
+</div>
+{% endblock %}
+{% block custom_scripts %}
+    <script type="text/javascript" src="{% static "js/jquery.min.js"%}"></script>
+    <script>
+        $(document ).ready(function() {
+            var list = $("#list");
+
+            {#list.sortable();#}
+
+            $('#add_method').on('click', function(e) {
+                e.preventDefault();
+                $('#empty-row').children().first().clone().appendTo(list);
+            });
+
+            list.on('click', '.remove', function () {
+                $(this).parent().remove();
+            });
+        });
+    </script>
+{% endblock %}

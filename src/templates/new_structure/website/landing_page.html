@@ -1,0 +1,31 @@
+{% extends 'base.html' %}{% load static %}
+{% block custom_style %}
+    <style>
+        .main-footer, .content-wrapper {margin-left: 0;}
+        .skin-blue .wrapper {background-color: #ecf0f4;}
+    </style>
+{% endblock %}
+{% block body_tag %}
+    <body class="hold-transition skin-blue login-page">
+{% endblock %}
+{% block sidebar %}{% endblock %}
+{% block content %}
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="login-logo">
+                <a href="/"><b>Landing</b> Page</a>
+            </div>
+            <!-- /.login-logo -->
+
+            <ol class="breadcrumb">
+                <li class="active"><i class="fa fa-home"></i> Home</li>
+            </ol>
+        </section>
+    </div>
+    <!-- /.row (main row) -->
+{% endblock %}
+
+</body>
+

@@ -1,0 +1,61 @@
+/*!
+ *   AdminLTE v2.3.2
+ *   Author: Almsaeed Studio
+ *	 Website: Almsaeed Studio <http://almsaeedstudio.com>
+ *   License: Open source - MIT
+ *           Please visit http://opensource.org/licenses/MIT for more information
+!*/
+//google fonts
+//@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic);
+@import "bootstrap/scss/bootstrap";
+
+// //MISC
+// //----
+@import "scss/variables";
+@import "scss/core.scss";
+@import "scss/mixins";
+@import "scss/miscellaneous";
+
+// //COMPONENTS
+// //-----------
+@import "scss/components/header";
+@import "scss/components/sidebar";
+@import "scss/components/sidebar-mini";
+@import "scss/components/control-sidebar";
+@import "scss/components/dropdown";
+@import "scss/components/forms";
+@import "scss/components/progress-bars";
+@import "scss/components/small-box";
+@import "scss/components/boxes";
+@import "scss/components/info-box";
+@import "scss/components/timeline";
+@import "scss/components/buttons";
+@import "scss/components/callout";
+@import "scss/components/alerts";
+@import "scss/components/navs";
+@import "scss/components/products";
+@import "scss/components/table";
+@import "scss/components/labels";
+@import "scss/components/direct-chat";
+@import "scss/components/users-list";
+@import "scss/components/carousel";
+@import "scss/components/modal";
+@import "scss/components/social-widgets";
+// //PAGES
+// //------
+@import "scss/pages/mailbox";
+@import "scss/pages/lockscreen";
+@import "scss/pages/login_and_register";
+@import "scss/pages/404_500_errors";
+@import "scss/pages/invoice";
+@import "scss/pages/profile";
+// //Plugins
+// //--------
+@import "scss/plugins/bootstrap-social";
+@import "scss/plugins/fullcalendar";
+@import "scss/plugins/select2";
+// //Miscellaneous
+// //-------------
+// @import "miscellaneous.less";
+@import "scss/print";
+@import "scss/skins/all-skins";

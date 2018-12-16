@@ -245,7 +245,6 @@ pg_dump  -h 127.0.0.1 -U openduty -c --column-inserts openduty < dummydata.sql
 ```bash
 python manage.py dumpdata --exclude=contenttypes --exclude=sessions -o demodata.json
 
-
 ```
 
 **Usually `contenttypes` and `sessions` will cause you: **

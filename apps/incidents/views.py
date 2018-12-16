@@ -26,6 +26,7 @@ from apps.incidents.serializers import IncidentSerializer
 from apps.incidents.escalation_helper import services_where_user_is_on_call
 from apps.incidents.models import Incident, IncidentSilenced
 from apps.incidents.tables import IncidentTable
+from django.views.generic import ListView
 
 
 class IncidentViewSet(viewsets.ModelViewSet):
@@ -216,17 +217,44 @@ class ServicesByMe(FilteredSingleTableView):
     model = Incident
     table_class = IncidentTable
     template_name = 'incidents/list2.html'
-    table_pagination = {"per_page": 10}
 
     def get_queryset(self, *args, **kwargs):
         user = self.request.user
-        print("\n\n", user, "\n\n\n")
         q = super(ServicesByMe, self).get_queryset()
         services = services_where_user_is_on_call(user)
-
         incidents = q.filter(service_key__in=services)
         incidents = incidents.order_by("-occurred_at")
         return incidents
+
+    def get_context_data(self, **kwargs):
+        context = super(ServicesByMe, self).get_context_data(**kwargs)
+        user = self.request.user
+        services = services_where_user_is_on_call(user)
+        context.update({
+            "services": services,
+        })
+        return context
+
+
+class OnCallIncidentsListView(ListView):
+    model = Incident
+    context_object_name = 'all_incidents'
+    template_name = 'incidents/list.html'
+
+    def get_queryset(self, *args, **kwargs):
+        user = self.request.user
+        q = super(OnCallIncidentsListView, self).get_queryset()
+        services = services_where_user_is_on_call(user)
+        incidents = q.filter(service_key__in=services)
+        incidents = incidents.order_by("-occurred_at")
+        return incidents
+
+
+class IncidentsListView(ListView):
+    model = Incident
+    queryset = Incident.objects.all().order_by('id')
+    template_name = 'incidents/list.html'
+    context_object_name = 'all_incidents'
 
 
 @login_required()
@@ -245,11 +273,15 @@ def details(request, id):
         users = User.objects.all()
         history = EventLog.objects.filter(
             incident_key=incident).order_by('-occurred_at')
-        return TemplateResponse(request, 'incidents/details.html', {
-            'item': incident, 'users': users, 'url': request.get_full_path(),
-            'history_list': history, 'service_silenced': service_silenced,
+        context = {
+            'item': incident,
+            'users': users,
+            'url': request.get_full_path(),
+            'history_list': history,
+            'service_silenced': service_silenced,
             'incident_silenced': incident_silenced
-        })
+        }
+        return TemplateResponse(request, 'incidents/details.html', context)
     except Service.DoesNotExist:
         raise Http404
 
@@ -380,6 +412,7 @@ def silence(request, incident_id):
             incident.save()
             unsilence_incident.apply_async(
                 (incident_id,), eta=silenced_incident.silenced_until)
+            messages.success(request, event_log_message)
         return HttpResponseRedirect(url)
     except Service.DoesNotExist:
         raise Http404
@@ -388,7 +421,7 @@ def silence(request, incident_id):
 @require_http_methods(["POST"])
 def unsilence(request, incident_id):
     try:
-        incident = Incident.objects.get(id = incident_id)
+        incident = Incident.objects.get(id=incident_id)
         url = request.POST.get("url")
         try:
             IncidentSilenced.objects.filter(incident=incident).delete()
@@ -401,9 +434,11 @@ def unsilence(request, incident_id):
             event_log.data = event_log_message
             event_log.occurred_at = timezone.now()
             event_log.save()
+            messages.success(request, event_log_message)
         except IncidentSilenced.DoesNotExist:
             # No need to delete
             pass
+            messages.warning(request, "IncidentSilenced Not found")
         return HttpResponseRedirect(url)
     except Service.DoesNotExist:
         raise Http404

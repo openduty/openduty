@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block title %}Services list{% endblock %}
+{% block content %}
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Services List
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+                <li class="active">Services list</li>
+            </ol>
+        </section>
+        <!-- Main content -->
+        <section class="content">
+            <!-- Main row -->
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            {% if messages %}
+                                <div class="alert alert-success alert-dismissible">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                    {% for message in messages %}
+                                        <h4>
+                                            {% if message.tags %}
+                                                <i class="icon fa fa-check {{ message.tags }}"></i>
+                                            {% endif %}
+                                            {{ message }}
+                                        </h4>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="box">
+                                <div class="box-header">
+                                    <h3 class="box-title">Services list</h3>
+                                    <div class="box-tools">
+                                        <div class="input-group input-group-sm" style="width: 150px;">
+                                            <a href="{% url 'openduty.services.new' %}"
+                                               class="btn btn-default">
+                                                <span class="glyphicon glyphicon-plus"></span>
+                                                New service
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="box-body table-responsive">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Service name</th>
+                                            <th>Notification Status</th>
+                                            <th>Incidents</th>
+                                            <th>Controls</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in services %}
+                                            <tr {% if item.notifications_disabled %} class="danger" {% endif %} >
+                                                <td>{{ item.name }}</td>
+                                                {% if item.notifications_disabled %}
+                                                    <td> Notifications for this service are disabled</td>
+                                                {% else %}
+                                                    <td> Notifications for this service are enabled</td>
+                                                {% endif %}
+                                                <td>{{ item.incident_num }}</td>
+                                                <td class="controls">
+                                                    <a href="{% url 'openduty.services.edit' item.id %}" class="btn btn-default btn-sm"
+                                                       data-toggle="tooltip" data-placement="top" title="Edit">
+                                                        <span class="glyphicon glyphicon-edit"></span></a>
+                                                    <a href="{% url 'openduty.services.delete' item.id %}" class="btn btn-default btn-sm"
+                                                            data-toggle="tooltip" data-placement="top" title="Delete" input type="submit" onclick="return confirm('Are you sure you want to delete this service : {{ item.name }}')" value="Button">
+                                                        <span class="glyphicon glyphicon-remove"></span></a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Service name</th>
+                                            <th>Notification Status</th>
+                                            <th>Incidents</th>
+                                            <th>Controls</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.box -->
+                </div>
+            </div>
+            <!-- /.row (main row) -->
+        </section>
+        <!-- /.content -->
+    </div>
+{% endblock %}
