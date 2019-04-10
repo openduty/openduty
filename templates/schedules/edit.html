@@ -1,38 +1,56 @@
-{% extends 'users/base.html' %}
-
+{% extends 'base.html' %}{% load arrowfilter static %}
+{% block title %}{% if item %}Edit Schedule{% else%}New Schedule{% endif %}{% endblock %}
 {% block content %}
-<div class="row header">
-    <div class="col-xs-12 col-md-8"><h2>{% if item %}Edit Schedule{% else%}New Schedule{% endif %}</h2></div>
-</div>
-{% if messages %}
-<div class="alert alert-danger">
-    {% for message in messages %}
-        {{ message }}
-    {% endfor %}
-</div>
-{% endif %}
-<form class="form-horizontal" role="form" method="post" action="{% url 'openduty.schedules.save' %}">
-    <input type="hidden" name="slug" value="{% if item %}{{ item.slug }}{% else%}""{% endif %}">
-    <div class="form-group">
-        <label for="name" class="col-sm-2 control-label">Name</label>
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            {% if item %}Edit Schedule{% else%}New Schedule{% endif %}
+        </h1>
+        <ol class="breadcrumb">
+            <li><i class="fa fa-dashboard"></i> Dashboard</li>
+        </ol>
+    </section>
+    <div class="content">
+        {% if messages %}
+            <div class="alert alert-success alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                {% for message in messages %}
+                    <h4>
+                        {% if message.tags %}<i class="icon fa fa-check {{ message.tags }}"></i>{% endif %}
+                        {{ message }}
+                    </h4>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-xs-12">
+                <form class="form-horizontal" role="form" method="post" action="{% url 'openduty.schedules.save' %}">
+                    <input type="hidden" name="slug" value="{% if item %}{{ item.slug }}{% else%}{% endif %}">
+                    <div class="form-group">
+                        <label for="name" class="col-sm-2 control-label">Name</label>
 
-        <div class="col-sm-10">
-            <input type="text" class="form-control" name="name" id="name" placeholder="Calendar Name" value="{% if item %}{{ item.name }}{% endif %}">
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="slug" class="col-sm-2 control-label">Slug</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="name" id="name" placeholder="Calendar Name" value="{% if item %}{{ item.name }}{% endif %}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="slug" class="col-sm-2 control-label">Slug</label>
 
-        <div class="col-sm-10">
-            <input type="text" class="form-control" name="slug" id="slug" placeholder="Slug" value="{% if item %}{{ item.slug }}{% endif %}"
-            {% if edit %}disabled{% endif %}>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="slug" id="slug" placeholder="Slug" value="{% if item %}{{ item.slug }}{% endif %}"
+                                   {% if edit %}disabled{% endif %}>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-default">Save</button>
+                        </div>
+                    </div>
+                    {% csrf_token %}
+                </form>
+            </div>
         </div>
     </div>
-    <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-            <button type="submit" class="btn btn-default">Save</button>
-        </div>
-    </div>
-    {% csrf_token %}
-</form>
+</div>
 {% endblock %}

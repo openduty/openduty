@@ -12,3 +12,4 @@ database.sql
 /celery.log
 /logfile*
 /node_modules/*
+.coverage
