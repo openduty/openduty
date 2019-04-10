@@ -20,10 +20,10 @@ def do(request):
     else:
         return HttpResponseRedirect('/login/')
 
-def logout(request):
-    auth_logout(request);
-    return HttpResponseRedirect('/login/')
 
+def logout(request):
+    auth_logout(request)
+    return HttpResponseRedirect('/login/')
 
 
 class IsAuthenticatedOrCreateOnly(BasePermission):
