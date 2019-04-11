@@ -10,8 +10,9 @@ from django.core.exceptions import PermissionDenied
 from rest_framework import viewsets
 from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
-from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
-from rest_framework.permissions import BasePermission, SAFE_METHODS
+from django.views.generic import ListView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.models import User, Group
 from apps.accounts.serializers import UserSerializer, GroupSerializer
 from apps.accounts.models import UserProfile
@@ -41,21 +42,18 @@ class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
 
 
-@login_required()
-def list(request):
-    users = User.objects.all()
-    return TemplateResponse(request, 'users/list.html', {'users': users})
+class UserListView(LoginRequiredMixin, ListView):
+    """Users List"""
+    model = User
+    template_name = 'users/list.html'
+    context_object_name = 'users'
 
 
-@login_required()
-@staff_member_required
-def delete(request, id):
-    try:
-        user = User.objects.get(id = id)
-        user.delete()
-        return HttpResponseRedirect('/users/')
-    except User.DoesNotExist:
-        raise Http404
+class UserDeleteView(LoginRequiredMixin, DeleteView):
+    """Delete User"""
+    model = User
+    template_name = 'users/delete.html'
+    success_url = '/users/'
 
 
 @login_required()
@@ -157,7 +155,7 @@ def save(request):
         profile.send_resolve_enabled = request.POST.get("send_resolve_notification", "off") == "on"
         profile.save()
 
-        return HttpResponseRedirect(reverse('openduty.users.list'))
+        return HttpResponseRedirect(reverse('UserListView'))
     except IntegrityError:
         messages.error(request, 'Username already exists.')
         if int(request.POST['id']) > 0:
@@ -173,7 +171,7 @@ def testnotification(request):
         raise PermissionDenied("User " + str(request.user.id) + " isn't staff")
     user = User.objects.get(id=request.POST['id'])
     NotificationHelper.notify_user_about_incident(None, user, 1, "This is a notification test message, just ignore it")
-    return HttpResponseRedirect(reverse('openduty.users.list'))
+    return HttpResponseRedirect(reverse('UserListView'))
 
 
 class UserLoginView(LoginView):
