@@ -18,10 +18,7 @@ from apps.accounts.models import UserProfile
 from apps.notification.helper import NotificationHelper
 from apps.notification.models import UserNotificationMethod
 from apps.notification.notifier.hipchat import HipchatNotifier
-
-from django.urls import reverse_lazy
 from django.core.exceptions import ObjectDoesNotExist
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import (
     LoginView,
     LogoutView,
