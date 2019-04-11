@@ -1,5 +1,6 @@
 import uuid
 import base64
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django.contrib.auth.models import User
 from django.db import transaction
 from django.utils import timezone
@@ -21,7 +22,6 @@ from apps.services.models import Service, ServiceSilenced, ServiceTokens
 from apps.events.models import EventLog
 from apps.services.models import Token
 from apps.openduty.tasks import unsilence_incident
-from apps.accounts.auth import IsAuthenticatedOrCreateOnly
 from apps.incidents.serializers import IncidentSerializer
 from apps.incidents.escalation_helper import services_where_user_is_on_call
 from apps.incidents.models import Incident, IncidentSilenced
@@ -36,7 +36,7 @@ class IncidentViewSet(viewsets.ModelViewSet):
     """
     queryset = Incident.objects.all()
     serializer_class = IncidentSerializer
-    permission_classes = (IsAuthenticatedOrCreateOnly,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def is_relevant(self, incident, new_event_type):
         """

@@ -9,7 +9,7 @@ database.sql
 /venv/
 /.venv/
 /*.sqlite3
-/celery.log
-/logfile*
+*logfile*
 /node_modules/*
 .coverage
+*celery.log

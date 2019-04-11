@@ -1,14 +1,17 @@
 from django.utils import timezone
+from rest_framework import status
+from django.contrib.auth.models import User
 from apps.services.models import Service, ServiceTokens
 from apps.accounts.models import Token
 from apps.policies.models import SchedulePolicy
 from apps.incidents.models import Incident
 from rest_framework.test import APIClient
-from .shared import BaseTestCase, random_string
+from django.test import TestCase
+from apps.openduty.tests.shared import BaseTestCase, random_string
 import pytest
 
 
-class TestAPI(BaseTestCase):
+class TestAPI(TestCase):
 
     def setUp(self):
         super(TestAPI, self).setUp()
@@ -26,6 +29,11 @@ class TestAPI(BaseTestCase):
         self.token2.save()
         self.servicetoken2 = ServiceTokens(name="testbinding", service_id=self.service2, token_id=self.token2)
         self.servicetoken2.save()
+        self.user = User.objects.create_user(username='testuser', password='1234test')
+        # Request Client
+        self.client = APIClient()
+        # Authenticate Request Client
+        self.client.force_authenticate(self.user)
 
     def tearDown(self):
         super(TestAPI, self).tearDown()
@@ -41,42 +49,34 @@ class TestAPI(BaseTestCase):
             pass
 
     def test_create_event(self):
-        try:
-            client = APIClient()
-            response = client.post(
-                '/api/create_event',
-                data = {
-                    "incident_key": "testing",
-                    "service_key": self.token.key,
-                    "event_type": "trigger",
-                    "description": "test",
-                    "details": "test"
-                },
-            )
-            self.assertEqual(201, response.status_code)
-            new_instance = Incident.objects.get(incident_key='testing')
-            self.assertEqual("testing", new_instance.incident_key)
-            self.assertEqual(Incident.TRIGGER, new_instance.event_type)
-            self.assertEqual(self.service, new_instance.service_key)
-        finally:
-            pass
+        response = self.client.post(
+            '/api/create_event/',
+            data = {
+                "incident_key": "testing",
+                "service_key": self.token.key,
+                "event_type": "trigger",
+                "description": "test",
+                "details": "test"
+            },
+        )
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
+        new_instance = Incident.objects.get(incident_key='testing')
+        self.assertEqual("testing", new_instance.incident_key)
+        self.assertEqual(Incident.TRIGGER, new_instance.event_type)
+        self.assertEqual(self.service, new_instance.service_key)
 
     def test_create_event_fails_with_invalid_key(self):
-        try:
-            client = APIClient()
-            response = client.post(
-                '/api/create_event',
-                data = {
-                    "incident_key": "testing",
-                    "service_key": "invalid",
-                    "event_type": "trigger",
-                    "description": "test",
-                    "details": "test"
-                },
-            )
-            self.assertEqual(403, response.status_code)
-        finally:
-            pass
+        response = self.client.post(
+            '/api/create_event/',
+            data = {
+                "incident_key": "testing",
+                "service_key": "invalid",
+                "event_type": "trigger",
+                "description": "test",
+                "details": "test"
+            },
+        )
+        self.assertEqual(403, response.status_code)
 
     def inject_incident(self):
         incident = Incident()
@@ -90,60 +90,50 @@ class TestAPI(BaseTestCase):
 
     def test_create_event_different_service(self):
         self.inject_incident()
-        try:
-            client = APIClient()
-            response = client.post(
-                '/api/create_event',
-                data = {
-                    "incident_key": "testing",
-                    "service_key": self.token2.key,
-                    "event_type": "trigger",
-                    "description": "test",
-                    "details": "test"
-                },
-            )
-            self.assertEqual(201, response.status_code)
-            incidents = Incident.objects.all()
-            self.assertEqual(2, incidents.count())
-        finally:
-            pass
+        response = self.client.post(
+            '/api/create_event/',
+            data = {
+                "incident_key": "testing",
+                "service_key": self.token2.key,
+                "event_type": "trigger",
+                "description": "test",
+                "details": "test"
+            },
+        )
+        self.assertEqual(201, response.status_code)
+        incidents = Incident.objects.all()
+        self.assertEqual(2, incidents.count())
 
     def test_incident_recovery(self):
         self.inject_incident()
-        try:
-            client = APIClient()
-            response = client.post(
-                '/api/create_event',
-                data = {
-                    "incident_key": "testing",
-                    "service_key": self.token.key,
-                    "event_type": "resolve",
-                    "description": "test",
-                    "details": "test"
-                },
-            )
-            self.assertEqual(201, response.status_code)
-            updated = Incident.objects.get(incident_key='testing')
-            self.assertEqual(Incident.RESOLVE, updated.event_type)
-        finally:
-            updated.delete()
+        response = self.client.post(
+            '/api/create_event/',
+            data = {
+                "incident_key": "testing",
+                "service_key": self.token.key,
+                "event_type": "resolve",
+                "description": "test",
+                "details": "test"
+            },
+        )
+        self.assertEqual(201, response.status_code)
+        updated = Incident.objects.get(incident_key='testing')
+        self.assertEqual(Incident.RESOLVE, updated.event_type)
+        updated.delete()
 
     def test_incident_acknowledge(self):
         self.inject_incident()
-        try:
-            client = APIClient()
-            response = client.post(
-                '/api/create_event',
-                data = {
-                    "incident_key": "testing",
-                    "service_key": self.token.key,
-                    "event_type": "acknowledge",
-                    "description": "test",
-                    "details": "test"
-                },
-            )
-            self.assertEqual(201, response.status_code)
-            updated = Incident.objects.get(incident_key='testing')
-            self.assertEqual(Incident.ACKNOWLEDGE, updated.event_type)
-        finally:
-            updated.delete()
+        response = self.client.post(
+            '/api/create_event/',
+            data = {
+                "incident_key": "testing",
+                "service_key": self.token.key,
+                "event_type": "acknowledge",
+                "description": "test",
+                "details": "test"
+            },
+        )
+        self.assertEqual(201, response.status_code)
+        updated = Incident.objects.get(incident_key='testing')
+        self.assertEqual(Incident.ACKNOWLEDGE, updated.event_type)
+        updated.delete()

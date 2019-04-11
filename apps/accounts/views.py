@@ -19,27 +19,15 @@ from apps.notification.helper import NotificationHelper
 from apps.notification.models import UserNotificationMethod
 from apps.notification.notifier.hipchat import HipchatNotifier
 from django.core.exceptions import ObjectDoesNotExist
-from django.contrib.auth.views import (
-    LoginView,
-    LogoutView,
-    PasswordChangeView,
-    PasswordChangeDoneView,
-    PasswordResetView,
-    PasswordResetConfirmView,
-    PasswordResetCompleteView,
-    PasswordResetDoneView,
-)
-from apps.accounts.forms import (
-    CustomAuthenticationForm,
-    CustomPasswordResetForm,
-    CustomSetPasswordForm
-)
+from django.contrib.auth.views import LoginView
+from apps.accounts.forms import CustomAuthenticationForm
 
 
 class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
+    model = User
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
@@ -48,6 +36,7 @@ class GroupViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
+    model = Group
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
@@ -195,32 +184,6 @@ class UserLoginView(LoginView):
         return self.request.GET.get("next", "/dashboard/")
 
 
-def do(request):
-    username = request.POST['username']
-    password = request.POST['password']
-    user = authenticate(username=username, password=password)
-    redirect_to = request.POST['redirect_to']
-    if user is not None:
-        if user.is_active:
-            auth_login(request, user)
-            return HttpResponseRedirect(redirect_to)
-    else:
-        return HttpResponseRedirect('/login/')
-
-
 def logout(request):
     auth_logout(request)
     return HttpResponseRedirect('/login/')
-
-
-class IsAuthenticatedOrCreateOnly(BasePermission):
-    """
-    The request is authenticated as a user, or is a read-only request.
-    """
-
-    def has_permission(self, request, view):
-        return (
-                request.method not in SAFE_METHODS or
-                request.user and
-                request.user.is_authenticated()
-        )
