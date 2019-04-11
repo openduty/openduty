@@ -1,18 +1,15 @@
 from django.contrib import admin
-
-# Register your models here.
-# vim: set fileencoding=utf-8 :
-from django.contrib import admin
-
-from . import models
+from apps.accounts.models import Token, UserProfile
 
 
+@admin.register(Token)
 class TokenAdmin(admin.ModelAdmin):
 
     list_display = ('key', 'created')
     list_filter = ('created',)
 
 
+@admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
 
     list_display = (
@@ -31,11 +28,3 @@ class UserProfileAdmin(admin.ModelAdmin):
         'send_resolve_enabled',
     )
     list_filter = ('user', 'send_resolve_enabled')
-
-
-def _register(model, admin_class):
-    admin.site.register(model, admin_class)
-
-
-_register(models.Token, TokenAdmin)
-_register(models.UserProfile, UserProfileAdmin)
