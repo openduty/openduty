@@ -28,6 +28,7 @@ HOST = env('HOST', default='www.openduty.com')
 
 # Application definition
 LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/dashboard/'
 
 PROFILE_MODULE = 'apps.accounts.UserProfile'
 
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
 
     # Local apps
     'apps.accounts',
+    'apps.commons',
     'apps.events',
     'apps.incidents',
     'apps.notification',

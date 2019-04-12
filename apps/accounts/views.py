@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.views.decorators.http import require_http_methods
 from django.db import IntegrityError
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.contrib import messages
 from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
@@ -10,8 +10,8 @@ from django.core.exceptions import PermissionDenied
 from rest_framework import viewsets
 from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
-from django.views.generic import ListView, DeleteView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView, DeleteView, UpdateView, CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin, AccessMixin
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.models import User, Group
 from apps.accounts.serializers import UserSerializer, GroupSerializer
@@ -49,41 +49,56 @@ class UserListView(LoginRequiredMixin, ListView):
     context_object_name = 'users'
 
 
-class UserDeleteView(LoginRequiredMixin, DeleteView):
+class UserIsAdminMixin(AccessMixin):  # pragma: no cover
+    """Verify that the current user is authenticated and Admin."""
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated and request.user.is_superuser:
+            return self.handle_no_permission()
+        return super().dispatch(request, *args, **kwargs)
+
+
+class UserDeleteView(UserIsAdminMixin, DeleteView):
     """Delete User"""
     model = User
     template_name = 'users/delete.html'
     success_url = '/users/'
 
 
-@login_required()
-def edit(request, id):
-    if not request.user.is_staff and int(request.user.id) != int(id):
-        raise PermissionDenied("User " + str(request.user.id) + " isn't staff")
-    try:
-        user = User.objects.get(id=int(id))
-        user_methods = UserNotificationMethod.objects.filter(user=user).order_by('position')
+class UserEditView(UserIsAdminMixin, UpdateView):
+    model = User
+    template_name = 'users/edit.html'
+    context_object_name = 'item'
+
+    def get_context_data(self, **kwargs):
+        context = super(UserEditView, self).get_context_data(**kwargs)
+        user_methods = UserNotificationMethod.objects.filter(user=self.object).order_by('position')
         all_groups = Group.objects.all()
-        user_groups = [str(x.name) for x in User.objects.get(id=id).groups.all()]
-        context = {
-            'item': user, 'all_groups': all_groups,
+        user_groups = [str(x.name) for x in self.object.groups.all()]
+        custom_context = {
+            'all_groups': all_groups,
             'user_groups': user_groups,
             'methods': UserNotificationMethod.methods,
             'user_methods': user_methods,
             'empty_user_method': UserNotificationMethod(),
             'hipchat_rooms': HipchatNotifier(settings.HIPCHAT_SETTINGS).get_all_rooms()
         }
-        return TemplateResponse(
-            request, 'users/edit.html', context
-        )
-    except User.DoesNotExist:
-        raise Http404
+        context.update(custom_context)
+        return context
 
 
-@login_required()
-@staff_member_required
-def new(request):
-    return TemplateResponse(request, 'users/edit.html', {'methods': UserNotificationMethod.methods, 'empty_user_method': UserNotificationMethod(), 'hipchat_rooms': HipchatNotifier (settings.HIPCHAT_SETTINGS).get_all_rooms()})
+class UserCreateView(UserIsAdminMixin, CreateView):
+    model = User
+    template_name = 'users/edit.html'
+    context_object_name = 'item'
+
+    def get_context_data(self, **kwargs):
+        context = super(UserCreateView, self).get_context_data(**kwargs)
+        custom_context = {
+            'methods': UserNotificationMethod.methods,
+            'empty_user_method': UserNotificationMethod(),
+            'hipchat_rooms': HipchatNotifier(settings.HIPCHAT_SETTINGS).get_all_rooms()
+        }
+        context.update(custom_context)
 
 
 @login_required()
@@ -159,9 +174,9 @@ def save(request):
     except IntegrityError:
         messages.error(request, 'Username already exists.')
         if int(request.POST['id']) > 0:
-            return HttpResponseRedirect(reverse('edit_profile', None, [str(request.POST['id'])]))
+            return HttpResponseRedirect(reverse('UserEditView', None, [str(request.POST['id'])]))
         else:
-            return HttpResponseRedirect(reverse('add_user'))
+            return HttpResponseRedirect(reverse('UserCreateView'))
 
 
 @login_required()
@@ -177,9 +192,6 @@ def testnotification(request):
 class UserLoginView(LoginView):
     template_name = 'auth/login.html'
     form_class = CustomAuthenticationForm
-
-    def get_success_url(self):
-        return self.request.GET.get("next", "/dashboard/")
 
 
 def logout(request):

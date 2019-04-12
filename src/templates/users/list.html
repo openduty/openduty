@@ -38,7 +38,7 @@
 
                             <div class="box-tools">
                                 <div class="input-group input-group-sm" style="width: 150px;">
-                                    <a href="{% url 'add_user' %}" type="submit" class="btn btn-success">
+                                    <a href="{% url 'UserCreateView' %}" type="submit" class="btn btn-success">
                                         <i class="fa fa-plus"></i> Add User
                                     </a>
                                 </div>
@@ -63,7 +63,7 @@
                                             <form method="post" action="{% url 'openduty.users.testnotification' %}">
                                                 {% csrf_token %}
                                                 <a
-                                                    href="{% url 'edit_profile' item.id %}"
+                                                    href="{% url 'UserEditView' item.id %}"
                                                     class="btn btn-default btn-sm"
                                                     data-toggle="tooltip"
                                                     data-placement="top"
