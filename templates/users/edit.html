@@ -37,7 +37,7 @@
                             <h3 class="box-title text-center">
                                 {% if form.non_field_errors %}
                                     <ul class="list-unstyled">
-                                        {% for error in form.subject.errors %}
+                                        {% for error in form.non_field_errors %}
                                             <li><strong>{{ error|escape }}</strong></li>
                                         {% endfor %}
                                     </ul>
@@ -46,37 +46,49 @@
                                 {% endif %}
                             </h3>
                         </div>
-                        <form
-                            role="form"
-                            method="post"
-                            action="{% url 'openduty.users.save' %}"
-                        >
+                        <form role="form"  method="post" action="">
+                            {% csrf_token %}
                             <div class="box-body">
-                                {% csrf_token %}
-                                <input type="hidden" name="id"
-                                       value="{% if item %}{{ item.id }}{% else%}0{% endif %}">
                                 <div class="form-group">
-                                    <label for="username">Username</label>
-                                    <input type="text" class="form-control" name="username"
-                                           id="username" placeholder="Username"
-                                           value="{% if item %}{{ item.username }}{% endif %}">
+                                    <label for="username">
+                                        Username
+                                        {% if form.errors %}{% for field in form %}
+                                            {% ifequal field form.user.username %}{% for error in field.errors %}
+                                                <strong class="alert-danger"> {{ error|escape }}</strong>
+                                            {% endfor %}{% endifequal %}
+                                        {% endfor %}{% endif %}
+                                    </label>
+                                    {{ form.user.username }}
                                 </div>
                                 <div class="form-group">
-                                    <label for="email">Email</label>
-                                        <input type="email" class="form-control"
-                                               name="email" id="email" placeholder="Email"
-                                               value="{% if item %}{{ item.email }}{% endif %}">
+                                    <label for="email">Email
+                                    {% if form.errors %}{% for field in form %}
+                                        {% ifequal field form.user.email %}{% for error in field.errors %}
+                                            <strong class="alert-danger"> {{ error|escape }}</strong>
+                                        {% endfor %}{% endifequal %}
+                                    {% endfor %}{% endif %}
+                                    </label>
+                                    {{ form.user.email }}
                                 </div>
                                 <div class="form-group">
-                                    <label for="password">Password</label>
-                                        <input type="password" class="form-control"
-                                               name="password" id="password" placeholder="Password">
+                                    <label for="password">Password
+                                    {% if form.errors %}{% for field in form %}
+                                        {% ifequal field form.user.password %}{% for error in field.errors %}
+                                            <strong class="alert-danger"> {{ error|escape }}</strong>
+                                        {% endfor %}{% endifequal %}
+                                    {% endfor %}{% endif %}
+                                    </label>
+                                    {{ form.user.password }}
                                 </div>
                                 <div class="form-group">
-                                    <label for="password">Phone number</label>
-                                        <input type="text" class="form-control" name="phone_number"
-                                               id="phone" placeholder="+33"
-                                               value="{% if item %}{{ item.profile.phone_number }}{% endif %}">
+                                    <label for="password">Phone number
+                                        {% if form.errors %}{% for field in form %}
+                                            {% ifequal field form.profile.phone_number %}{% for error in field.errors %}
+                                                <strong class="alert-danger"> {{ error|escape }}</strong>
+                                            {% endfor %}{% endifequal %}
+                                        {% endfor %}{% endif %}
+                                    </label>
+                                    {{ form.profile.phone_number }}
                                 </div>
                                 <div class="form-group">
                                     <label for="groups">Groups</label>
@@ -94,62 +106,95 @@
                                         {% endif %}
                                 </div>
                                 <div class="form-group">
-                                    <label for="pushover_user_key">Pushover user key</label>
-                                        <input type="text" class="form-control"
-                                               name="pushover_user_key"
-                                               value="{% if item %}{{ item.profile.pushover_user_key }}{% endif %}" />
+                                    <label for="pushover_user_key">Pushover user key
+                                        {% if form.errors %}{% for field in form %}
+                                            {% ifequal field form.profile.pushover_user_key %}{% for error in field.errors %}
+                                                <strong class="alert-danger"> {{ error|escape }}</strong>
+                                            {% endfor %}{% endifequal %}
+                                        {% endfor %}{% endif %}
+                                    </label>
+                                    {{ form.profile.pushover_user_key }}
                                 </div>
                                 <div class="form-group">
-                                    <label for="pushover_app_key">Pushover application key</label>
-                                        <input type="text" class="form-control" name="pushover_app_key"
-                                               value="{% if item %}{{ item.profile.pushover_app_key }}{% endif %}">
+                                    <label for="pushover_app_key">Pushover application key
+                                        {% if form.errors %}{% for field in form %}
+                                            {% ifequal field form.profile.pushover_app_key %}{% for error in field.errors %}
+                                                <strong class="alert-danger"> {{ error|escape }}</strong>
+                                            {% endfor %}{% endifequal %}
+                                        {% endfor %}{% endif %}
+                                    </label>
+                                    {{ form.profile.pushover_app_key }}
                                 </div>
                                 <div class="form-group">
-                                    <label for="slack_room_name">Slack room name</label>
-                                        <input type="text" class="form-control" name="slack_room_name"
-                                               value="{% if item %}{{ item.profile.slack_room_name }}{% endif %}">
+                                    <label for="slack_room_name">Slack room name
+                                        {% if form.errors %}{% for field in form %}
+                                            {% ifequal field form.profile.slack_room_name %}{% for error in field.errors %}
+                                                <strong class="alert-danger"> {{ error|escape }}</strong>
+                                            {% endfor %}{% endifequal %}
+                                        {% endfor %}{% endif %}
+                                    </label>
+                                    {{ form.profile.slack_room_name }}
                                 </div>
                                 <div class="form-group">
-                                    <label for="prowl_api_key">Prowl api key</label>
-                                        <input type="text" class="form-control" name="prowl_api_key"
-                                               value="{% if item %}{{ item.profile.prowl_api_key }}{% endif %}">
+                                    <label for="prowl_api_key">Prowl api key
+                                        {% if form.errors %}{% for field in form %}
+                                            {% ifequal field form.profile.prowl_api_key %}{% for error in field.errors %}
+                                                <strong class="alert-danger"> {{ error|escape }}</strong>
+                                            {% endfor %}{% endifequal %}
+                                        {% endfor %}{% endif %}
+                                    </label>
+                                    {{ form.profile.prowl_api_key }}
                                 </div>
                                 <div class="form-group">
-                                    <label for="prowl_application">Prowl application name</label>
-                                        <input type="text" class="form-control" name="prowl_application"
-                                               placeholder="openduty"
-                                               value="{% if item %}{{ item.profile.prowl_application }}{% endif %}">
+                                    <label for="prowl_application">Prowl application name
+                                        {% if form.errors %}{% for field in form %}
+                                            {% ifequal field form.profile.prowl_application %}{% for error in field.errors %}
+                                                <strong class="alert-danger"> {{ error|escape }}</strong>
+                                            {% endfor %}{% endifequal %}
+                                        {% endfor %}{% endif %}
+                                    </label>
+                                    {{ form.profile.prowl_application }}
                                 </div>
                                 <div class="form-group">
-                                    <label for="prowl_url">Prowl url (optional)</label>
-                                        <input type="text" class="form-control" name="prowl_url"
-                                            value="{% if item %}{{ item.profile.prowl_url }}{% endif %}">
+                                    <label for="prowl_url">Prowl url (optional)
+                                        {% if form.errors %}{% for field in form %}
+                                            {% ifequal field form.profile.prowl_url %}{% for error in field.errors %}
+                                                <strong class="alert-danger"> {{ error|escape }}</strong>
+                                            {% endfor %}{% endifequal %}
+                                        {% endfor %}{% endif %}
+                                    </label>
+                                    {{ form.profile.prowl_url }}
                                 </div>
                                 <div class="form-group">
-                                    <label for="rocket_webhook_url">Rocket Webhook Url(optional)</label>
-                                        <input type="text" class="form-control" name="rocket_webhook_url"
-                                            value="{% if item %}{{ item.profile.rocket_webhook_url }}{% endif %}">
+                                    <label for="rocket_webhook_url">Rocket Webhook Url(optional)
+                                        {% if form.errors %}{% for field in form %}
+                                            {% ifequal field form.profile.rocket_webhook_url %}{% for error in field.errors %}
+                                                <strong class="alert-danger"> {{ error|escape }}</strong>
+                                            {% endfor %}{% endifequal %}
+                                        {% endfor %}{% endif %}
+                                    </label>
+                                    {{ form.profile.rocket_webhook_url }}
                                 </div>
                                 <div class="form-group">
-                                    <label for="hipchat_room_name">HipChat room name</label>
-                                        <select name="hipchat_room_name" class="form-control">
-                                            <optgroup label="Room">
-                                                {% for room in hipchat_rooms %}
-                                                    <option
-                                                        value="{{room}}"
-                                                        {% if item.profile.hipchat_room_name == room %}selected{% endif %}>
-                                                        {{room}}
-                                                    </option>
-                                                {% endfor %}
-                                            </optgroup>
-                                        </select>
+                                    <label for="hipchat_room_name">HipChat room name
+                                        {% if form.errors %}{% for field in form %}
+                                            {% ifequal field form.profile.hipchat_room_name %}{% for error in field.errors %}
+                                                <strong class="alert-danger"> {{ error|escape }}</strong>
+                                            {% endfor %}{% endifequal %}
+                                        {% endfor %}{% endif %}
+                                    </label>
+                                    {{ form.profile.hipchat_room_name }}
                                 </div>
                                 <div class="form-group">
                                     <label for="hipchat_room_url">
                                         Hipchat Room URL (secondary to room name)
+                                        {% if form.errors %}{% for field in form %}
+                                            {% ifequal field form.profile.hipchat_room_url %}{% for error in field.errors %}
+                                                <strong class="alert-danger"> {{ error|escape }}</strong>
+                                            {% endfor %}{% endifequal %}
+                                        {% endfor %}{% endif %}
                                     </label>
-                                        <input type="text" class="form-control" name="hipchat_room_url"
-                                            value="{% if item %}{{ item.profile.hipchat_room_url }}{% endif %}">
+                                    {{ form.profile.hipchat_room_url }}
                                 </div>
                                 <div class="form-group">
                                     <label for="username">Notification methods</label>
@@ -187,12 +232,12 @@
                                     </div>
                                 <div class="form-group create-new">
                                     <label class>
-                                        <input
-                                            type="checkbox"
-                                            class="flat-red"
-                                            id="send_resolve_notification"
-                                            name="send_resolve_notification"
-                                            {% if item.profile.send_resolve_enabled  %} checked {% endif %}>
+                                        {% if form.errors %}{% for field in form %}
+                                            {% ifequal field form.profile.send_resolve_enabled %}{% for error in field.errors %}
+                                                <strong class="alert-danger"> {{ error|escape }}</strong>
+                                            {% endfor %}{% endifequal %}
+                                        {% endfor %}{% endif %}
+                                        {{ form.profile.send_resolve_enabled }}
                                         Send Resolve Notifications
                                     </label>
                                 </div>

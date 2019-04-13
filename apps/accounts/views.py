@@ -1,27 +1,26 @@
 from django.contrib.auth.decorators import login_required
-from django.http import Http404
 from django.views.decorators.http import require_http_methods
 from django.db import IntegrityError
 from django.urls import reverse, reverse_lazy
+from django.shortcuts import redirect
 from django.contrib import messages
 from django.conf import settings
-from django.contrib.admin.views.decorators import staff_member_required
+from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.views import LoginView
 from django.core.exceptions import PermissionDenied
-from rest_framework import viewsets
 from django.http import HttpResponseRedirect
-from django.template.response import TemplateResponse
 from django.views.generic import ListView, DeleteView, UpdateView, CreateView
-from django.contrib.auth.mixins import LoginRequiredMixin, AccessMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.models import User, Group
+from rest_framework import viewsets
+from braces.views import StaffuserRequiredMixin
 from apps.accounts.serializers import UserSerializer, GroupSerializer
-from apps.accounts.models import UserProfile
+from apps.accounts.models import Profile
 from apps.notification.helper import NotificationHelper
 from apps.notification.models import UserNotificationMethod
 from apps.notification.notifier.hipchat import HipchatNotifier
-from django.core.exceptions import ObjectDoesNotExist
-from django.contrib.auth.views import LoginView
-from apps.accounts.forms import CustomAuthenticationForm
+from apps.accounts.forms import CustomAuthenticationForm, UserProfileMultiForm
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -49,25 +48,65 @@ class UserListView(LoginRequiredMixin, ListView):
     context_object_name = 'users'
 
 
-class UserIsAdminMixin(AccessMixin):  # pragma: no cover
-    """Verify that the current user is authenticated and Admin."""
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated and request.user.is_superuser:
-            return self.handle_no_permission()
-        return super().dispatch(request, *args, **kwargs)
-
-
-class UserDeleteView(UserIsAdminMixin, DeleteView):
+class UserDeleteView(StaffuserRequiredMixin, DeleteView):
     """Delete User"""
     model = User
     template_name = 'users/delete.html'
     success_url = '/users/'
 
 
-class UserEditView(UserIsAdminMixin, UpdateView):
+class UserEditView(StaffuserRequiredMixin, UpdateView):
     model = User
     template_name = 'users/edit.html'
     context_object_name = 'item'
+    form_class = UserProfileMultiForm
+    success_url = reverse_lazy('UserListView')
+
+    def form_valid(self, form):
+        # Save the user first, because the profile needs a user before it
+        # can be saved.
+        user = form['user'].save()
+        profile = form['profile'].save(commit=False)
+        profile.user = user
+        profile.save()
+        all_groups = []
+        for group in Group.objects.all():
+            all_groups.append(int(group.id))
+        post_groups = self.request.POST.getlist('groups[]')
+        for idx, group in enumerate(post_groups):
+            group = int(group)
+            if group in all_groups:
+                all_groups.remove(group)
+            if group not in [x.id for x in User.objects.get(id=self.request.POST['id']).groups.all()]:
+                # Groups.objects.filter(id__in=user.groups.all().values_list('id', flat=True))]:
+                try:
+                    user.groups.add(group)
+                except Exception as e:
+                    messages.error(self.request, str(e))
+        if len(all_groups) > 0:
+            for group in all_groups:
+                user.groups.remove(group)
+        user.save()
+        try:
+            UserNotificationMethod.objects.filter(user=user).delete()
+        except UserNotificationMethod.DoesNotExist:  # pragma: no cover
+            pass  # Nothing to clear
+        methods = self.request.POST.getlist('methods[]')
+        for idx, item in enumerate(methods):
+            method = UserNotificationMethod()
+            method.method = item
+            method.user = user
+            method.position = idx + 1
+            method.save()
+        return redirect(self.success_url)
+
+    def get_form_kwargs(self):
+        kwargs = super(UserEditView, self).get_form_kwargs()
+        kwargs.update(instance={
+            'user': self.object,
+            'profile': self.object.profile,
+        })
+        return kwargs
 
     def get_context_data(self, **kwargs):
         context = super(UserEditView, self).get_context_data(**kwargs)
@@ -86,10 +125,11 @@ class UserEditView(UserIsAdminMixin, UpdateView):
         return context
 
 
-class UserCreateView(UserIsAdminMixin, CreateView):
-    model = User
+class UserCreateView(StaffuserRequiredMixin, CreateView):
     template_name = 'users/edit.html'
     context_object_name = 'item'
+    form_class = UserProfileMultiForm
+    success_url = reverse_lazy('UserListView')
 
     def get_context_data(self, **kwargs):
         context = super(UserCreateView, self).get_context_data(**kwargs)
@@ -99,6 +139,13 @@ class UserCreateView(UserIsAdminMixin, CreateView):
             'hipchat_rooms': HipchatNotifier(settings.HIPCHAT_SETTINGS).get_all_rooms()
         }
         context.update(custom_context)
+
+    def form_valid(self, form):
+        user = form['user'].save()
+        profile = form['profile'].save(commit=False)
+        profile.user = user
+        profile.save()
+        return redirect(self.success_url)
 
 
 @login_required()
@@ -153,7 +200,7 @@ def save(request):
         try:
             profile = user.profile
         except ObjectDoesNotExist:
-            profile = UserProfile()
+            profile = Profile()
             profile.user = user
             profile.save()
 
@@ -181,7 +228,7 @@ def save(request):
 
 @login_required()
 @require_http_methods(["POST"])
-def testnotification(request):
+def testnotification(request):  # pragma: no cover
     if not request.user.is_staff and int(request.user.id) != int(request.POST['id']):
         raise PermissionDenied("User " + str(request.user.id) + " isn't staff")
     user = User.objects.get(id=request.POST['id'])
@@ -194,6 +241,6 @@ class UserLoginView(LoginView):
     form_class = CustomAuthenticationForm
 
 
-def logout(request):
+def logout(request):  # pragma: no cover
     auth_logout(request)
     return HttpResponseRedirect('/login/')

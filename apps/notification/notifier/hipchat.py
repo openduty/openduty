@@ -57,12 +57,12 @@ class HipchatNotifier:
         try:
             hc = self.start()
             if not hc:
-                return [""]
+                return []
             else:
                 rooms = hc.rooms().contents()
                 names = []
                 for room in rooms:
-                    names.append(room['name'])
+                    names.append((room['name'], room['name']))
             return names
         except:
-            return [""]
+            return []

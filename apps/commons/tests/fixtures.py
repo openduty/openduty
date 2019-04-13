@@ -3,6 +3,7 @@ from django_dynamic_fixture import G
 from rest_framework.test import APIRequestFactory
 from django.contrib.auth.models import User
 from django.contrib.auth.models import AnonymousUser
+from apps.accounts.models import Profile
 
 
 @pytest.mark.django_db
@@ -13,6 +14,7 @@ def base_user():
         username='regular_user',
         password='1234test'
     )
+    G(Profile, user=user)
     return user
 
 
@@ -24,6 +26,7 @@ def other_user():
         username="other_user",
         password='1234test'
     )
+    G(Profile, user=user)
     return user
 
 
@@ -35,6 +38,7 @@ def admin_user():
         username="admin_user",
         password='1234test'
     )
+    G(Profile, user=user)
     return user
 
 

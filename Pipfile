@@ -40,6 +40,8 @@ vobject = "==0.9.6.1"
 werkzeug = "==0.14.1"
 django = "==2.1.4"
 django-dynamic-fixture = "==2.0.0"
+django-braces = "*"
+django-betterforms = "*"
 
 [dev-packages]
 

@@ -10,6 +10,6 @@ urlpatterns = [
     path('new/', UserCreateView.as_view(), name='UserCreateView'),
     path('save/', views.save, name='openduty.users.save'),
     path('testnotification/', views.testnotification, name='openduty.users.testnotification'),
-    path('edit/<int:id>/', UserEditView.as_view(), name='UserEditView'),
-    path('delete/<int:pk>/', UserDeleteView.as_view(), name='UserDeleteView'),
+    path('edit/<int:pk>/', UserEditView.as_view(), name='UserEditView'),
+    path('delete/<int:id>/', UserDeleteView.as_view(), name='UserDeleteView'),
 ]

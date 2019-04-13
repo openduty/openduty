@@ -1,5 +1,5 @@
 from django.contrib import admin
-from apps.accounts.models import Token, UserProfile
+from apps.accounts.models import Token, Profile
 
 
 @admin.register(Token)
@@ -9,7 +9,7 @@ class TokenAdmin(admin.ModelAdmin):
     list_filter = ('created',)
 
 
-@admin.register(UserProfile)
+@admin.register(Profile)
 class UserProfileAdmin(admin.ModelAdmin):
 
     list_display = (

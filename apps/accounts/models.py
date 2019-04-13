@@ -29,7 +29,7 @@ class Token(models.Model):
         return self.key
 
 
-class UserProfile(models.Model):
+class Profile(models.Model):
     user = models.OneToOneField('auth.User', related_name='profile', on_delete=models.CASCADE)
     phone_number = models.CharField(max_length=50)
     pushover_user_key = models.CharField(max_length=50)

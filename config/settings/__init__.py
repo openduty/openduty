@@ -30,9 +30,9 @@ HOST = env('HOST', default='www.openduty.com')
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
 
-PROFILE_MODULE = 'apps.accounts.UserProfile'
+PROFILE_MODULE = 'apps.accounts.Profile'
 
-AUTH_PROFILE_MODULE = 'apps.accounts.UserProfile'
+AUTH_PROFILE_MODULE = 'apps.accounts.Profile'
 
 # Application definition
 INSTALLED_APPS = [
