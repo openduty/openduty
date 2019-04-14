@@ -38,8 +38,8 @@
 
                             <div class="box-tools">
                                 <div class="input-group input-group-sm" style="width: 150px;">
-                                    <a href="{% url 'add_user' %}" type="submit" class="btn btn-success">
-                                        <i class="fa fa-plus"></i> Add Patient
+                                    <a href="{% url 'UserCreateView' %}" type="submit" class="btn btn-success">
+                                        <i class="fa fa-plus"></i> Add User
                                     </a>
                                 </div>
                             </div>
@@ -63,7 +63,7 @@
                                             <form method="post" action="{% url 'openduty.users.testnotification' %}">
                                                 {% csrf_token %}
                                                 <a
-                                                    href="{% url 'edit_profile' item.id %}"
+                                                    href="{% url 'UserEditView' item.id %}"
                                                     class="btn btn-default btn-sm"
                                                     data-toggle="tooltip"
                                                     data-placement="top"
@@ -84,13 +84,12 @@
                                                 </button>
                                                 {% if item.id != user.id %}
                                                     <a
-                                                        href="{% url 'openduty.users.delete' item.id %}"
+                                                        href="{% url 'UserDeleteView' item.id %}"
                                                         class="btn btn-default btn-sm"
                                                         data-toggle="tooltip"
                                                         data-placement="top"
                                                         title="Remove"
                                                         type="submit"
-                                                        onclick="return confirm('Are you really want to suppress this user : {{ item.username }}')"
                                                         value="Button">
                                                         <span class="glyphicon glyphicon-remove"></span>
                                                     </a>

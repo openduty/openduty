@@ -13,3 +13,4 @@ database.sql
 /node_modules/*
 .coverage
 *celery.log
+htmlcov/

@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "9c75b031ab344b74b1c15b62ea22152d9d6415fea95083d752794acda45348ca"
+            "sha256": "aafdb1aa2af1d210110c0cfece86f6c450316d6ca329b8a9b9c459436382ded0"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -234,6 +234,21 @@
             "index": "pypi",
             "version": "==0.10.4"
         },
+        "django-betterforms": {
+            "hashes": [
+                "sha256:7d61ad6302793daba6f5f15fbb1dbe68785b6fe31a508df1da404814bc537acc"
+            ],
+            "index": "pypi",
+            "version": "==1.2"
+        },
+        "django-braces": {
+            "hashes": [
+                "sha256:a457d74ea29478123c0c4652272681b3cea0bf1232187fd9f9b6f1d97d32a890",
+                "sha256:ba68e98b817c6f01d71d10849f359979617b3fe4cefb7f289adefddced092ddc"
+            ],
+            "index": "pypi",
+            "version": "==1.13.0"
+        },
         "django-celery-beat": {
             "hashes": [
                 "sha256:800b67d396b12c59ca40b50a10c3ace58ca5907879237cad4e0cd404e779aa39",
@@ -249,6 +264,13 @@
             ],
             "index": "pypi",
             "version": "==1.10.1"
+        },
+        "django-dynamic-fixture": {
+            "hashes": [
+                "sha256:f8f44d8276fddb8a89a48c623fbf11d49e912e44cdee66785b7da85731f840aa"
+            ],
+            "index": "pypi",
+            "version": "==2.0.0"
         },
         "django-environ": {
             "hashes": [
@@ -675,10 +697,10 @@
         },
         "twilio": {
             "hashes": [
-                "sha256:11b5a2bf73cdda673b0ee3a4c52926f709a35b521e3f45d0f3495cc170fea6d4",
-                "sha256:a23cd49ca89ef572e43c26ad043ca73c0e47fee4b630d84a2ff2c1aa3616fea2"
+                "sha256:ca7245109795fc19d6998e09bc32d8e2326be398b96a542b77d1edebf8ae9589",
+                "sha256:e5798a07274f25d0cc4d058b2580948649abc3c59ebc94abd2371766d2bf2e15"
             ],
-            "version": "==6.26.0"
+            "version": "==6.26.1"
         },
         "urllib3": {
             "hashes": [
