@@ -8,7 +8,7 @@ from apps.accounts import views
 urlpatterns = [
     path('', UserListView.as_view(), name='UserListView'),
     path('new/', UserCreateView.as_view(), name='UserCreateView'),
-    path('save/', views.save, name='openduty.users.save'),
+    # path('save/', views.save, name='openduty.users.save'),
     path('testnotification/', views.testnotification, name='openduty.users.testnotification'),
     path('edit/<int:pk>/', UserEditView.as_view(), name='UserEditView'),
     path('delete/<int:id>/', UserDeleteView.as_view(), name='UserDeleteView'),

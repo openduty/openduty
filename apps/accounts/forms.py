@@ -62,7 +62,7 @@ class UserForm(forms.ModelForm):
         widget=forms.EmailInput(attrs={'class': 'form-control'})
     )
     password = forms.CharField(
-        required=True,
+        required=False,
         widget=forms.PasswordInput(attrs={'class': 'form-control'})
     )
 
@@ -88,49 +88,49 @@ class ProfileForm(forms.ModelForm):
                                         [("", ""), ("room", "Room")]
 
     phone_number = forms.CharField(
-        required=True,
+        required=False,
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "+44"})
     )
     pushover_user_key = forms.CharField(
-        required=True,
+        required=False,
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
     pushover_app_key = forms.CharField(
-        required=True,
+        required=False,
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
     slack_room_name = forms.CharField(
-        required=True,
+        required=False,
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
     prowl_api_key = forms.CharField(
-        required=True,
+        required=False,
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
     prowl_application = forms.CharField(
-        required=True,
+        required=False,
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
     prowl_url = forms.CharField(
-        required=True,
+        required=False,
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
     rocket_webhook_url = forms.CharField(
-        required=True,
+        required=False,
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
     hipchat_room_name = forms.ChoiceField(
-        required=True,
+        required=False,
         widget=forms.Select(
             attrs={'class': 'form-control'}
         )
     )
     hipchat_room_url = forms.CharField(
-        required=True,
+        required=False,
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
     send_resolve_enabled = forms.CharField(
-        required=True,
+        required=False,
         widget=forms.CheckboxInput(attrs={'class': 'flat-red'})
     )
 

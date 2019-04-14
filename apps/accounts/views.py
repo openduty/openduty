@@ -66,6 +66,9 @@ class UserEditView(StaffuserRequiredMixin, UpdateView):
         # Save the user first, because the profile needs a user before it
         # can be saved.
         user = form['user'].save()
+        if form['user'].cleaned_data.get('password'):
+            user.set_password(form['user'].cleaned_data.get('password'))
+            user.save()
         profile = form['profile'].save(commit=False)
         profile.user = user
         profile.save()
@@ -77,11 +80,10 @@ class UserEditView(StaffuserRequiredMixin, UpdateView):
             group = int(group)
             if group in all_groups:
                 all_groups.remove(group)
-            if group not in [x.id for x in User.objects.get(id=self.request.POST['id']).groups.all()]:
-                # Groups.objects.filter(id__in=user.groups.all().values_list('id', flat=True))]:
+            if group not in [x.id for x in User.objects.get(id=self.object.id).groups.all()]:
                 try:
                     user.groups.add(group)
-                except Exception as e:
+                except Exception as e:  # pragma: no cover
                     messages.error(self.request, str(e))
         if len(all_groups) > 0:
             for group in all_groups:
@@ -142,88 +144,13 @@ class UserCreateView(StaffuserRequiredMixin, CreateView):
 
     def form_valid(self, form):
         user = form['user'].save()
+        if form['user'].cleaned_data.get('password'):
+            user.set_password(form['user'].cleaned_data.get('password'))
+            user.save()
         profile = form['profile'].save(commit=False)
         profile.user = user
         profile.save()
         return redirect(self.success_url)
-
-
-@login_required()
-@require_http_methods(["POST"])
-def save(request):
-    if not request.user.is_staff and int(request.user.id) != int(request.POST['id']):
-        raise PermissionDenied("User " + str(request.user.id) + " isn't staff")
-    try:
-        user = User.objects.get(id=int(request.POST['id']))
-    except User.DoesNotExist:
-        user = User()
-        user.is_active = True
-
-    user.username = request.POST['username']
-    user.email = request.POST['email']
-    if request.POST['password']:
-        user.set_password(request.POST['password'])
-
-    try:
-        user.save()
-        all_groups = []
-        for group in Group.objects.all():
-            all_groups.append(int(group.id))
-        post_groups = request.POST.getlist('groups[]')
-        for idx, group in enumerate(post_groups):
-            group = int(group)
-            if group in all_groups:
-                all_groups.remove(group)
-            if group not in [x.id for x in User.objects.get(id=request.POST['id']).groups.all()]:  #Groups.objects.filter(id__in=user.groups.all().values_list('id', flat=True))]:
-                try:
-                    user.groups.add(group)
-                except Exception as e:
-                    messages.error(request, str(e))
-
-        if len(all_groups) > 0:
-            for group in all_groups:
-                user.groups.remove(group)
-
-        user.save()
-        try:
-            UserNotificationMethod.objects.filter(user=user).delete()
-        except UserNotificationMethod.DoesNotExist:  # pragma: no cover
-            pass  # Nothing to clear
-        methods = request.POST.getlist('methods[]')
-        for idx, item in enumerate(methods):
-            method = UserNotificationMethod()
-            method.method = item
-            method.user = user
-            method.position = idx +1
-            method.save()
-
-        try:
-            profile = user.profile
-        except ObjectDoesNotExist:
-            profile = Profile()
-            profile.user = user
-            profile.save()
-
-        profile.phone_number = request.POST['phone_number']
-        profile.pushover_user_key = request.POST['pushover_user_key']
-        profile.pushover_app_key = request.POST['pushover_app_key']
-        profile.slack_room_name = request.POST['slack_room_name']
-        profile.prowl_api_key = request.POST['prowl_api_key']
-        profile.prowl_application = request.POST['prowl_application']
-        profile.prowl_url = request.POST['prowl_url']
-        profile.rocket_webhook_url = request.POST['rocket_webhook_url']
-        profile.hipchat_room_name = request.POST['hipchat_room_name']
-        profile.hipchat_room_url = request.POST['hipchat_room_url']
-        profile.send_resolve_enabled = request.POST.get("send_resolve_notification", "off") == "on"
-        profile.save()
-
-        return HttpResponseRedirect(reverse('UserListView'))
-    except IntegrityError:
-        messages.error(request, 'Username already exists.')
-        if int(request.POST['id']) > 0:
-            return HttpResponseRedirect(reverse('UserEditView', None, [str(request.POST['id'])]))
-        else:
-            return HttpResponseRedirect(reverse('UserCreateView'))
 
 
 @login_required()
