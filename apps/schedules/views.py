@@ -1,6 +1,7 @@
 import pytz
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
+from django.views.generic import ListView, DeleteView, UpdateView, CreateView
 from django.template.response import TemplateResponse
 from django.contrib.auth.decorators import login_required
 from django.utils.datetime_safe import datetime
@@ -22,6 +23,12 @@ from schedule.periods import weekday_abbrs, weekday_names
 def list(request):
     schedules = Calendar.objects.all()
     return TemplateResponse(request, 'schedules/list.html', {'schedules': schedules})
+
+
+class SchedulesListView(ListView):
+    model = Calendar
+    template_name = 'schedules/list.html'
+    context_object_name = 'schedules'
 
 
 @login_required()

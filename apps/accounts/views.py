@@ -1,11 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
-from django.db import IntegrityError
 from django.urls import reverse, reverse_lazy
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.views import LoginView
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
@@ -16,7 +14,6 @@ from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from braces.views import StaffuserRequiredMixin
 from apps.accounts.serializers import UserSerializer, GroupSerializer
-from apps.accounts.models import Profile
 from apps.notification.helper import NotificationHelper
 from apps.notification.models import UserNotificationMethod
 from apps.notification.notifier.hipchat import HipchatNotifier

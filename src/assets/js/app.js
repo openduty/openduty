@@ -100,7 +100,7 @@ $(function () {
         })
     }
 
-    init_events($('#external-events div.external-event'))
+    init_events($('#external-events div.external-event'));
 
     /* initialize the calendar
      -----------------------------------------------------------------*/
