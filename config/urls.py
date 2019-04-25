@@ -40,9 +40,9 @@ urlpatterns = [
     path('users/', include('apps.accounts.urls')),
     path('services/', include('apps.services.urls')),
     path('policies/', include('apps.policies.urls')),
+    path('events/', include('apps.events.urls')),
     path('schedule/', include('schedule.urls')),
     path('schedules/', include('apps.schedules.urls')),
-    path('events/', include('apps.events.urls')),
     path('services/', include('apps.services.urls')),
     path('incidents/', include('apps.incidents.urls')),
 

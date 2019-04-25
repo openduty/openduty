@@ -31,7 +31,7 @@ def create_or_edit_event(request, calendar_slug, event_id=None, next=None):
 
     instance = None
     if event_id is not None:
-        instance = get_object_or_404(Event, id=event_id)
+        instance = get_object_or_404(Event, id=int(event_id))
 
     calendar = get_object_or_404(Calendar, slug=calendar_slug)
     data = request.POST.copy()
@@ -47,7 +47,7 @@ def create_or_edit_event(request, calendar_slug, event_id=None, next=None):
                 event.creator = request.user
                 event.calendar = calendar
             event.save()
-            return HttpResponseRedirect(reverse('calendar_details', kwargs={'calendar_slug': calendar.slug}))
+            return HttpResponseRedirect(reverse('calendar_slug', kwargs={'calendar_slug': calendar.slug}))
     if instance is not None:
         officers = instance.title.split(",")
         data["oncall"] = officers[0]
@@ -87,4 +87,4 @@ def destroy_event(request, calendar_slug, event_id=None, next=None,
 
     calendar = get_object_or_404(Calendar, slug=calendar_slug)
 
-    return HttpResponseRedirect(reverse('calendar_details', None, [str(calendar.slug)]))
+    return HttpResponseRedirect(reverse('calendar_slug', None, [str(calendar.slug)]))

@@ -1,7 +1,7 @@
 from schedule.models import Calendar, Event, Rule
 from apps.services.models import Service
 from apps.policies.models import SchedulePolicy, SchedulePolicyRule
-from .shared import BaseTestCase, random_string
+from apps.commons.tests.fixtures import BaseTestCase, random_string
 from django.utils import timezone
 from datetime import timedelta
 from apps.incidents.escalation_helper import get_escalation_for_service
