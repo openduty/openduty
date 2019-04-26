@@ -46,6 +46,20 @@ def admin_user():
     return user
 
 
+@pytest.mark.django_db
+@pytest.fixture
+def authenticated_client():
+    user = User.objects.create_superuser(
+        email='admin_user@example.com',
+        username="admin_user",
+        password='1234test'
+    )
+    G(Profile, user=user)
+    client = Client()
+    client.force_login(user)
+    return client
+
+
 @pytest.fixture
 def create_view(view_class, url,  url_kwargs, payload=None, action_map=None, request_user=None):
     request_type, method_called = None, None

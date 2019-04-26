@@ -25,30 +25,53 @@
         {% endif %}
         <div class="row">
             <div class="col-xs-12">
-                <form class="form-horizontal" role="form" method="post" action="{% url 'openduty.schedules.save' %}">
-                    <input type="hidden" name="slug" value="{% if item %}{{ item.slug }}{% else%}{% endif %}">
-                    <div class="form-group">
-                        <label for="name" class="col-sm-2 control-label">Name</label>
-
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" name="name" id="name" placeholder="Calendar Name" value="{% if item %}{{ item.name }}{% endif %}">
+                <div class="col-lg-6 col-lg-push-3 col-md-8 col-md-push-2 col-xs-10 col-xs-push-1">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title text-center">
+                                {% if form.non_field_errors %}
+                                    <ul class="list-unstyled">
+                                        {% for error in form.non_field_errors %}
+                                            <li><strong>{{ error|escape }}</strong></li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    {% if item %}Edit user{% else%}New user{% endif %}
+                                {% endif %}
+                            </h3>
+                            <form class="form-horizontal" role="form" method="post" action="">
+                                <div class="box-body">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="name">
+                                            Name
+                                            {% if form.errors %}{% for field in form %}
+                                                {% ifequal field form.name %}{% for error in field.errors %}
+                                                    <strong class="alert-danger"> {{ error|escape }}</strong>
+                                                {% endfor %}{% endifequal %}
+                                            {% endfor %}{% endif %}
+                                        </label>
+                                        {{ form.name }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="slug">
+                                            Slug
+                                            {% if form.errors %}{% for field in form %}
+                                                {% ifequal field form.slug %}{% for error in field.errors %}
+                                                    <strong class="alert-danger"> {{ error|escape }}</strong>
+                                                {% endfor %}{% endifequal %}
+                                            {% endfor %}{% endif %}
+                                        </label>
+                                        {{ form.slug }}
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary">Save</button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="slug" class="col-sm-2 control-label">Slug</label>
-
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" name="slug" id="slug" placeholder="Slug" value="{% if item %}{{ item.slug }}{% endif %}"
-                                   {% if edit %}disabled{% endif %}>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-offset-2 col-sm-10">
-                            <button type="submit" class="btn btn-default">Save</button>
-                        </div>
-                    </div>
-                    {% csrf_token %}
-                </form>
+                </div>
             </div>
         </div>
     </div>

@@ -1,22 +1,14 @@
 import pytz
-from django.shortcuts import render
-from django.http import HttpResponseRedirect
 from django.views.generic import ListView, DeleteView, UpdateView, CreateView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.template.response import TemplateResponse
-from django.contrib.auth.decorators import login_required
 from django.utils.datetime_safe import datetime
 from django.utils import timezone
 from django.http import Http404
-from django.views.decorators.http import require_http_methods
-from django.db import IntegrityError
-from django.urls import reverse
-from django.contrib import messages
-from django.shortcuts import get_object_or_404
 from apps.incidents import escalation_helper
+from apps.schedules.forms import CalendarForm
 from schedule.models import Calendar
-from schedule.views import FullCalendarView, CalendarMixin
-from schedule.periods import Month, Year
+from schedule.views import CalendarMixin
+from schedule.periods import Month
 from schedule.utils import coerce_date_dict
 from schedule.periods import weekday_abbrs, weekday_names
 
@@ -27,22 +19,14 @@ class SchedulesListView(LoginRequiredMixin, ListView):
     context_object_name = 'schedules'
 
 
-@login_required()
-def delete(request, calendar_slug):
-    try:
-        sched = get_object_or_404(Calendar, slug=calendar_slug)
-        sched.delete()
-        return HttpResponseRedirect('/schedules/')
-    except Calendar.DoesNotExist:
-        raise Http404
-
+class SchedulesDeleteView(LoginRequiredMixin, CalendarMixin, DeleteView):
+    """Delete Schedules"""
+    success_url = '/schedules/'
 
 
 class SchedulesDetailView(LoginRequiredMixin, CalendarMixin, DetailView):
-    model = Calendar
-    slug_url_kwarg = 'calendar_slug'
     template_name = 'schedules/detail.html'
-    context_object_name = 'schedules'
+    context_object_name = 'item'
 
     def get_on_call_users(self):
         schedule = self.get_object()
@@ -67,27 +51,18 @@ class SchedulesDetailView(LoginRequiredMixin, CalendarMixin, DetailView):
         event_list = schedule.event_set.all()
         on_call_1, on_call_2 = self.get_on_call_users()
         local_timezone = timezone.get_default_timezone()
-        if 'django_timezone' in self.request.session:
+        if 'django_timezone' in self.request.session:  # pragma: no cover
             local_timezone = pytz.timezone(self.request.session['django_timezone'])
         period_objects = {}
-        for period in [Month]:
-            if period.__name__.lower() == 'year':
-                period_objects[period.__name__.lower()] = Year(event_list, date, None, local_timezone)
-            else:
-                period_objects[period.__name__.lower()] = Month(event_list, date, None, None, local_timezone)
-
-        month = period_objects['month']
+        month = Month(event_list, date, None, None, local_timezone)
         shift = None
-        if shift:
+        if shift:  # pragma: no cover
             if shift == -1:
                 month = month.prev()
             if shift == 1:
-                month = next(month)
+                month = month.next()
         size = 'regular'
-        if size == 'small':
-            day_names = weekday_abbrs
-        else:
-            day_names = weekday_names
+        day_names = weekday_abbrs if size == 'small' else weekday_names
 
         extra_context = {
             'day_names': day_names,
@@ -107,40 +82,15 @@ class SchedulesDetailView(LoginRequiredMixin, CalendarMixin, DetailView):
         return context
 
 
-@login_required()
-def new(request):
-    try:
-        return TemplateResponse(request, 'schedules/edit.html', {})
-    except Calendar.DoesNotExist:
-        raise Http404
+class SchedulesCreateView(LoginRequiredMixin, CalendarMixin, CreateView):
+    template_name = 'schedules/edit.html'
+    context_object_name = 'item'
+    form_class = CalendarForm
+    success_url = '/schedules/'
 
 
-
-@login_required()
-def edit(request, calendar_slug):
-    try:
-        sched = get_object_or_404(Calendar, slug=calendar_slug)
-        return TemplateResponse(request, 'schedules/edit.html', {'item': sched, 'edit': True})
-    except Calendar.DoesNotExist:
-        raise Http404
-
-
-@login_required()
-@require_http_methods(["POST"])
-def save(request):
-    try:
-        sched = Calendar.objects.get(slug=request.POST['slug'])
-    except Calendar.DoesNotExist:
-        sched = Calendar()
-
-    sched.name = request.POST['name']
-    sched.slug = request.POST['slug']
-    try:
-        sched.save()
-        return HttpResponseRedirect('/schedules/')
-    except IntegrityError:
-        messages.error(request, 'Schedule already exists')
-        if request.POST['slug']:
-            return HttpResponseRedirect(reverse('openduty.schedules.edit', None, [request.POST['slug']]))
-        else:
-            return HttpResponseRedirect(reverse('openduty.schedules.new'))
+class SchedulesUpdateView(LoginRequiredMixin, CalendarMixin, UpdateView):
+    template_name = 'schedules/edit.html'
+    context_object_name = 'item'
+    form_class = CalendarForm
+    success_url = '/schedules/'
