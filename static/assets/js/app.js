@@ -217,7 +217,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
         }
       }
     }; // IE9 throws an 'unknown error' if document.activeElement is used
-    // inside an iframe or frame. 
+    // inside an iframe or frame.
 
 
     var activeEl;
@@ -1722,7 +1722,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
   };
   /**
    * DataTables utility methods
-   * 
+   *
    * This namespace provides helper methods that DataTables uses internally to
    * create a DataTable, but which are not exclusively used only for DataTables.
    * These methods can be used by extension authors to save the duplication of
@@ -2324,7 +2324,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
     var data = settings.aoData;
     var types = DataTable.ext.type.detect;
     var i, ien, j, jen, k, ken;
-    var col, cell, detectedType, cache; // For each column, spin over the 
+    var col, cell, detectedType, cache; // For each column, spin over the
 
     for (i = 0, ien = columns.length; i < ien; i++) {
       col = columns[i];
@@ -4306,7 +4306,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
        * word order. We also want double quoted text to be preserved, so word
        * order is important - a la google. So this is what we want to
        * generate:
-       * 
+       *
        * ^(?=.*?\bone\b)(?=.*?\btwo three\b)(?=.*?\bfour\b).*$
        */
       var a = $.map(search.match(/"[^"]+"|[^ ]+/g) || [''], function (word) {
@@ -5372,7 +5372,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
         height: 1,
         right: 0,
         overflow: 'hidden'
-      } : {}).append(tmpTable).appendTo(tableContainer); // When scrolling (X or Y) we want to set the width of the table as 
+      } : {}).append(tmpTable).appendTo(tableContainer); // When scrolling (X or Y) we want to set the width of the table as
       // appropriate. However, when not scrolling leave the table width as it
       // is. This results in slightly different, but I think correct behaviour
 
@@ -10803,7 +10803,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
        * However, multiple different tables on the page can use different
        * decimal place characters.
        *  @type string
-       *  @default 
+       *  @default
        *
        *  @dtopt Language
        *  @name DataTable.defaults.language.decimal
@@ -10962,7 +10962,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
       /**
        * Assign a `placeholder` attribute to the search `input` element
        *  @type string
-       *  @default 
+       *  @default
        *
        *  @dtopt Language
        *  @name DataTable.defaults.language.searchPlaceholder
@@ -11158,7 +11158,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
      * * `full` - 'First', 'Previous', 'Next' and 'Last' buttons
      * * `full_numbers` - 'First', 'Previous', 'Next' and 'Last' buttons, plus page numbers
      * * `first_last_numbers` - 'First' and 'Last' buttons, plus page numbers
-     *  
+     *
      * Further methods can be added using {@link DataTable.ext.oPagination}.
      *  @type string
      *  @default simple_numbers
@@ -13043,7 +13043,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
 
   /**
    * DataTables extensions
-   * 
+   *
    * This namespace acts as a collection area for plug-ins that can be used to
    * extend DataTables capabilities. Indeed many of the build in methods
    * use this method to provide their own capabilities (sorting methods for
@@ -13083,7 +13083,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
 
     /**
      * Error reporting.
-     * 
+     *
      * How should DataTables report an error. Can take the value 'alert',
      * 'throw', 'none' or a function.
      *
@@ -13094,14 +13094,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
 
     /**
      * Feature plug-ins.
-     * 
+     *
      * This is an array of objects which describe the feature plug-ins that are
      * available to DataTables. These feature plug-ins are then available for
      * use through the `dom` initialisation option.
-     * 
+     *
      * Each feature plug-in is described by an object which must have the
      * following properties:
-     * 
+     *
      * * `fnInit` - function that is used to initialise the plug-in,
      * * `cFeature` - a character so the feature can be enabled by the `dom`
      *   instillation option. This is case sensitive.
@@ -13112,7 +13112,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
      *    {@link DataTable.models.oSettings}
      *
      * And the following return is expected:
-     * 
+     *
      * * {node|null} The element which contains your feature. Note that the
      *   return may also be void if your plug-in does not require to inject any
      *   DOM elements into DataTables control (`dom`) - for example this might
@@ -13133,7 +13133,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
 
     /**
      * Row searching.
-     * 
+     *
      * This method of searching is complimentary to the default type based
      * searching, and a lot more comprehensive as it allows you complete control
      * over the searching logic. Each element in this array is a function
@@ -13223,7 +13223,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
 
     /**
      * Internal functions, exposed for used in plug-ins.
-     * 
+     *
      * Please note that you should not need to use the internal methods for
      * anything other than a plug-in (and even then, try to avoid if possible).
      * The internal function may change between releases.
@@ -13252,7 +13252,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
 
     /**
      * Pagination plug-in methods.
-     * 
+     *
      * Each entry in this object is a function and defines which buttons should
      * be shown by the pagination rendering method that is used for the table:
      * {@link DataTable.ext.renderer.pageButton}. The renderer addresses how the
@@ -13303,16 +13303,16 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
 
     /**
      * Ordering plug-ins - custom data source
-     * 
+     *
      * The extension options for ordering of data available here is complimentary
      * to the default type based ordering that DataTables typically uses. It
      * allows much greater control over the the data that is being used to
      * order a column, but is necessarily therefore more complex.
-     * 
+     *
      * This type of ordering is useful if you want to do ordering based on data
      * live from the DOM (for example the contents of an 'input' element) rather
      * than just the static string that DataTables knows of.
-     * 
+     *
      * The way these plug-ins work is that you create an array of the values you
      * wish to be ordering for the column in question and then return that
      * array. The data in the array much be in the index order of the rows in
@@ -13405,7 +13405,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
        *
        * Note that is a search is not defined for a column of a given type,
        * no search formatting will be performed.
-       * 
+       *
        * Pre-processing of searching data plug-ins - When you assign the sType
        * for a column (or have it automatically detected for you by DataTables
        * or a type detection plug-in), you will typically be using this for
@@ -13474,7 +13474,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
        *   than the second parameter, ===0 if the two parameters are equal and
        *   >0 if the first parameter should be sorted height than the second
        *   parameter.
-       * 
+       *
        *  @type object
        *  @default {}
        *
@@ -13813,7 +13813,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
     return _empty(d) || typeof d === 'string' && d.indexOf('<') !== -1 ? 'html' : null;
   }]); // Filter formatting functions. See model.ext.ofnSearch for information about
   // what is required from these methods.
-  // 
+  //
   // Note that additional search methods are added for the html numbers and
   // html formatted numbers by `_addNumericSort()` when we know what the decimal
   // place is
@@ -23493,7 +23493,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
   };
   /**
    * DataTables utility methods
-   * 
+   *
    * This namespace provides helper methods that DataTables uses internally to
    * create a DataTable, but which are not exclusively used only for DataTables.
    * These methods can be used by extension authors to save the duplication of
@@ -24095,7 +24095,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
     var data = settings.aoData;
     var types = DataTable.ext.type.detect;
     var i, ien, j, jen, k, ken;
-    var col, cell, detectedType, cache; // For each column, spin over the 
+    var col, cell, detectedType, cache; // For each column, spin over the
 
     for (i = 0, ien = columns.length; i < ien; i++) {
       col = columns[i];
@@ -26077,7 +26077,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
        * word order. We also want double quoted text to be preserved, so word
        * order is important - a la google. So this is what we want to
        * generate:
-       * 
+       *
        * ^(?=.*?\bone\b)(?=.*?\btwo three\b)(?=.*?\bfour\b).*$
        */
       var a = $.map(search.match(/"[^"]+"|[^ ]+/g) || [''], function (word) {
@@ -27143,7 +27143,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
         height: 1,
         right: 0,
         overflow: 'hidden'
-      } : {}).append(tmpTable).appendTo(tableContainer); // When scrolling (X or Y) we want to set the width of the table as 
+      } : {}).append(tmpTable).appendTo(tableContainer); // When scrolling (X or Y) we want to set the width of the table as
       // appropriate. However, when not scrolling leave the table width as it
       // is. This results in slightly different, but I think correct behaviour
 
@@ -32574,7 +32574,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
        * However, multiple different tables on the page can use different
        * decimal place characters.
        *  @type string
-       *  @default 
+       *  @default
        *
        *  @dtopt Language
        *  @name DataTable.defaults.language.decimal
@@ -32733,7 +32733,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
       /**
        * Assign a `placeholder` attribute to the search `input` element
        *  @type string
-       *  @default 
+       *  @default
        *
        *  @dtopt Language
        *  @name DataTable.defaults.language.searchPlaceholder
@@ -32929,7 +32929,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
      * * `full` - 'First', 'Previous', 'Next' and 'Last' buttons
      * * `full_numbers` - 'First', 'Previous', 'Next' and 'Last' buttons, plus page numbers
      * * `first_last_numbers` - 'First' and 'Last' buttons, plus page numbers
-     *  
+     *
      * Further methods can be added using {@link DataTable.ext.oPagination}.
      *  @type string
      *  @default simple_numbers
@@ -34814,7 +34814,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
 
   /**
    * DataTables extensions
-   * 
+   *
    * This namespace acts as a collection area for plug-ins that can be used to
    * extend DataTables capabilities. Indeed many of the build in methods
    * use this method to provide their own capabilities (sorting methods for
@@ -34854,7 +34854,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
 
     /**
      * Error reporting.
-     * 
+     *
      * How should DataTables report an error. Can take the value 'alert',
      * 'throw', 'none' or a function.
      *
@@ -34865,14 +34865,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
 
     /**
      * Feature plug-ins.
-     * 
+     *
      * This is an array of objects which describe the feature plug-ins that are
      * available to DataTables. These feature plug-ins are then available for
      * use through the `dom` initialisation option.
-     * 
+     *
      * Each feature plug-in is described by an object which must have the
      * following properties:
-     * 
+     *
      * * `fnInit` - function that is used to initialise the plug-in,
      * * `cFeature` - a character so the feature can be enabled by the `dom`
      *   instillation option. This is case sensitive.
@@ -34883,7 +34883,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
      *    {@link DataTable.models.oSettings}
      *
      * And the following return is expected:
-     * 
+     *
      * * {node|null} The element which contains your feature. Note that the
      *   return may also be void if your plug-in does not require to inject any
      *   DOM elements into DataTables control (`dom`) - for example this might
@@ -34904,7 +34904,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
 
     /**
      * Row searching.
-     * 
+     *
      * This method of searching is complimentary to the default type based
      * searching, and a lot more comprehensive as it allows you complete control
      * over the searching logic. Each element in this array is a function
@@ -34994,7 +34994,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
 
     /**
      * Internal functions, exposed for used in plug-ins.
-     * 
+     *
      * Please note that you should not need to use the internal methods for
      * anything other than a plug-in (and even then, try to avoid if possible).
      * The internal function may change between releases.
@@ -35023,7 +35023,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
 
     /**
      * Pagination plug-in methods.
-     * 
+     *
      * Each entry in this object is a function and defines which buttons should
      * be shown by the pagination rendering method that is used for the table:
      * {@link DataTable.ext.renderer.pageButton}. The renderer addresses how the
@@ -35074,16 +35074,16 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
 
     /**
      * Ordering plug-ins - custom data source
-     * 
+     *
      * The extension options for ordering of data available here is complimentary
      * to the default type based ordering that DataTables typically uses. It
      * allows much greater control over the the data that is being used to
      * order a column, but is necessarily therefore more complex.
-     * 
+     *
      * This type of ordering is useful if you want to do ordering based on data
      * live from the DOM (for example the contents of an 'input' element) rather
      * than just the static string that DataTables knows of.
-     * 
+     *
      * The way these plug-ins work is that you create an array of the values you
      * wish to be ordering for the column in question and then return that
      * array. The data in the array much be in the index order of the rows in
@@ -35176,7 +35176,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
        *
        * Note that is a search is not defined for a column of a given type,
        * no search formatting will be performed.
-       * 
+       *
        * Pre-processing of searching data plug-ins - When you assign the sType
        * for a column (or have it automatically detected for you by DataTables
        * or a type detection plug-in), you will typically be using this for
@@ -35245,7 +35245,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
        *   than the second parameter, ===0 if the two parameters are equal and
        *   >0 if the first parameter should be sorted height than the second
        *   parameter.
-       * 
+       *
        *  @type object
        *  @default {}
        *
@@ -35584,7 +35584,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
     return _empty(d) || typeof d === 'string' && d.indexOf('<') !== -1 ? 'html' : null;
   }]); // Filter formatting functions. See model.ext.ofnSearch for information about
   // what is required from these methods.
-  // 
+  //
   // Note that additional search methods are added for the html numbers and
   // html formatted numbers by `_addNumericSort()` when we know what the decimal
   // place is
@@ -47939,7 +47939,7 @@ __webpack_require__(/*! ./lib/moment */ "./src/assets/js/lib/moment.js");
 __webpack_require__(/*! ./lib/jquery-ui */ "./src/assets/js/lib/jquery-ui.js"); //Date picker
 
 
-jquery__WEBPACK_IMPORTED_MODULE_0___default()('#id_birth_date').datepicker({
+jquery__WEBPACK_IMPORTED_MODULE_0___default()('.datepicker').datepicker({
   autoclose: true,
   calendarWeeks: true,
   format: "yyyy-mm-dd"
@@ -50885,7 +50885,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   };
   fc.dateFormatters = dateFormatters;
   /* thanks jQuery UI (https://github.com/jquery/jquery-ui/blob/master/ui/jquery.ui.datepicker.js)
-   * 
+   *
    * Set as calculateWeek to determine the week of the year based on the ISO 8601 definition.
    * `date` - the date to get the week for
    * `number` - the number of the week within the year that contains this date
@@ -52469,7 +52469,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           if (cell && cell.col == origCell.col && !getIsCellAllDay(cell)) {
             var d1 = realCellToDate(origCell);
             var d2 = realCellToDate(cell);
-            dates = [d1, addMinutes(cloneDate(d1), snapMinutes), // calculate minutes depending on selection slot minutes 
+            dates = [d1, addMinutes(cloneDate(d1), snapMinutes), // calculate minutes depending on selection slot minutes
             d2, addMinutes(cloneDate(d2), snapMinutes)].sort(dateCompare);
             renderSlotSelection(dates[0], dates[3]);
           } else {

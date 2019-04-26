@@ -1,8 +1,12 @@
 import pytest
-from django_dynamic_fixture import G
-from rest_framework.test import APIRequestFactory
+import string
+import random
+from django.test import Client
+from django.test import TestCase
 from django.contrib.auth.models import User
 from django.contrib.auth.models import AnonymousUser
+from django_dynamic_fixture import G
+from rest_framework.test import APIRequestFactory
 from apps.accounts.models import Profile
 
 
@@ -40,6 +44,20 @@ def admin_user():
     )
     G(Profile, user=user)
     return user
+
+
+@pytest.mark.django_db
+@pytest.fixture
+def authenticated_client():
+    user = User.objects.create_superuser(
+        email='admin_user@example.com',
+        username="admin_user",
+        password='1234test'
+    )
+    G(Profile, user=user)
+    client = Client()
+    client.force_login(user)
+    return client
 
 
 @pytest.fixture
@@ -82,3 +100,34 @@ def create_view(view_class, url,  url_kwargs, payload=None, action_map=None, req
     else:
         response = instantiated_view_class.list(request, **url_kwargs)
     return response
+
+
+def random_string(size=6, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
+
+
+class BaseTestCase(TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.username = random_string()
+        cls.password = random_string()
+        cls.user = User.objects.create_superuser(
+            cls.username,
+            'test@localhost',
+            cls.password,
+        )
+
+    @classmethod
+    def tearDownClass(cls):
+        try:
+            cls.user.delete()
+        except Exception:
+            pass
+
+
+class LoggedInTestCase(BaseTestCase):
+
+    def setUp(self):
+        self.client = Client()
+        self.client.force_login(self.user)

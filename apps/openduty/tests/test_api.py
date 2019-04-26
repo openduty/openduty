@@ -7,7 +7,7 @@ from apps.policies.models import SchedulePolicy
 from apps.incidents.models import Incident
 from rest_framework.test import APIClient
 from django.test import TestCase
-from apps.openduty.tests.shared import BaseTestCase, random_string
+from apps.commons.tests.fixtures import random_string
 import pytest
 
 
