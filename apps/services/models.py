@@ -6,7 +6,6 @@ from apps.accounts.models import Token
 from apps.policies.models import SchedulePolicy
 
 
-@python_2_unicode_compatible
 class Service(models.Model):
     """
     Incidents are representations of a malfunction in the system.
@@ -30,7 +29,6 @@ class Service(models.Model):
         return (self.id)
 
 
-@python_2_unicode_compatible
 class ServiceTokens(models.Model):
     """
     Service tokens
@@ -51,3 +49,6 @@ class ServiceSilenced(models.Model):
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
     silenced = models.BooleanField(default=False)
     silenced_until = models.DateTimeField()
+
+    def __str__(self):
+        return f"Silenced: {self.silenced}, Until {self.silenced_until}"

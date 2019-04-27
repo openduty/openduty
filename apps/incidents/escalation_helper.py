@@ -71,7 +71,7 @@ def get_escalation_for_service(service):
     result = []
     if service.notifications_disabled:
         return result
-    rules = SchedulePolicyRule.getRulesForService(service)
+    rules = SchedulePolicyRule.get_rules_for_service(service)
     for item in rules:
         if item.schedule:
             result += get_current_events_users(item.schedule)

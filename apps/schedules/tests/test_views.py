@@ -1,12 +1,10 @@
+import pytest
 from datetime import timedelta
 from django.urls import reverse
 from django.utils import timezone
-from schedule.models import Calendar, Event
-from schedule.periods import Year
 from django_dynamic_fixture import G
+from schedule.models import Calendar, Event
 from apps.commons.tests.fixtures import authenticated_client, base_user, other_user
-from apps.schedules.views import SchedulesDetailView
-import pytest
 
 
 @pytest.mark.django_db

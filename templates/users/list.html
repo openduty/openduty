@@ -38,8 +38,7 @@
                     </div>
                     <div class="box">
                         <div class="box-header">
-                            <h3 class="box-title">All Users</h3>
-
+                            <h2></h2>
                             <div class="box-tools">
                                 <div class="input-group input-group-sm" style="width: 150px;">
                                     <a href="{% url 'UserCreateView' %}" type="submit" class="btn btn-success">
@@ -55,7 +54,7 @@
                                     <th>User name</th>
                                     <th>E-mail</th>
                                     <th>Phone</th>
-                                    <th></th>
+                                    <th>Options</th>
                                 </tr>
                                 {% for item in users %}
                                     {% if perms.is_staff or item.id == user.id %}
