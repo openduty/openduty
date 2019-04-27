@@ -5,17 +5,39 @@
 [![Coverage Status](https://coveralls.io/repos/github/openduty/openduty/badge.svg)](https://coveralls.io/github/openduty/openduty)
 [![Requirements Status](https://requires.io/github/openduty/openduty/requirements.svg?branch=master)](https://requires.io/github/openduty/openduty/requirements/?branch=master)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/openduty/opendutyweb)
+
+
+---
+
+#### **_Outdated_** `Requirements Status`
+
+2 packages (indirect dependencies)  are outdated - but required by other packages:
+
+**`Faker`** `installed` `==0.9.1` | `latest` `==1.0.5`
+
+**`urllib3`** `installed` `==1.24.2` | `latest` `==1.25.1`
+
+---
+
+
 # What is this?
 **Openduty** is an incident escalation tool, just like [Pagerduty](http://pagerduty.com) . It has a Pagerduty compatible API too. 
 # Integrations
 Has been tested with Nagios, works well for us. Any Pagerduty Notifier using the Pagerduty API should work without a problem.
 [Icinga2 config](https://github.com/deathowl/OpenDuty-Icinga2) for openduty integration
 
+
+
+
 # Notifications
 Email, SMS, Phone(Thanks Twilio for being awesome!), Push notifications(thanks Pushover, Prowl as well!)and Slack, HipChat, Rocket.chat are supported at the moment.
 
 # Current status
-Openduty is in Beta status, it can be considered stable at the moment, however major structural changes can appear anytime (not affecting the API, or the Notifier structure)
+Openduty is in Beta status, it can be considered stable at the moment, 
+however major structural changes can appear anytime 
+(not affecting the API, or the Notifier structure)
+
+
 
 # Contribution guidelines
 Yes, please. You are welcome.
