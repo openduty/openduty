@@ -1,15 +1,11 @@
 from django.http import HttpResponseRedirect
-from django.template.response import TemplateResponse
-from django.contrib.auth.decorators import login_required
+from django.views.generic import ListView, DeleteView, UpdateView, CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import Group
-from django.http import Http404
-from django.views.decorators.http import require_http_methods
-from django.db import IntegrityError
-from django.urls import reverse
-from django.contrib import messages
 from rest_framework import viewsets
 from django.contrib.auth.models import User
 from schedule.models import Calendar
+from apps.policies.forms import SchedulePolicyForm
 from apps.policies.serializers import SchedulePolicySerializer, SchedulePolicyRuleSerializer
 from apps.policies.models import SchedulePolicy, SchedulePolicyRule
 
@@ -24,111 +20,84 @@ class SchedulePolicyRuleViewSet(viewsets.ModelViewSet):
     serializer_class = SchedulePolicyRuleSerializer
 
 
-@login_required()
-def list(request):
-    policies = SchedulePolicy.objects.all()
-    return TemplateResponse(request, 'escalation/list.html', {'policies': policies})
+class SchedulePolicyListView(LoginRequiredMixin, ListView):
+    model = SchedulePolicy
+    template_name = 'policies/list.html'
+    context_object_name = 'policies'
 
 
-@login_required()
-def delete(request, id):
-    try:
-        policy = SchedulePolicy.objects.get(id=id)
-        policy.delete()
-        return HttpResponseRedirect('/policies/')
-    except Calendar.DoesNotExist:
-        raise Http404
+class SchedulePolicyCreateOrUpdateMixin(object):
 
-
-@login_required()
-def new(request):
-    try:
-        users = User.objects.all()
-    except User.DoesNotExist:
-        users = None
-    try:
-        groups = Group.objects.all()
-    except Group.DoesNotExist:
-        groups = None
-    try:
-        calendars = Calendar.objects.all()
-    except Calendar.DoesNotExist:
-        calendars = None
-
-    return TemplateResponse(request, 'escalation/edit.html', {'calendars': calendars, 'groups': groups, 'users': users})
-
-
-@login_required()
-def edit(request, id):
-    try:
-        policy = SchedulePolicy.objects.get(id=id)
-        try:
-            elements = SchedulePolicyRule.objects.filter(schedule_policy = policy).order_by('position')
-        except SchedulePolicyRule.DoesNotExist:
-            elements = None
-        try:
+    @staticmethod
+    def get_extra_context(policy):
+        extra_context = {}
+        if policy:
+            elements = SchedulePolicyRule.objects.filter(schedule_policy=policy).order_by('position')
             calendars = Calendar.objects.all()
-        except Calendar.DoesNotExist:
-            calendars = None
-        try:
             groups = Group.objects.all()
-        except Group.DoesNotExist:
-            groups = None
-        try:
             users = User.objects.all()
-        except User.DoesNotExist:
-            users = None
+            extra_context = {
+                'elements': elements,
+                'calendars': calendars,
+                'groups': groups,
+                'users': users
+            }
+        return extra_context
 
-        return TemplateResponse(request, 'escalation/edit.html', {'item': policy, 'elements': elements,
-                                                                  'calendars': calendars, 'groups': groups, 'users': users})
-    except Calendar.DoesNotExist:
-        raise Http404
-
-
-@login_required()
-@require_http_methods(["POST"])
-def save(request):
-    try:
-        policy = SchedulePolicy.objects.get(id=request.POST['id'])
-    except SchedulePolicy.DoesNotExist:
-        policy = SchedulePolicy()
-
-    policy.name = request.POST['name']
-    policy.repeat_times = request.POST['repeat']
-    try:
-        policy.save()
-    except IntegrityError:
-        messages.error(request, 'Schedule already exists')
-        if int(request.POST['id']) > 0:
-            return HttpResponseRedirect(reverse('openduty.escalation.edit', None, [str(request.POST['id'])]))
-        else:
-            return HttpResponseRedirect(reverse('openduty.escalation.new'))
-
-    elements = request.POST.getlist('escalate_to[]')
-    try:
+    @staticmethod
+    def after_form_valid(elements=[], policy=None, redirect_url='/'):
         SchedulePolicyRule.objects.filter(schedule_policy=policy).delete()
-    except SchedulePolicyRule.DoesNotExist:
-        pass  # Nothing to clear
-    for idx,item in enumerate(elements):
-        rule = SchedulePolicyRule()
-        rule.schedule_policy = policy
-        parts = item.split("|")
-        rule.escalate_after = 0  # HACK!
-        rule.position = idx + 1
-        rule.schedule = None
-        rule.user_id = None
-        rule.group_id = None
-        if parts[0] == "user":
-            rule.user_id = User.objects.get(id=parts[1])
-        elif parts[0] == "calendar":
-            rule.schedule = Calendar.objects.get(id=parts[1])
-        elif parts[0] == "group":
-            rule.group_id = Group.objects.get(id=parts[1])
-
-        try:
+        for index, item in enumerate(elements):
+            rule = SchedulePolicyRule(
+                schedule_policy=policy,
+                escalate_after=policy.repeat_times,
+                position=index + 1,
+                schedule=None,
+                user_id=None,
+                group_id=None
+            )
+            parts = item.split("|")
+            if parts[0] == "user":
+                rule.user_id = User.objects.get(id=parts[1])
+            elif parts[0] == "calendar":
+                rule.schedule = Calendar.objects.get(id=parts[1])
+            elif parts[0] == "group":
+                rule.group_id = Group.objects.get(id=parts[1])
             rule.save()
-        except IntegrityError:
-            return HttpResponseRedirect(reverse('openduty.escalation.edit', None, [str(request.POST['id'])]))
+        return HttpResponseRedirect(redirect_url)
 
 
-    return HttpResponseRedirect('/policies/')
+class SchedulePolicyCreateView(LoginRequiredMixin, CreateView, SchedulePolicyCreateOrUpdateMixin):
+    model = SchedulePolicy
+    form_class = SchedulePolicyForm
+    template_name = 'policies/edit.html'
+    success_url = '/policies/'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(self.get_extra_context(self.object))
+        return context
+
+    def form_valid(self, form):
+        super(SchedulePolicyCreateView, self).form_valid(form)
+        return self.after_form_valid(self.request.POST.getlist('escalate_to[]'), self.object, self.get_success_url())
+
+
+class SchedulePolicyUpdateView(LoginRequiredMixin, UpdateView, SchedulePolicyCreateOrUpdateMixin):
+    model = SchedulePolicy
+    form_class = SchedulePolicyForm
+    template_name = 'policies/edit.html'
+    context_object_name = 'item'
+    success_url = '/policies/'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extra_context = self.get_extra_context(self.get_object())
+        context.update(extra_context)
+        return context
+
+
+class SchedulePolicyDeleteView(LoginRequiredMixin, DeleteView):
+    """Delete Schedule Policy"""
+    model = SchedulePolicy
+    success_url = '/policies/'

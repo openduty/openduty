@@ -282,12 +282,11 @@
 {% endblock %}
 {% block custom_scripts %}
     <script type="text/javascript" src="{% static "assets/js/jquery-3.3.1.min.js"%}"></script>
+    <script type="text/javascript" src="{% static "assets/js/jquery-ui.js"%}"></script>
     <script>
         $(document ).ready(function() {
             var list = $("#list");
-
-            {#list.sortable();#}
-
+            list.sortable();
             $('#add_method').on('click', function(e) {
                 e.preventDefault();
                 $('#empty-row').children().first().clone().appendTo(list);

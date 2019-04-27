@@ -1,11 +1,13 @@
-from django.conf.urls import url
-from apps.policies import views
+from django.urls import path
+from apps.policies.views import (
+    SchedulePolicyListView, SchedulePolicyDeleteView,
+    SchedulePolicyCreateView, SchedulePolicyUpdateView
+)
 
 
 urlpatterns = [
-    url(r'^$', views.list, name='openduty.escalation.list'),
-    url(r'^new$', views.new, name='openduty.escalation.new'),
-    url(r'^save', views.save, name='openduty.escalation.save'),
-    url(r'^edit/(.*)$', views.edit, name='openduty.escalation.edit'),
-    url(r'^delete/(.*)$', views.delete, name='openduty.escalation.delete'),
+    path('', SchedulePolicyListView.as_view(), name='SchedulePolicyListView'),
+    path('new/', SchedulePolicyCreateView.as_view(), name='SchedulePolicyCreateView'),
+    path('edit/<int:pk>/', SchedulePolicyUpdateView.as_view(), name="SchedulePolicyUpdateView"),
+    path('delete/<int:pk>/', SchedulePolicyDeleteView.as_view(), name="openduty.escalation.delete"),
 ]

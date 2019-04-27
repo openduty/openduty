@@ -51,7 +51,7 @@
                 <option value="{{ c.id }}" {% if policy.id == c.id %}selected{% endif %}>{{ c.name }}</option>
                 {% endfor %}
             </select>
-            <a href="{% url 'openduty.escalation.edit' policy.id %}" role="button" class="btn btn-success btn-large">Jump to {{ policy }}</a>
+            <a href="{% url 'SchedulePolicyUpdateView' policy.id %}" role="button" class="btn btn-success btn-large">Jump to {{ policy }}</a>
         </div>
 
 
