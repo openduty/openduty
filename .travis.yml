@@ -12,6 +12,7 @@ env:
 install:
   - pip install -U pipenv
   - pipenv install --system --deploy
+  - pip install django-twilio==0.10.0
 
 before_script:
   - psql -c "CREATE DATABASE openduty;" -U postgres
