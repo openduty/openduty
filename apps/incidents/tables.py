@@ -53,10 +53,10 @@ class IncidentTable(tables.Table):
                 Incident.objects.values_list('incident_key', flat=True).order_by('-occurred_at')[:500]
             ])
         )
-    except ProgrammingError:
+    except ProgrammingError:  # pragma: no cover
         filters = []
 
-    def render_tr_class(self, record):
+    def render_tr_class(self, record):  # pragma: no cover
         return record.color
 
     class Meta:
