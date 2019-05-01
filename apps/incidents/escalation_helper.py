@@ -42,28 +42,36 @@ def get_current_events_users(calendar):
 def get_events_users_inbetween(calendar, since, until):
     delta = until - since
     result = {}
+    added_users = []
     for i in range(delta.days + 1):
         that_day = since + timedelta(days=i)
-        that_day = timezone.make_aware(that_day, timezone.get_current_timezone())
+        if not timezone.is_aware(that_day):
+            that_day = timezone.make_aware(that_day, timezone.get_current_timezone())
         day = Day(calendar.events.all(), that_day)
         for o in day.get_occurrences():
             if o.start <= that_day <= o.end:
                 items = o.event.title.split(',')
                 for item in items:
-                    username = item
-                    if Group.objects.filter(name=item.strip()) is not None:
-                        for user in User.objects.filter(groups__name=item):
-                            if user not in result.keys():
-                                result.append(user)
-                            else:
-                                result[username]["end"] = o.end
+                    username = item.strip()
+                    if Group.objects.filter(name=username):
+                        for user in User.objects.filter(groups__name=username):
+                            if user not in added_users:
+                                result[username] = {
+                                    "start": o.start,
+                                    "person": user.username,
+                                    "end": o.end,
+                                    "email": user.email
+                                }
+                                added_users.append(user)
                     else:
-                        if item not in result.keys():
-                            user_instance = User.objects.get(username=item.strip())
-                            result[username] = {"start": o.start, "person": username.strip(), "end": o.end,
-                                            "email": user_instance.email}
-                        else:
-                            result[username]["end"] = o.end
+                        if username not in result.keys():
+                            user_instance = User.objects.get(username=username)
+                            result[username] = {
+                                "start": o.start,
+                                "person": username,
+                                "end": o.end,
+                                "email": user_instance.email
+                            }
     return result.values()
 
 
@@ -72,16 +80,23 @@ def get_escalation_for_service(service):
     if service.notifications_disabled:
         return result
     rules = SchedulePolicyRule.get_rules_for_service(service)
+    print(rules)
     for item in rules:
+        print(item.schedule)
+        print(item.user_id)
+        print(item.group_id)
         if item.schedule:
-            result += get_current_events_users(item.schedule)
-        elif item.user_id:
-            result.append(item.user_id)
-        elif item.group_id and Group.objects.filter(name=item.group_id) is not None:
-            for user in User.objects.filter(groups__name=item.group_id):
-                user.came_from_group = item.group_id.name
-                result.append(user)
-    #TODO: This isnt de-deuped, is that right?
+            current_events_users = get_current_events_users(item.schedule)
+            for user in current_events_users:
+                if user not in result:
+                    result.append(user)
+        if item.user_id:
+            if item.user_id not in result:
+                result.append(item.user_id)
+        if item.group_id:
+            for user in item.group_id.user_set.all():
+                if user not in result:
+                    result.append(user)
     return result
 
 
