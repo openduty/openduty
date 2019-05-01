@@ -1,4 +1,4 @@
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext as _  # pragma: no cover
 
 
 class Status:  # pragma: no cover

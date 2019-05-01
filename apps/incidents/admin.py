@@ -1,12 +1,8 @@
 from django.contrib import admin
-
-# Register your models here.
-# vim: set fileencoding=utf-8 :
-from django.contrib import admin
-
-from . import models
+from apps.incidents.models import Incident, IncidentSilenced
 
 
+@admin.register(Incident)
 class IncidentAdmin(admin.ModelAdmin):
 
     list_display = (
@@ -22,15 +18,7 @@ class IncidentAdmin(admin.ModelAdmin):
     list_filter = ('service_key', 'occurred_at', 'service_to_escalate_to')
 
 
+@admin.register(IncidentSilenced)
 class IncidentSilencedAdmin(admin.ModelAdmin):
-
     list_display = ('id', 'incident', 'silenced', 'silenced_until')
     list_filter = ('incident', 'silenced', 'silenced_until')
-
-
-def _register(model, admin_class):
-    admin.site.register(model, admin_class)
-
-
-_register(models.Incident, IncidentAdmin)
-_register(models.IncidentSilenced, IncidentSilencedAdmin)

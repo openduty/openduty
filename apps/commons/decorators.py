@@ -1,11 +1,11 @@
-try:
+try:  # pragma: no cover
     from functools import wraps
-except ImportError:
+except ImportError:  # pragma: no cover
     from django.utils.functional import wraps
 import inspect
 
 
-def disable_for_loaddata(signal_handler):
+def disable_for_loaddata(signal_handler):  # pragma: no cover
     @wraps(signal_handler)
     def wrapper(*args, **kwargs):
         for fr in inspect.stack():
