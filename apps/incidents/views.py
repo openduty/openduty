@@ -1,5 +1,4 @@
 import uuid
-import base64
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django.contrib.auth.models import User
 from django.db import transaction
@@ -30,7 +29,6 @@ from django.views.generic import ListView
 
 
 class IncidentViewSet(viewsets.ModelViewSet):
-
     """
     API endpoint that allows incidents to be viewed or edited.
     """
@@ -58,7 +56,7 @@ class IncidentViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         try:
-            token = Token.objects.get(key=request.data["service_key"])
+            token = Token.objects.get(key__in=[request.data.get("service_key")])
             serviceToken = ServiceTokens.objects.get(token_id=token)
             service = serviceToken.service_id
         except ServiceTokens.DoesNotExist:
@@ -66,99 +64,79 @@ class IncidentViewSet(viewsets.ModelViewSet):
         except Token.DoesNotExist:
             return Response({"No service key"}, status=status.HTTP_403_FORBIDDEN)
 
-        with transaction.atomic():
-            try:
-                esc = False
-                incident = Incident.objects.get(incident_key=request.data["incident_key"],service_key=service)
-                print("Received %s for %s on service %s" % (request.data['event_type'],request.data['incident_key'],serviceToken.name))
-                #check if type is ACK or resolve and if there's an escalation to a different escalation policy, remove it
-                if request.data['event_type'] == Incident.ACKNOWLEDGE or request.data['event_type'] == Incident.RESOLVE:
-                    print("ACK or Resolve, removing specific escalation")
-                    esc = True
-                    incident.service_to_escalate_to = None
-                    incident.save()
-                # check if incident is resolved and refuse to ACK
-                if not (incident.event_type == Incident.RESOLVE and request.data['event_type'] == Incident.ACKNOWLEDGE):
-                    event_log_message = "%s api key changed %s from %s to %s" % (
-                        serviceToken.name, incident.incident_key,
-                        incident.event_type, request.data['event_type'])
-                    if esc:
-                        event_log_message += ", unescalated"
-                else:
-                    response = {}
-                    response["status"] = "failure"
-                    response["message"] = "Can\'t ACK a resolved incident!"
-                    return Response(response, status=status.HTTP_400_BAD_REQUEST)
-            except (Incident.DoesNotExist, KeyError):
-                incident = Incident()
-                try:
-                    incident.incident_key = request.data["incident_key"]
-                except KeyError:
-                    if request.data["event_type"] == Incident.TRIGGER:
-                        incident.incident_key = base64.urlsafe_b64encode(
-                            uuid.uuid1().bytes).replace(
-                            '=',
-                            '')
-                    else:
-                        response = {}
-                        response["status"] = "failure"
-                        response["message"] = "Mandatory parameter missing"
-                        return Response(
-                            response,
-                            status=status.HTTP_400_BAD_REQUEST)
-                incident.service_key = service
-
-                event_log_message = "%s api key created %s with status %s" % (
-                    serviceToken.name, incident.incident_key, request.data['event_type'])
-
-            if self.is_relevant(incident, request.data['event_type']):
-                event_log = EventLog()
-                # Anonymous user for testing
-                if request.user.is_anonymous:
-                    user = None
-                else:
-                    user = request.user
-                event_log.user = user
-                event_log.service_key = incident.service_key
-                event_log.data = event_log_message
-                event_log.occurred_at = timezone.now()
-
-                incident.event_type = request.data["event_type"]
-                incident.description = request.data["description"][:100]
-                incident.details = request.data.get("details", "")
-                incident.occurred_at = timezone.now()
-                try:
-                    incident.full_clean()
-                except ValidationError as e:
-                    return Response(
-                        {'errors': e.messages},
-                        status=status.HTTP_400_BAD_REQUEST)
+        esc = False
+        incident = Incident.objects.filter(
+            incident_key=request.data.get("incident_key"), service_key=service
+        ).first()
+        if incident:
+            print(f"Received {request.data.get('event_type')} for"
+                  f" {request.data.get('incident_key')} on service {serviceToken.name}")
+            # check if type is ACK or resolve and if there's an
+            # escalation to a different escalation policy, remove it
+            if request.data.get('event_type') in [Incident.ACKNOWLEDGE, Incident.RESOLVE]:
+                print("ACK or Resolve, removing specific escalation")
+                esc = True
+                incident.service_to_escalate_to = None
                 incident.save()
-                event_log.incident_key = incident
-                event_log.action = incident.event_type
-                event_log.save()
-                servicesilenced = ServiceSilenced.objects.filter(
-                    service=service).count() > 0
-                if incident.event_type == Incident.TRIGGER and not servicesilenced:
+            # check if incident is resolved and refuse to ACK
+            event_log_message = f"{serviceToken.name} api key changed {incident.incident_key} " \
+                f"from {incident.event_type} to {request.data.get('event_type')}"
+            if incident.event_type not in [Incident.RESOLVE, Incident.ACKNOWLEDGE] and esc:
+                event_log_message += ", unescalated"
+        else:
+            try:
+                assert request.data.get("event_type")
+                assert request.data.get("incident_key")
+                assert request.data.get("service_key")
+            except AssertionError:
+                response = {"status": "failure", "message": "Mandatory parameter missing"}
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+            event_type = request.data.get("event_type")
+            incident_key = str(uuid.uuid1()) if (event_type == Incident.TRIGGER) else request.data.get("incident_key")
+            incident_service_key = service
+            incident = Incident.objects.create(
+                event_type=event_type,
+                incident_key=incident_key,
+                service_key=incident_service_key,
+                description=request.data.get("description", " "),
+                details = request.data.get("details", " "),
+                occurred_at=timezone.now()
+            )
+            event_log_message = f"{serviceToken.name} api key created " \
+                f"{incident.incident_key} with status {request.data.get('event_type')}"
+
+        if self.is_relevant(incident, request.data.get('event_type')):
+            user = None if request.user.is_anonymous else request.user
+            event_log = EventLog(
+                user=user,
+                service_key=incident.service_key,
+                data=event_log_message,
+                occurred_at=timezone.now()
+            )
+            try:
+                incident.full_clean()
+            except ValidationError as e:
+                return Response({'errors': e.messages}, status=status.HTTP_400_BAD_REQUEST)
+            event_log.incident_key = incident
+            event_log.action = incident.event_type
+            event_log.save()
+            servicesilenced = ServiceSilenced.objects.filter(
+                service=service).count() > 0
+            if incident.event_type == Incident.TRIGGER and not servicesilenced:
+                NotificationHelper.notify_incident(incident)
+            if incident.event_type == Incident.RESOLVE or incident.event_type == Incident.ACKNOWLEDGE:
+                ScheduledNotification.remove_all_for_incident(incident)
+                if incident.event_type == Incident.RESOLVE and service.send_resolve_enabled:
                     NotificationHelper.notify_incident(incident)
-                if incident.event_type == Incident.RESOLVE or incident.event_type == Incident.ACKNOWLEDGE:
-                    ScheduledNotification.remove_all_for_incident(incident)
-                    if incident.event_type == Incident.RESOLVE and service.send_resolve_enabled:
-                        NotificationHelper.notify_incident(incident)
 
-            headers = self.get_success_headers(request.POST)
+        response = {"status": "success", "message": "Event processed", "incident_key": incident.incident_key}
+        return Response(response, status=status.HTTP_201_CREATED)
 
-            response = {}
-            response["status"] = "success"
-            response["message"] = "Event processed"
-            response["incident_key"] = incident.incident_key
-            return Response(response,status=status.HTTP_201_CREATED,headers=headers)
-
-
-    #escalate an incident to another service's escalation rule; persists until ACK
     @detail_route(methods=['put'])
     def escalate(self, request, *args, **kwargs):
-        #get arguments
+        """
+        escalate an incident to another service's escalation rule; persists until ACK
+        """
         try:
             token = Token.objects.get(key=request.data["service_key"])
             serviceToken = ServiceTokens.objects.get(token_id=token)

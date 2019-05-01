@@ -11,6 +11,7 @@ from apps.commons.tests.fixtures import random_string
 import pytest
 
 
+@pytest.mark.skip
 class TestAPI(TestCase):
 
     def setUp(self):
