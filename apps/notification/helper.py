@@ -15,7 +15,7 @@ class NotificationHelper(object):
 
         for notification in notifications:
             notification.save()
-            send_notifications.apply_async((notification.id,) ,eta=notification.send_at)
+            send_notifications.apply_async((notification.id,), eta=notification.send_at)
     @staticmethod
     def notify_user_about_incident(incident, user, delay=None, preparedmsg = None):
         notifications = NotificationHelper.generate_notifications_for_user(incident, user, delay, preparedmsg)

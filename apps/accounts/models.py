@@ -2,10 +2,8 @@ import hmac
 import uuid
 from hashlib import sha1
 from django.db import models
-from django.utils.encoding import python_2_unicode_compatible
 
 
-@python_2_unicode_compatible
 class Token(models.Model):
     """
     The default authorization token model.
@@ -21,9 +19,6 @@ class Token(models.Model):
     def generate_key(self):
         unique = uuid.uuid4()
         return hmac.new(unique.bytes, digestmod=sha1).hexdigest()
-
-    def __unicode__(self):
-        return self.key
 
     def __str__(self):
         return self.key

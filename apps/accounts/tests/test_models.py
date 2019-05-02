@@ -43,6 +43,4 @@ def test_token_save():
 def test_token___unicode__str__():
     token = Token()
     token.save()
-    assert token.key == token.__unicode__()
     assert token.key == token.__str__()
-    assert token.__str__() == token.__unicode__()

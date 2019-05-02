@@ -13,7 +13,7 @@ class Incident(models.Model):
     UNACKNOWLEDGE = "unacknowledge"
     ESCALATE = "escalate"
 
-    service_key = models.ForeignKey(Service,related_name="incident", on_delete=models.CASCADE)
+    service_key = models.ForeignKey(Service, related_name="incident", on_delete=models.CASCADE)
     incident_key = models.CharField(max_length=200)
     event_type = models.CharField(max_length=15)
     description = models.CharField(max_length=200)
