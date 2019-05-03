@@ -10,7 +10,7 @@
             </h1>
             <ol class="breadcrumb">
                 <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-                <li><a href="{% url 'incident_list' %}"><i class="fa fa-list"></i> Incidents</a></li>
+                <li><a href="{% url 'IncidentsListView' %}"><i class="fa fa-list"></i> Incidents</a></li>
                 <li class="active">
                     {% if item %}Incident: {{ item.incident_key }}{% else %}Incident Detail{% endif %}
                 </li>
@@ -99,7 +99,7 @@
                             </div>
                             <div class="row">
                                 <div class="form-horizontal">
-                                    <form method="post" action="{% url 'openduty.incidents.update_type' %}">
+                                    <form method="post" action="{% url 'incidents_update_type' %}">
                                         <input type="hidden" name="id" value="{{ item.id }}">
                                         <input type="hidden" name="url" value="{{ url }}">
                                         {% csrf_token %}
@@ -110,7 +110,7 @@
                                     </form>
                                     {% if incident_silenced %}
                                         <div class="form-group" style="text-align: center">
-                                            <form method="post" action="{% url 'openduty.incidents.unsilence' item.id %}">
+                                            <form method="post" action="{% url 'incidents_unsilence' item.id %}">
                                                 <button type="submit" class="btn btn-danger">Remove silence</button>
                                                 {% csrf_token %}
                                                 <input type="hidden" name="url" value="{{ url }}">
@@ -123,7 +123,7 @@
 
                                             <div class="form-group">
                                                 <label class="col-sm-5 control-label">Silence incident for</label>
-                                                <form class="form-horizontal" role="form" method="post" action="{% url 'openduty.incidents.silence' item.id %}">
+                                                <form class="form-horizontal" role="form" method="post" action="{% url 'incidents_silence' item.id %}">
                                                     <input type="hidden" name="url" value="{{ url }}">
                                                     <div class="col-sm-2">
                                                         <input type="number" class="form-control" name="silence_for" id="silence_for" placeholder="Silence for x hours">
@@ -137,7 +137,7 @@
                             <div class="form-horizontal" style ="padding-left: 50px;">
                                 <div class="form-group">
                                     <label class="col-sm-5 control-label">Forward to</label>
-                                    <form class="form-horizontal" role="form" method="post" action="{% url 'openduty.incidents.forward_incident' %}">
+                                    <form class="form-horizontal" role="form" method="post" action="{% url 'incidents_forward_incident' %}">
                                         <input type="hidden" name="id" value="{{ item.id }}">
                                         <input type="hidden" name="url" value="{{ url }}">
                                         {% csrf_token %}

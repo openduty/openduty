@@ -1,10 +1,8 @@
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from django.contrib.auth.models import User
 
 
-@python_2_unicode_compatible
 class EventLog(models.Model):
     """
     Event Log
@@ -24,9 +22,9 @@ class EventLog(models.Model):
 
     @property
     def color(self):
-        colort_dict = {
+        colour_dict = {
             'acknowledge': 'warning',
-            'unacknowledge' : 'warning',
+            'unacknowledge': 'warning',
             'resolve': 'success',
             'silence_service': 'active',
             'unsilence_service': 'active',
@@ -39,7 +37,7 @@ class EventLog(models.Model):
             'notification_failed': 'danger',
             'log': ''
         }
-        return colort_dict[self.action]
+        return colour_dict.get(self.action)
 
     user = models.ForeignKey(User, blank=True, default=None, null=True, related_name='users', on_delete=models.CASCADE)
     incident_key = models.ForeignKey('incidents.Incident', blank=True, null=True, on_delete=models.CASCADE)

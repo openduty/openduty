@@ -418,7 +418,7 @@ def test_update_event_service(authenticated_client):
     data = {
         "service_key": str(token.key),
         "incident_key": str(token.key),
-        "incident_details": "incident_details",
+        "IncidentDetailView": "incident_details",
         "event_type":  event_type,
         "description": "description",
         "details": "details",

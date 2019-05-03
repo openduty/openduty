@@ -40,13 +40,13 @@
                         </span>
                 </a>
                 <ul class="treeview-menu">
-                    <li><a href="{% url 'incidents_on_call' %}?event_type=trigger"><i class="fa fa-circle-o"></i>
+                    <li><a href="{% url 'OnCallIncidentsListView' %}?event_type=trigger"><i class="fa fa-circle-o"></i>
                         Unhandled (for me)</a></li>
-                    <li><a href="{% url 'incident_list' %}?event_type=trigger"><i class="fa fa-circle-o"></i>
+                    <li><a href="{% url 'IncidentsListView' %}?event_type=trigger"><i class="fa fa-circle-o"></i>
                         Unhandled (all services)</a></li>
-                    <li><a href="{% url 'incident_list' %}?event_type=acknowledge"><i class="fa fa-circle-o"></i>
+                    <li><a href="{% url 'IncidentsListView' %}?event_type=acknowledge"><i class="fa fa-circle-o"></i>
                         Acknowledged</a></li>
-                    <li><a href="{% url 'incident_list' %}"><i class="fa fa-circle-o"></i> All</a></li>
+                    <li><a href="{% url 'IncidentsListView' %}"><i class="fa fa-circle-o"></i> All</a></li>
                 </ul>
             </li>
             <li><a href="{% url 'openduty.services.list' %}"><i class="fa fa-phone"></i> <span>Services</span></a>

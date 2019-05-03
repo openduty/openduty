@@ -128,7 +128,7 @@
                                     <td>{{ item.service_to_escalate_to|default:"-" }}</td>
                                     <td>
                                         <a
-                                            href="{% url 'incident_details' item.id %}"
+                                            href="{% url 'IncidentDetailView' item.id %}"
                                             class="btn btn-default btn-sm"
                                             data-toggle="tooltip"
                                             data-placement="top"
@@ -136,7 +136,7 @@
                                         >
                                             <span class="glyphicon glyphicon-edit"></span>
                                         </a>
-                                        <form method="post" action="{% url 'openduty.incidents.update_type' %}">
+                                        <form method="post" action="{% url 'incidents_update_type' %}">
                                             {% csrf_token %}
                                             <input type="hidden" name="url" value="{{ request.get_full_path }}">
                                             <input type="hidden" name="id" value="{{ item.id }}">
