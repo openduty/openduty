@@ -1,10 +1,10 @@
-from django.utils import timezone
-from django.core.management.base import BaseCommand
-from apps.incidents.models import Incident
-import datetime
+from django.utils import timezone  # pragma: no cover
+from django.core.management.base import BaseCommand  # pragma: no cover
+from apps.incidents.models import Incident  # pragma: no cover
+import datetime  # pragma: no cover
 
 
-class Command(BaseCommand):
+class Command(BaseCommand):  # pragma: no cover
     help = 'Auto resolves stuck acknowledged incidents'
 
     def handle(self, *args, **options):

@@ -1,5 +1,3 @@
-
-
 from time import sleep, time
 import datetime
 from apps.openduty.serializers import NoneSerializer
@@ -15,7 +13,7 @@ class HealthCheckViewSet(viewsets.ModelViewSet):
     queryset = Incident.objects.all()
     serializer_class = NoneSerializer
 
-    def list(self, request):
+    def list(self, request, *args, **kwargs):
         try:
             firstincident = Incident.objects.first()
         except Exception:
@@ -27,7 +25,7 @@ class CeleryHealthCheckViewSet(viewsets.ModelViewSet):
     queryset = Incident.objects.all()
     serializer_class = NoneSerializer
 
-    def list(self, request):
+    def list(self, *args, **kwargs):
         try:
             timestamp = int(time())
             random = randint(0, 100000)

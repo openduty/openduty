@@ -1,8 +1,8 @@
-from django.contrib.auth import authenticate, login as auth_login
-from django.utils.deprecation import MiddlewareMixin
+from django.contrib.auth import authenticate, login as auth_login  # pragma: no cover
+from django.utils.deprecation import MiddlewareMixin  # pragma: no cover
 
 
-class BasicAuthMiddleware(MiddlewareMixin):
+class BasicAuthMiddleware(MiddlewareMixin):  # pragma: no cover
 
     def process_request(self,request):
         authentication = request.META.get('HTTP_AUTHORIZATION')

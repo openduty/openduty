@@ -35,7 +35,7 @@ class Incident(models.Model):
             'trigger': 'trigger',
             'log': ''
         }
-        return colour_dict[self.event_type]
+        return colour_dict.get(self.event_type)
 
     class Meta:
         verbose_name = _('incidents')

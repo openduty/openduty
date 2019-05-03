@@ -1,13 +1,10 @@
-import datetime
-import dateutil
 from django.contrib.auth.models import User
-from django.utils.encoding import python_2_unicode_compatible
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from apps.incidents.models import Incident
 
 
-@python_2_unicode_compatible
 class UserNotificationMethod(models.Model):
     """
     Schedule rule
@@ -39,7 +36,6 @@ class UserNotificationMethod(models.Model):
         return str(self.id)
 
 
-@python_2_unicode_compatible
 class ScheduledNotification(models.Model):
     notifier = models.CharField(max_length=30)
     message = models.CharField(max_length=500)
@@ -64,6 +60,5 @@ class ScheduledNotification(models.Model):
     @staticmethod
     def get_notifications_to_send(date=None):
         if not date:
-            date = datetime.datetime.now(dateutil.tz.tzutc())
+            date = timezone.now()
         return ScheduledNotification.objects.filter(send_at__lte=date)
-

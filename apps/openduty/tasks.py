@@ -1,8 +1,7 @@
-from __future__ import absolute_import
 from apps.notification.helper import NotificationHelper
 from celery import shared_task
 from apps.incidents.models import Incident, IncidentSilenced
-from apps.services.models import  Service, ServiceSilenced
+from apps.services.models import Service, ServiceSilenced
 
 
 

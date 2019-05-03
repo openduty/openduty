@@ -1,9 +1,9 @@
 
-<a href="{% url 'incident_details' record.id %}" class="btn btn-default btn-sm"
+<a href="{% url 'IncidentDetailView' record.id %}" class="btn btn-default btn-sm"
         data-toggle="tooltip" data-placement="top" title="Edit">
     <span class="glyphicon glyphicon-edit"></span></a>
 
-<form method="post" action="{% url 'openduty.incidents.update_type' %}">
+<form method="post" action="{% url 'incidents_update_type' %}">
     {% csrf_token %}
     <input type="hidden" name="url" value="{{ request.get_full_path }}">
     <input type="hidden" name="id" value="{{ record.id }}">

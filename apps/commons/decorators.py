@@ -2,7 +2,7 @@ try:  # pragma: no cover
     from functools import wraps
 except ImportError:  # pragma: no cover
     from django.utils.functional import wraps
-import inspect
+import inspect  # pragma: no cover
 
 
 def disable_for_loaddata(signal_handler):  # pragma: no cover

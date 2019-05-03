@@ -1,33 +1,27 @@
 import uuid
-from django.views.generic import ListView, DeleteView, UpdateView, CreateView, DetailView
+from django.urls import reverse
+from django.views.generic import DetailView, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from django.db import transaction
 from django.utils import timezone
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from django.template.response import TemplateResponse
-from django.core.exceptions import ValidationError
-from django.http import Http404
 from django.views.decorators.http import require_http_methods
 from django.contrib import messages
 from rest_framework import viewsets
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
-from rest_framework.decorators import detail_route, list_route
-from django_tables2_simplefilter import FilteredSingleTableView
+from rest_framework.decorators import detail_route
 from apps.notification.models import ScheduledNotification
 from apps.notification.helper import NotificationHelper
-from apps.services.models import Service, ServiceSilenced, ServiceTokens
+from apps.services.models import ServiceSilenced, ServiceTokens
 from apps.events.models import EventLog
 from apps.services.models import Token
 from apps.openduty.tasks import unsilence_incident
 from apps.incidents.serializers import IncidentSerializer
 from apps.incidents.escalation_helper import services_where_user_is_on_call
 from apps.incidents.models import Incident, IncidentSilenced
-from apps.incidents.tables import IncidentTable
-from django.views.generic import ListView
 
 
 class IncidentViewSet(viewsets.ModelViewSet):
@@ -160,8 +154,8 @@ class IncidentViewSet(viewsets.ModelViewSet):
             return Response({"Incident does not exist"}, status=status.HTTP_404_NOT_FOUND)
         incident.service_to_escalate_to = service2
         incident.event_type = "escalated"
-        if request.data.get("incident_details"):
-            incident.details = request.data.get("incident_details")
+        if request.data.get("IncidentDetailView"):
+            incident.details = request.data.get("IncidentDetailView")
         incident.save()
         username = 'no user' if request.user.is_anonymous else request.user.username
         event_log_message = f"{username} escalated to " \
@@ -188,21 +182,18 @@ class IncidentViewSet(viewsets.ModelViewSet):
         )
 
 
-class OnCallIncidentsListView(ListView):
+class OnCallIncidentsListView(LoginRequiredMixin, ListView):
     model = Incident
     context_object_name = 'all_incidents'
     template_name = 'incidents/list.html'
 
     def get_queryset(self, *args, **kwargs):
-        user = self.request.user
-        q = super(OnCallIncidentsListView, self).get_queryset()
-        services = services_where_user_is_on_call(user)
-        incidents = q.filter(service_key__in=services)
-        incidents = incidents.order_by("-occurred_at")
-        return incidents
+        services = services_where_user_is_on_call(self.request.user)
+        queryset = Incident.objects.filter(service_key__in=services).order_by("-occurred_at")
+        return queryset
 
 
-class IncidentsListView(ListView):
+class IncidentsListView(LoginRequiredMixin, ListView):
     model = Incident
     queryset = Incident.objects.all().order_by('id')
     template_name = 'incidents/list.html'
@@ -243,157 +234,137 @@ class IncidentDetailView(LoginRequiredMixin, DetailView):
 
 def _update_type(user, ids, event_type):
     for incident_id in ids:
-        with transaction.atomic():
-            incident = Incident.objects.get(id=int(incident_id))
-            unesc = False
-            if incident.service_to_escalate_to is not None:
-                incident.service_to_escalate_to = None
-                unesc = True
-            logmessage = EventLog()
-            logmessage.service_key = incident.service_key
-            logmessage.user = user
-            logmessage.action = event_type
-            logmessage.data = "%s changed %s from %s to %s" % (
-                user.username,
-                incident.incident_key,
-                incident.event_type,
-                event_type)
-            if unesc:
-                logmessage.data += ", unescalated"
-            logmessage.occurred_at = timezone.now()
-
-            incident.event_type = event_type
-            incident.occurred_at = timezone.now()
-            incident.save()
-
-            logmessage.incident_key = incident
-            logmessage.save()
-            if incident.event_type == Incident.RESOLVE or incident.event_type == Incident.ACKNOWLEDGE:
-                ScheduledNotification.remove_all_for_incident(incident)
+        incident = Incident.objects.get(id=int(incident_id))
+        log_message_data = f"{user.username} changed {incident.incident_key} from {incident.event_type} to {event_type}"
+        if incident.service_to_escalate_to is not None:
+            incident.service_to_escalate_to = None
+            log_message_data += ", unescalated"
+        EventLog.objects.create(
+            service_key=incident.service_key,
+            user=user,
+            action=event_type,
+            data=log_message_data,
+            occurred_at=timezone.now(),
+            incident_key=incident
+        )
+        incident.event_type = event_type
+        incident.occurred_at = timezone.now()
+        incident.save()
+        if incident.event_type == Incident.RESOLVE or incident.event_type == Incident.ACKNOWLEDGE:
+            ScheduledNotification.remove_all_for_incident(incident)
 
 
+# TODO: Needs Refactoring work + changed update_type url
 @login_required()
 @require_http_methods(["POST"])
 def update_type(request):
-    event_type = request.POST['event_type']
-    event_types = ('acknowledge', 'resolve')
-    incident_ids = request.POST.getlist('selection', None)
-    if not event_type:
+    event_type = request.POST.get('event_type')
+    incident_ids = request.POST.getlist('selection', [])
+    incident_ids.append(request.POST.get('id'))
+    url = reverse('IncidentsListView')
+    request_url = request.POST.get('url', url)
+    if event_type is None:
         messages.error(request, 'Invalid event modification!')
-        return HttpResponseRedirect(request.POST['url'])
+        return HttpResponseRedirect(request_url)
     try:
-        if incident_ids:
-            for id in incident_ids:
-                with transaction.atomic():
-                    incident = Incident.objects.get(id=id)
-                    if incident.event_type == 'resolve' and event_type == 'acknowledge':
-                        messages.error(request, 'Can\' ACK a resolved incident!')
-                        return HttpResponseRedirect(request.POST['url'])
-                    else:
-                        _update_type(request.user, incident_ids, event_type)
-        else:
-            id = request.POST.get('id')
-            incident = Incident.objects.get(id=id)
+        for pk in incident_ids:
+            incident = Incident.objects.get(id=pk)
             if incident.event_type == 'resolve' and event_type == 'acknowledge':
                 messages.error(request, 'Can\' ACK a resolved incident!')
-                return HttpResponseRedirect(request.POST['url'])
+                return HttpResponseRedirect(request_url)
             else:
-                _update_type(request.user, [id], event_type)
+                _update_type(request.user, incident_ids, event_type)
     except Incident.DoesNotExist:
         messages.error(request, 'Incident not found')
-        return HttpResponseRedirect(request.POST['url'])
-    except ValidationError as e:
-        messages.error(request, e.messages)
-    return HttpResponseRedirect(request.POST['url'])
+    return HttpResponseRedirect(request_url)
 
 
+# TODO: Needs Refactoring work + changed forward_incident url
 @login_required()
 @require_http_methods(["POST"])
 def forward_incident(request):
+    url = reverse('IncidentsListView')
+    request_url = request.POST.get('url', url)
     try:
-        with transaction.atomic():
-            incident = Incident.objects.get(id=request.POST['id'])
-            user = User.objects.get(id=request.POST['user_id'])
-            ScheduledNotification.remove_all_for_incident(incident)
-            NotificationHelper.notify_user_about_incident(incident, user)
-            event_log_message = "%s  changed assignee of incident :  %s  to %s" % (
-                request.user.username, incident.incident_key, user.username)
-            event_log = EventLog()
-            event_log.user = request.user
-            event_log.action = "forward"
-            event_log.incident_key = incident
-            event_log.service_key = incident.service_key
-            event_log.data = event_log_message
-            event_log.occurred_at = timezone.now()
-            event_log.save()
-
+        incident = Incident.objects.get(id=request.POST.get('id'))
+        user = User.objects.get(id=request.POST.get('user_id'))
+        ScheduledNotification.remove_all_for_incident(incident)
+        NotificationHelper.notify_user_about_incident(incident, user)
+        event_log_message = f"{request.user.username} changed assignee of " \
+            f"incident : {incident.incident_key} to {user.username}"
+        EventLog.objects.create(
+            user=request.user,
+            action="forward",
+            incident_key=incident,
+            service_key=incident.service_key,
+            data=event_log_message,
+            occurred_at=timezone.now()
+        )
     except Incident.DoesNotExist:
         messages.error(request, 'Incident not found')
-        return HttpResponseRedirect(request.POST['url'])
+        return HttpResponseRedirect(request_url)
     except User.DoesNotExist:
         messages.error(request, 'Incident not found')
-        return HttpResponseRedirect(request.POST['url'])
-    except ValidationError as e:
-        messages.error(request, e.messages)
-    return HttpResponseRedirect(request.POST['url'])
+        return HttpResponseRedirect(request_url)
+    return HttpResponseRedirect(request_url)
 
 
+# TODO: Needs Refactoring work + changed silence url
 @login_required()
 @require_http_methods(["POST"])
 def silence(request, incident_id):
+    silence_for = request.POST.get('silence_for', 0)
+    url = reverse('IncidentsListView')
+    request_url = request.POST.get('url', url)
     try:
-        incident = Incident.objects.get(id=incident_id)
-        silence_for = request.POST.get('silence_for')
-        url = request.POST.get("url")
-        if IncidentSilenced.objects.filter(incident=incident).count() < 1:
-            silenced_incident = IncidentSilenced()
-            silenced_incident.incident = incident
-            silenced_incident.silenced_until = timezone.now(
-            ) + timezone.timedelta(hours=int(silence_for))
-            silenced_incident.silenced = True
-            silenced_incident.save()
-            event_log_message = "%s silenced incident %s for %s hours" % (
-                request.user.username, incident.incident_key, silence_for)
-            event_log = EventLog()
-            event_log.incident_key = incident
-            event_log.action = 'silence_incident'
-            event_log.user = request.user
-            event_log.service_key = incident.service_key
-            event_log.data = event_log_message
-            event_log.occurred_at = timezone.now()
-            event_log.save()
-            ScheduledNotification.remove_all_for_incident(incident)
-            incident.event_type = Incident.ACKNOWLEDGE
-            incident.save()
-            unsilence_incident.apply_async(
-                (incident_id,), eta=silenced_incident.silenced_until)
-            messages.success(request, event_log_message)
-        return HttpResponseRedirect(url)
-    except Service.DoesNotExist:
-        raise Http404
+        incident = Incident.objects.get(id=int(incident_id))
+    except Incident.DoesNotExist:
+        messages.error(request, 'Incident not found')
+        return HttpResponseRedirect(request_url)
+    if IncidentSilenced.objects.filter(incident=incident).count() < 1:
+        silenced_incident = IncidentSilenced.objects.create(
+            incident=incident,
+            silenced_until=timezone.now() + timezone.timedelta(hours=int(silence_for)),
+            silenced=True
+        )
+        event_log_message = f"{request.user.username} silenced " \
+            f"incident {incident.incident_key} for {silence_for} hours"
+        EventLog.objects.create(
+            incident_key=incident,
+            action='silence_incident',
+            user=request.user,
+            service_key=incident.service_key,
+            data=event_log_message,
+            occurred_at=timezone.now()
+        )
+        ScheduledNotification.remove_all_for_incident(incident)
+        incident.event_type = Incident.ACKNOWLEDGE
+        incident.save()
+        unsilence_incident.apply_async((incident_id,), eta=silenced_incident.silenced_until)
+        messages.success(request, event_log_message)
+    return HttpResponseRedirect(request_url)
 
+
+# TODO: Needs Refactoring work + changed unsilence url
 @login_required()
 @require_http_methods(["POST"])
 def unsilence(request, incident_id):
+    url = reverse('IncidentsListView')
+    request_url = request.POST.get('url', url)
     try:
         incident = Incident.objects.get(id=incident_id)
-        url = request.POST.get("url")
-        try:
-            IncidentSilenced.objects.filter(incident=incident).delete()
-            event_log_message = "%s removed silence from incident %s" % (request.user.username, incident.incident_key)
-            event_log = EventLog()
-            event_log.action = 'unsilence_incident'
-            event_log.user = request.user
-            event_log.incident_key = incident
-            event_log.service_key = incident.service_key
-            event_log.data = event_log_message
-            event_log.occurred_at = timezone.now()
-            event_log.save()
-            messages.success(request, event_log_message)
-        except IncidentSilenced.DoesNotExist:
-            # No need to delete
-            pass
-            messages.warning(request, "IncidentSilenced Not found")
-        return HttpResponseRedirect(url)
-    except Service.DoesNotExist:
-        raise Http404
+    except Incident.DoesNotExist:
+        messages.error(request, 'Incident not found')
+        return HttpResponseRedirect(request_url)
+    IncidentSilenced.objects.filter(incident=incident).delete()
+    event_log_message = f"{request.user.username} removed silence from incident {incident.incident_key}"
+    EventLog.objects.create(
+        action='unsilence_incident',
+        user=request.user,
+        incident_key=incident,
+        service_key=incident.service_key,
+        data=event_log_message,
+        occurred_at=timezone.now()
+    )
+    messages.success(request, event_log_message)
+    return HttpResponseRedirect(request_url)

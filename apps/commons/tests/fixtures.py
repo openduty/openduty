@@ -55,7 +55,7 @@ def authenticated_client():
         password='1234test'
     )
     G(Profile, user=user)
-    client = Client()
+    client = Client(enforce_csrf_checks=False)
     client.force_login(user)
     return client
 

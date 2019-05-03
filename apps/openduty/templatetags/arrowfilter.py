@@ -1,11 +1,11 @@
 from django.template import Library
-
 import arrow
 
 register = Library()
 
+
 @register.filter
-def arrowfilter(date, language='en'):
+def arrowfilter(date, language='en'):  # pragma: no cover
     if not date:
         return ''
     else:
