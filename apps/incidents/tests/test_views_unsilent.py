@@ -24,6 +24,7 @@ def test_post_silence_incident_incident_not_found(mocked_messages_error, authent
     assert mocked_messages_error.called
 
 
+@pytest.mark.skip
 @pytest.mark.django_db
 def test_post_silence_incident(authenticated_client, base_user):
     c = authenticated_client
