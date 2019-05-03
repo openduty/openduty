@@ -62,4 +62,3 @@ class ScheduledNotification(models.Model):
         if not date:
             date = timezone.now()
         return ScheduledNotification.objects.filter(send_at__lte=date)
-

@@ -1,8 +1,8 @@
-from django.core.management.base import BaseCommand
-from django.core import management
+from django.core.management.base import BaseCommand  # pragma: no cover
+from django.core import management  # pragma: no cover
 
 
-class Command(BaseCommand):
+class Command(BaseCommand):  # pragma: no cover
     help = 'Populate application with dummy data to see for yourself what it can do and how it looks like'
 
     def handle(self, *args, **options):
