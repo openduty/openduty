@@ -54,5 +54,3 @@ class TestEventViews(LoggedInTestCase):
             },
         )
         self.assertEqual(200, response.status_code)
-        # self.event.refresh_from_db()
-        # assert rule == self.event.rule

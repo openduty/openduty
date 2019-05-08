@@ -1,10 +1,9 @@
-from django.conf.urls import url
-from apps.events import views
+from django.urls import path
+from apps.events.views import CustomCreateEventView, CustomUpdateEventView, CustomDeleteEventView
 
 
 urlpatterns = [
-    url(r'^create/(?P<calendar_slug>[-\w]+)/$', views.create_or_edit_event,
-        name='openduty.events.create_or_edit_event'),
-    url(r'^edit/(?P<calendar_slug>[-\w]+)/(?P<event_id>\d+)/$', views.create_or_edit_event, name='edit_event'),
-    url(r'^destroy/(?P<calendar_slug>[-\w]+)/(?P<event_id>\d+)/$', views.destroy_event, name='destroy_event'),
+    path('create/<slug:calendar_slug>/', CustomCreateEventView.as_view(), name='CustomCreateEventView'),
+    path('edit/<slug:calendar_slug>/<int:event_id>/', CustomUpdateEventView.as_view(), name='edit_event'),
+    path('destroy/<slug:calendar_slug>/<int:event_id>/', CustomDeleteEventView.as_view(), name='destroy_event'),
 ]

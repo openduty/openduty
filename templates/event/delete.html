@@ -1,0 +1,44 @@
+{% extends 'base.html' %}{% load i18n static %}
+{% block title %}{% if event %}{% trans "Edit event." %}{% else %}{% trans "Create event." %}{% endif %}{% endblock %}
+{% block content %}
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>{% trans 'Delete Event' %}</h1>
+      <ol class="breadcrumb">
+        <li><a href="{% url 'calendar_details' calendar.slug %}"><i class="fa fa-event"></i> Schedule</a></li>
+        <li><a href="{% url 'edit_event' calendar.slug event.id %}"><i class="fa fa-event"></i> {% trans 'Edit Event' %}</a></li>
+        <li class="active">{% trans 'Delete Event' %}</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <!-- Main row -->
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="col-lg-6 col-lg-push-3 col-md-8 col-md-push-2 col-xs-10 col-xs-push-1">
+            <div class="box box-primary">
+              <div class="box-header with-border">
+                <h3 class="box-title text-center">
+                  {% trans "Are you sure that you really want to delete it?" %}
+                </h3>
+
+                <div class="box-body">
+                  <form class="form-horizontal" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">{% trans "Delete" %}</button>
+                    <a href="{% url 'edit_event' calendar.slug event.id %}" class="btn btn-default">{% trans "Cancel" %}</a>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /.box -->
+        </div>
+      </div>
+      <!-- /.row (main row) -->
+    </section>
+    <!-- /.content -->
+  </div>
+{% endblock %}

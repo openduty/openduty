@@ -32,7 +32,16 @@ function loadConfig() {
 // Build the "dist" folder by running all of the below tasks
 // Sass must be run later so UnCSS can search for used classes in the others assets.
 gulp.task('build',
-    gulp.series(clean, gulp.parallel(javascript, images, copy, copyTemplates), sass));
+    gulp.series(
+        clean,
+        gulp.parallel(
+            javascript,
+            images,
+            copy,
+            // copyTemplates
+        ),
+        sass
+    ));
 
 // Build the site, run the server, and watch for file changes
 gulp.task('default',
@@ -42,14 +51,14 @@ gulp.task('default',
 // This happens every time a build starts
 function clean(done) {
     rimraf(PATHS.dist, done);
-    rimraf('./templates', done);
+    // rimraf('./templates', done);
 }
 
 // Copy files out of the assets folder
 // This task skips over the "img", "js", and "scss" folders, which are parsed separately
 function copy() {
     return gulp.src(PATHS.assets)
-        .pipe(gulp.dest(PATHS.dist + '/assets'));
+        .pipe(gulp.dest(PATHS.dist));
 }
 
 function copyTemplates() {
@@ -86,7 +95,7 @@ function sass() {
         .pipe($.postcss(postCssPlugins))
         .pipe($.if(PRODUCTION, $.cleanCss({ compatibility: 'ie9' })))
         .pipe($.if(!PRODUCTION, $.sourcemaps.write()))
-        .pipe(gulp.dest(PATHS.dist + '/assets/css'))
+        .pipe(gulp.dest(PATHS.dist + '/css'))
         .pipe(browser.reload({ stream: true }));
 }
 
@@ -120,7 +129,7 @@ function javascript() {
             .on('error', e => { console.log(e); })
         ))
         .pipe($.if(!PRODUCTION, $.sourcemaps.write()))
-        .pipe(gulp.dest(PATHS.dist + '/assets/js'));
+        .pipe(gulp.dest(PATHS.dist + '/js'));
 }
 
 // Copy images to the "dist" folder
@@ -130,7 +139,7 @@ function images() {
         .pipe($.if(PRODUCTION, $.imagemin([
             $.imagemin.jpegtran({ progressive: true }),
         ])))
-        .pipe(gulp.dest(PATHS.dist + '/assets/img'));
+        .pipe(gulp.dest(PATHS.dist + '/img'));
 }
 
 // Start a server with BrowserSync to preview the site in
@@ -154,7 +163,7 @@ function reload(done) {
 // Watch for changes to static assets, pages, Sass, and JavaScript
 function watch() {
     gulp.watch(PATHS.assets, copy);
-    gulp.watch('src/templates/**/*.html').on('all', gulp.series(copyTemplates, browser.reload));
+    // gulp.watch('src/templates/**/*.html').on('all', gulp.series(copyTemplates, browser.reload));
     gulp.watch('src/assets/scss/**/*.scss').on('all', sass);
     gulp.watch('src/assets/js/**/*.js').on('all', gulp.series(javascript, browser.reload));
     gulp.watch('src/assets/img/**/*').on('all', gulp.series(images, browser.reload));

@@ -50,8 +50,8 @@ def admin_user():
 @pytest.fixture
 def authenticated_client():
     user = User.objects.create_superuser(
-        email='admin_user@example.com',
-        username="admin_user",
+        email='authenticated_user@example.com',
+        username="authenticated_user",
         password='1234test'
     )
     G(Profile, user=user)
