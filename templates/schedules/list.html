@@ -76,7 +76,7 @@
                                         <a href="{% url "SchedulesUpdateView" cal.slug %}" role="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="top" title="Edit">
                                             <span class="glyphicon glyphicon-edit"></span>
                                         </a>
-                                        <a href="{% url 'openduty.events.create_or_edit_event' cal.slug %}" role="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="top" title="Add event">
+                                        <a href="{% url 'CustomCreateEventView' cal.slug %}" role="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="top" title="Add event">
                                             <span class="glyphicon glyphicon-plus"></span>
                                         </a>
                                         <form

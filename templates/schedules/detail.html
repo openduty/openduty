@@ -33,7 +33,7 @@
               <div class="col-xs-12 col-md-8">Fallback on-call engineer: {{ currently_oncall_2 }}</div>
               <div class="col-xs-12 col-md-8">Current date: {{ current_date }} {{ local_timezone }} </div>
               <div class="col-xs-6 col-md-4 button">
-                  <a href="{% url 'openduty.events.create_or_edit_event' calendar_slug %}" class="btn btn-default">
+                  <a href="{% url 'CustomCreateEventView' calendar_slug %}" class="btn btn-default">
                       <span class="glyphicon glyphicon-plus"></span>
                       New Event
                   </a>

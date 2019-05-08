@@ -1,191 +1,214 @@
-{% extends 'users/base.html' %}{% load i18n static %}
-
-{% block title %}{% trans "Create or change an event." %}{% endblock %}
+{% extends 'base.html' %}{% load i18n static %}
+{% block title %}{% if event %}{% trans "Edit event." %}{% else %}{% trans "Create event." %}{% endif %}{% endblock %}
+{% block custom_style %}
+  <link rel="stylesheet" href="{% static "schedule/jquery-ui.css" %}" type="text/css" media="screen"/>
+  <link rel="stylesheet" href="{% static "schedule/schedule.css" %}" type="text/css" media="screen"/>
+{% endblock %}
 {% block content %}
-<div class="content-wrapper">
+  <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1>
-            {% if item %}Edit event{% else%}New event{% endif %}
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="{% url 'SchedulesListView' %}"><i class="fa fa-event"></i> Schedules</a></li>
-            <li class="active">
-                {% if item %}Edit event{% else%}New event{% endif %}
-            </li>
-        </ol>
+      <h1>{% if event %}Edit event{% else %}New event{% endif %}</h1>
+      <ol class="breadcrumb">
+        <li><a href="{% url 'calendar_details' calendar.slug %}"><i class="fa fa-event"></i> Schedule</a></li>
+        <li class="active">{% if event %}Edit event{% else %}New event{% endif %}</li>
+      </ol>
     </section>
-
     <!-- Main content -->
     <section class="content">
-        <!-- Main row -->
-        <div class="row">
-            <div class="col-xs-12">
-                {% if messages %}
-                    <div class="alert alert-success alert-dismissible">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        {% for message in messages %}
-                            <h4>
-                                {% if message.tags %}
-                                    <i class="icon fa fa-check {{ message.tags }}"></i>
-                                {% endif %}
-                                {{ message }}
-                            </h4>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-                <div class="col-lg-6 col-lg-push-3 col-md-8 col-md-push-2 col-xs-10 col-xs-push-1">
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h3 class="box-title text-center">
-                                {% if form.non_field_errors %}
-                                    <ul class="list-unstyled">
-                                        {% for error in form.non_field_errors %}
-                                            <li><strong>{{ error|escape }}</strong></li>
-                                        {% endfor %}
-                                    </ul>
-                                {% else %}
-                                    {% if item %}Edit event{% else%}New event{% endif %}
-                                {% endif %}
-                            </h3>
-                        </div>
-                    </div>
-                    <form class="form-horizontal" method="post">
-                        {% csrf_token %}
-                        <div class="form-group form-inline">
-                            <label for="id_start_0" class="col-sm-2 control-label">Start:</label>
-                            <div class="col-sm-10">
-                                <input
-                                    id="id_start_0"
-                                    name="start_0"
-                                    type="text"
-                                    class="form-control datepicker"
-                                    value="{% if data.start_ymd %} {{data.start_ymd}}{% endif %}"
-                                >
-                                <input
-                                    id="id_start_1"
-                                    name="start_1"
-                                    type="text"
-                                    class="form-control datepicker"
-                                    value="{% if data.start_hour %} {{data.start_hour}}{% endif %}"
-                                >
-                            </div>
-                        </div>
-                        <div class="form-group form-inline">
-                            <label for="id_end_0" class="col-sm-2 control-label">End:</label>
-                            <div class="col-sm-10">
-                                <input
-                                    id="id_end_0"
-                                    class="form-control datepicker"
-                                    name="end_0"
-                                    type="text"
-                                    value="{% if data.end_ymd %} {{data.end_ymd}}{% endif %}"
-                                >
-                                <input
-                                    id="id_end_1"
-                                    class="form-control datepicker"
-                                    name="end_1"
-                                    type="text"
-                                    value="{% if data.end_hour %} {{data.end_hour}}{% endif %}"
-                                >
-                                <span class="helptext">The end time must be later than start time.</span></td>
-                            </div>
-                        </div>
-
-                        <div class="form-group form-inline">
-                            <label for="id_title" class="col-sm-2 control-label">On call</label>
-                            <div class="col-sm-10">
-                                <select name="oncall" class="form-control">
-                                    <optgroup label="Groups">
-                                        {% for item in groups %}
-                                            <option value="{{item.name}}" {% if data.oncall == item.name %}selected{% endif %} >{{ item.name }}</option>
-                                        {% endfor %}
-                                    </optgroup>
-
-                                    <optgroup label="People">
-                                        {% for item in users %}
-                                            <option value="{{item.username}}" {% if data.oncall == item.username %}selected{% endif %} >{{ item.username }}</option>
-                                        {% endfor %}
-                                    </optgroup>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div id="content-main">
-                            {% for group in grouped_models %}
-                                <div class="module">
-                                    <h2 id="app-{{ group.grouper.label }}">{{ group.grouper.verbose_name }} ({{ group.grouper.name }})</h2>
-                                    <table class="xfull">
-                                        {% for model in group.list %}
-                                            <tr>
-                                                <th><a href="{% url 'django-admindocs-models-detail' app_label=model.app_label model_name=model.model_name %}">{{ model.object_name }}</a></th>
-                                            </tr>
-                                        {% endfor %}
-                                    </table>
-                                </div>
-                            {% endfor %}
-                        </div>
-                        <div class="form-group form-inline">
-                            <label for="fallback" class="col-sm-2 control-label">Fallback</label>
-                            <div class="col-sm-10">
-                                <select name="fallback" class="form-control">
-
-                                    <optgroup label="Groups">
-                                        {% for item in groups %}
-                                            <option value="{{item.name}}" {% if data.fallback == item.name %}selected{% endif %} >{{ item.name }}</option>
-                                        {% endfor %}
-                                    </optgroup>
-
-                                    <optgroup label="People">
-                                        {% for item in users %}
-                                            <option value="{{item.username}}" {% if data.fallback == item.username %}selected{% endif %} >{{ item.username }}</option>
-                                        {% endfor %}
-                                    </optgroup>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group form-inline">
-                            <label for="rule" class="col-sm-2 control-label">Recurring</label>
-                            <div class="col-sm-10">
-                                <select name="rule" class="form-control">
-                                    {% for id, name in form.rule.field.choices %}
-                                        <option value="{{ id }}" {% if data.rule == id %} {{"selected"}}{% endif %}>{{ name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group form-inline">
-                            <label for="id_start_0" class="col-sm-2 control-label">End recurring</label>
-                            <div class="col-sm-10">
-                                <input id="id_end_recurring_period" name="end_recurring_period" type="text"
-                                       class="datepicker form-control" value="{% if data.recurr_ymd %} {{data.recurr_ymd}}{% endif %}">
-                            </div>
-                        </div>
-                        <div class="form-group form-inline"><label for="id_description" class="col-sm-2 control-label">Description</label>
-                            <div class="col-sm-10">
-                                <textarea class="form-control" cols="40" id="id_description" name="description" rows="5">{% if data.description %} {{data.description}}{% endif %}</textarea>
-                            </div>
-                        </div>
-                        <br/>
-                        <input type="submit" class="btn btn-success" value="{% trans "Save" %}">
-                        <input type="button" class="btn btn-danger" value="{% trans "Cancel" %}" onclick="window.location='/schedules/view/{{ calendar.slug }}'"/>
-                        <input type="hidden" name="next" value="{{next|default:""}}"/>
-                    </form>
-                </div>
-                <!-- /.box -->
+      <!-- Main row -->
+      <div class="row">
+        <div class="col-xs-12">
+          {% if messages %}
+            <div class="alert alert-success alert-dismissible">
+              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+              {% for message in messages %}
+                <h4>
+                  {% if message.tags %}<i class="icon fa fa-check {{ message.tags }}"></i>{% endif %}
+                  {{ message }}
+                </h4>
+              {% endfor %}
             </div>
+          {% endif %}
+          <div class="col-lg-6 col-lg-push-3 col-md-8 col-md-push-2 col-xs-10 col-xs-push-1">
+            <div class="box box-primary">
+              <div class="box-header with-border">
+                <h3 class="box-title text-center">
+                  {% if event %}Edit event{% else %}New event{% endif %}
+                </h3>
+                <br>
+                {% if form.non_field_errors %}
+                  <ul class="list-unstyled errorlist">
+                    {% for error in form.non_field_errors %}
+                      <li ><span class="alert-danger">{{ error|escape }}</span></li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
+            </div>
+            <form class="form-horizontal" method="post">
+              {% csrf_token %}
+              <div class="form-group form-inline">
+                <label for="start" class="col-sm-2 control-label">Start: </label>
+                <div class="col-sm-10">
+                  {% if form.errors %}{% for field in form %}
+                    {% ifequal field form.start_0 %}{% for error in field.errors %}
+                      <strong class="alert-danger"> {{ error|escape }}</strong>
+                    {% endfor %}{% endifequal %}
+                  {% endfor %}{% endif %}
+                  {% if form.errors %}{% for field in form %}
+                    {% ifequal field form.start_1 %}{% for error in field.errors %}
+                      <strong class="alert-danger"> {{ error|escape }}</strong>
+                    {% endfor %}{% endifequal %}
+                  {% endfor %}{% endif %}
+                  {{ form.start_0 }}
+                  {{ form.start_1 }}
+                </div>
+              </div>
+              <div class="form-group form-inline">
+                <label for="start" class="col-sm-2 control-label">End: </label>
+                <div class="col-sm-10">
+                  {% if form.errors %}{% for field in form %}
+                    {% ifequal field form.end_0 %}{% for error in field.errors %}
+                      <strong class="alert-danger"> {{ error|escape }}</strong>
+                    {% endfor %}{% endifequal %}
+                  {% endfor %}{% endif %}
+                  {% if form.errors %}{% for field in form %}
+                    {% ifequal field form.end_1 %}{% for error in field.errors %}
+                      <strong class="alert-danger"> {{ error|escape }}</strong>
+                    {% endfor %}{% endifequal %}
+                  {% endfor %}{% endif %}
+                  {{ form.end_0 }}
+                  {{ form.end_1 }}
+                  <small class="helptext">{{ form.end_1.help_text }}</small>
+                </div>
+              </div>
+              <div class="form-group form-inline">
+                <label for="start" class="col-sm-2 control-label">{{ form.end_recurring_period.label }}: </label>
+                <div class="col-sm-10">
+                  {% if form.errors %}{% for field in form %}
+                    {% ifequal field form.end_recurring_period %}{% for error in field.errors %}
+                      <strong class="alert-danger"> {{ error|escape }}</strong>
+                    {% endfor %}{% endifequal %}
+                  {% endfor %}{% endif %}
+                  {{ form.end_recurring_period }}
+                  <small class="helptext">{{ form.end_recurring_period.help_text }}</small>
+                </div>
+              </div>
+              <div class="form-group form-inline">
+                <label for="start" class="col-sm-2 control-label">{{ form.on_call.label }}: </label>
+                <div class="col-sm-10">
+                  {% if form.errors %}{% for field in form %}
+                    {% ifequal field form.on_call %}{% for error in field.errors %}
+                      <strong class="alert-danger"> {{ error|escape }}</strong>
+                    {% endfor %}{% endifequal %}
+                  {% endfor %}{% endif %}
+                  {{ form.on_call }}
+                </div>
+              </div>
+              <div class="form-group form-inline">
+                <label for="start" class="col-sm-2 control-label">{{ form.fallback.label }}: </label>
+                <div class="col-sm-10">
+                  {% if form.errors %}{% for field in form %}
+                    {% ifequal field form.fallback %}{% for error in field.errors %}
+                      <strong class="alert-danger"> {{ error|escape }}</strong>
+                    {% endfor %}{% endifequal %}
+                  {% endfor %}{% endif %}
+                  {{ form.fallback }}
+                </div>
+              </div>
+              <div class="form-group form-inline">
+                <label for="start" class="col-sm-2 control-label">{{ form.rule.label }}: </label>
+                <div class="col-sm-10">
+                  {% if form.errors %}{% for field in form %}
+                    {% ifequal field form.rule %}{% for error in field.errors %}
+                      <strong class="alert-danger"> {{ error|escape }}</strong>
+                    {% endfor %}{% endifequal %}
+                  {% endfor %}{% endif %}
+                  {{ form.rule }}
+                  <small class="helptext">{{ form.rule.help_text }}</small>
+                </div>
+              </div>
+              <div class="form-group form-inline">
+                <label for="start" class="col-sm-2 control-label">Details: </label>
+                <div class="col-sm-10">
+                  {% if form.errors %}{% for field in form %}
+                    {% ifequal field form.description %}{% for error in field.errors %}
+                      <strong class="alert-danger"> {{ error|escape }}</strong>
+                    {% endfor %}{% endifequal %}
+                  {% endfor %}{% endif %}
+                  {{ form.description }}
+                </div>
+              </div>
+              <div class="form-group form-inline">
+                <label for="start" class="col-sm-2 control-label">{{ form.color_event.label }}: </label>
+                <div class="col-sm-10">
+                  {% if form.errors %}{% for field in form %}
+                    {% ifequal field form.color_event %}{% for error in field.errors %}
+                      <strong class="alert-danger"> {{ error|escape }}</strong>
+                    {% endfor %}{% endifequal %}
+                  {% endfor %}{% endif %}
+                  {{ form.color_event }}
+                </div>
+              </div>
+              <br/>
+              <button type="submit" class="btn btn-success">{% trans "Save" %}</button>
+              <a href="{% url 'calendar_details' calendar.slug %}" class="btn btn-default">{% trans "Cancel" %}</a>
+              {% if event %}
+              <a href="{% url 'destroy_event' calendar.slug event.id %}" class="btn btn-danger">
+                {% trans "Delete" %}
+              </a>
+              {% endif %}
+            </form>
+          </div>
+          <!-- /.box -->
         </div>
-        <!-- /.row (main row) -->
+      </div>
+      <!-- /.row (main row) -->
     </section>
     <!-- /.content -->
-</div>
+  </div>
 {% endblock %}
 {% block custom_scripts %}
-    <script type="text/javascript" src="{% static "assets/js/jquery-3.3.1.min.js"%}"></script>
-
-    <script>
-        $(document ).ready(function() {
-        });
-    </script>
-    <link rel="stylesheet" href="{%  static 'assets/css/bootstrap-datepicker.css' %}">
+  <script type="text/javascript" src="{% static "schedule/js/jquery.js" %}"></script>
+  <script type="text/javascript" src="{% static "schedule/js/jquery-ui.js" %}"></script>
+  <script type="text/javascript" src="{% static "schedule/js/jquery.timePicker.js" %}"></script>
+  <script type="text/javascript">
+      $(function () {
+          var start_1 = $("#id_start_1");
+          var end_1 = $("#id_end_1");
+          var date_format = 'dd/mm/yy';
+          $("#id_start_0").datepicker({
+              dateFormat: date_format
+          });
+          $("#id_end_0").datepicker({
+              dateFormat: date_format
+          });
+          start_1.timePicker();
+          end_1.timePicker();
+          $("#id_end_recurring_period").datepicker({
+              dateFormat: date_format
+          });
+          var oldTime = $.timePicker("#id_start_1").getTime();
+          start_1.change(function () {
+              if ($("#id_end_1").val()) { // Only update when second input has a value.
+                  // Calculate duration.
+                  var duration = ($.timePicker("#id_end_1").getTime() - oldTime);
+                  var time = $.timePicker("#id_start_1").getTime();
+                  // Calculate and update the time in the second input.
+                  $.timePicker("#id_end_1").setTime(new Date(new Date(time.getTime() + duration)));
+                  oldTime = time;
+              }
+          });
+          // Validate.
+          // TODO this should validate date AND time
+          end_1.change(function () {
+              if ($.timePicker("#id_start_1").getTime() > $.timePicker(this).getTime()) {
+                  $(this).addClass("error");
+              } else {
+                  $(this).removeClass("error");
+              }
+          });
+      });
+  </script>
 {% endblock %}

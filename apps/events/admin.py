@@ -1,12 +1,8 @@
 from django.contrib import admin
-
-# Register your models here.
-# vim: set fileencoding=utf-8 :
-from django.contrib import admin
-
-from . import models
+from apps.events.models import EventLog
 
 
+@admin.register(EventLog)
 class EventLogAdmin(admin.ModelAdmin):
 
     list_display = (
@@ -19,10 +15,3 @@ class EventLogAdmin(admin.ModelAdmin):
         'occurred_at',
     )
     list_filter = ('user', 'incident_key', 'service_key', 'occurred_at')
-
-
-def _register(model, admin_class):
-    admin.site.register(model, admin_class)
-
-
-_register(models.EventLog, EventLogAdmin)
