@@ -49,8 +49,3 @@ quickly merge or address your contributions.
 5. The issue is closed. Sometimes, valid issues will be closed to keep
    the issue tracker clean. The issue is still indexed and available for
    future viewers, or can be re-opened if necessary.
-
-## Setting up Go to work on **`openduty`**
-
-If you have never worked with Go before, you will have to complete the
-following steps listed in the [README](README.md).
