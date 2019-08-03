@@ -20,12 +20,13 @@ class CustomEventForm(EventForm):
             if on_call_list:
                 self.fields['on_call'].initial = on_call_list[0]
                 self.fields['fallback'].initial = on_call_list[1]
-
-    on_call_choices = [
-        ("", "-----"),
-        ('Groups', [(x.name, x.name) for x in Group.objects.all()]),
-        ('People', [(x.username, x.username) for x in User.objects.all()])
-    ]
+            on_call_choices = [
+                ("", "-----"),
+                ('Groups', [(x.name, x.name) for x in Group.objects.all()]),
+                ('People', [(x.username, x.username) for x in User.objects.all()])
+            ]
+            self.fields['on_call'].choices = on_call_choices
+            self.fields['fallback'].choices = on_call_choices
 
     start_0 = forms.DateField(
         label=_("start"),
@@ -81,7 +82,7 @@ class CustomEventForm(EventForm):
     on_call = forms.ChoiceField(
         required=False,
         label=_('On Call'),
-        choices=on_call_choices,
+        choices=[],
         widget=forms.Select(
             attrs={"class": "form-control"}
         )
@@ -89,7 +90,7 @@ class CustomEventForm(EventForm):
     fallback = forms.ChoiceField(
         required=False,
         label=_('Fallback'),
-        choices=on_call_choices,
+        choices=[],
         widget=forms.Select(
             attrs={"class": "form-control"}
         )
